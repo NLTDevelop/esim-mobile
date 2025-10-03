@@ -1,0 +1,10 @@
+
+// import 'package:flutter_bloc/flutter_bloc.dart';
+//
+// class HelpBloc extends Bloc<HelpEvent, HelpState> {
+//   HelpBloc() : super(HelpInitial()) {
+//     on<HelpEvent>((event, emit) {
+//       // TODO: implement event handler
+//     });
+//   }
+// }
