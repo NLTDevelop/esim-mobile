@@ -91,6 +91,5 @@ class StoreContent extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }

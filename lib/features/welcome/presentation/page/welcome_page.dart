@@ -6,7 +6,6 @@ import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
-import 'package:esim_mob_app/features/auth/presentation/page/auth_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

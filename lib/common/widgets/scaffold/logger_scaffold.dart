@@ -87,7 +87,7 @@ class _DraggableFloatingButtonState extends State<DraggableFloatingButton> {
       child: SafeArea(
         child: IconButton.filledTonal(
           style: ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(Colors.grey.withOpacity(0.70)),
+            backgroundColor: WidgetStatePropertyAll(Colors.grey.withAlpha(70)),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
