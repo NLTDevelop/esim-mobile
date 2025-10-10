@@ -24,8 +24,6 @@ abstract interface class ColoredPalette {
     required this.shadow,
     required this.textDialog,
     required this.textDialogButton,
-    required this.splashLinearProgressIndicator,
-    required this.splashLinearProgressIndicatorBackground,
     required this.textFieldBorder,
     required this.navBarBackground,
     required this.disabledNavBarButton,
@@ -34,10 +32,14 @@ abstract interface class ColoredPalette {
     required this.darknessBackground,
     required this.searchIcon,
     required this.searchCursor,
-    required this.dividerSaveActionButton,
-    required this.miniPlayerScaffoldButton,
     required this.selectedTabLabel,
     required this.avatarBackground,
+    required this.splashBackground,
+    required this.cardBorder,
+    required this.icon,
+    required this.toggleActive,
+    required this.toggleCircle,
+    required this.descriptionText,
   });
 
   final Brightness brightness;
@@ -45,6 +47,7 @@ abstract interface class ColoredPalette {
   final Color background;
   final Color onBackground;
   final Color text;
+  final Color descriptionText;
   final Color enabledPrimaryButton;
   final Color disabledPrimaryButton;
   final Color onEnabledPrimaryButton;
@@ -62,18 +65,19 @@ abstract interface class ColoredPalette {
   final Color shadow;
   final Color textDialog;
   final Color textDialogButton;
-  final Color splashLinearProgressIndicator;
-  final Color splashLinearProgressIndicatorBackground;
   final Color textFieldBorder;
+  final Color cardBorder;
   final Color navBarBackground;
   final Color disabledNavBarButton;
   final Color enabledNavBarButton;
   final Color actionButton;
   final Color darknessBackground;
+  final Color icon;
   final Color searchIcon;
   final Color searchCursor;
-  final Color dividerSaveActionButton;
-  final Color miniPlayerScaffoldButton;
   final Color selectedTabLabel;
   final Color avatarBackground;
+  final Color splashBackground;
+  final Color toggleCircle;
+  final Color toggleActive;
 }

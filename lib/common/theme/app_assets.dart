@@ -1,0 +1,33 @@
+
+
+class AppImages{
+  static const _imagePath = 'assets/images';
+  static const splash = '$_imagePath/splash_logo.png';
+  static const logo = '$_imagePath/logo.png';
+  static const regionalCardBackground = '$_imagePath/regional_card_background.jpeg';
+}
+
+class AppIcons{
+  static const _svgPath = 'assets/icons';
+  static const home = '$_svgPath/home.svg';
+  static const credits = '$_svgPath/credits.svg';
+  static const help = '$_svgPath/help.svg';
+  static const profile = '$_svgPath/profile.svg';
+  static const offline = '$_svgPath/offline.svg';
+  static const google = '$_svgPath/google.svg';
+  static const ios = '$_svgPath/apple.svg';
+  static const search = '$_svgPath/search.svg';
+  static const turkey = '$_svgPath/tr.svg';
+  static const usa = '$_svgPath/us.svg';
+  static const thailand = '$_svgPath/th.svg';
+  static const japan = '$_svgPath/jp.svg';
+  static const malaysia = '$_svgPath/ma.svg';
+  static const indonesia = '$_svgPath/id.svg';
+  static const world = '$_svgPath/world.svg';
+  static const info = '$_svgPath/info.svg';
+  static const delete = '$_svgPath/delete.svg';
+  static const logout = '$_svgPath/logout.svg';
+  static const notification = '$_svgPath/notification.svg';
+  static const termsOfCondition = '$_svgPath/terms_of_condition.svg';
+  static const privacyPolicy = '$_svgPath/privacy_policy.svg';
+}

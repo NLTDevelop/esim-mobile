@@ -13,9 +13,6 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
   splashColor: Colors.transparent,
   highlightColor: Colors.transparent,
   sliderTheme: SliderThemeData(
-    activeTrackColor: palette.splashLinearProgressIndicator,
-    inactiveTrackColor: palette.splashLinearProgressIndicatorBackground,
-    thumbColor: palette.splashLinearProgressIndicator,
     valueIndicatorColor: palette.primary,
     trackHeight: 2.0,
     thumbShape: const RoundSliderThumbShape(
@@ -117,10 +114,8 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
       shadow: palette.shadow,
       textDialog: palette.textDialog,
       textDialogButton: palette.textDialogButton,
-      splashLinearProgressIndicator: palette.splashLinearProgressIndicator,
-      splashLinearProgressIndicatorBackground:
-      palette.splashLinearProgressIndicatorBackground,
       textFieldBorder: palette.textFieldBorder,
+      cardBorder: palette.cardBorder,
       navBarBackground: palette.navBarBackground,
       disabledNavBarButton: palette.disabledNavBarButton,
       enabledNavBarButton: palette.enabledNavBarButton,
@@ -128,6 +123,12 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
       darknessBackground: palette.darknessBackground,
       searchIcon: palette.searchIcon,
       searchCursor: palette.searchCursor,
+      splashBackground: palette.splashBackground,
+      toggleActive: palette.toggleActive,
+      toggleCircle: palette.toggleCircle,
+      icon: palette.icon,
+      descriptionText: palette.descriptionText
+
     ),
   ],
   dividerTheme: DividerThemeData(
@@ -252,41 +253,41 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
       borderRadius: BorderRadius.circular(2.0),
     ),
   ),
-  textTheme: const TextTheme(
-    displayLarge: TextStyle(),
-    displayMedium: TextStyle(),
-    displaySmall: TextStyle(
-      fontWeight: FontWeight.w400,
+  textTheme:  TextTheme(
+    displayLarge: const TextStyle(),
+    displayMedium:const  TextStyle(),
+    displaySmall: const TextStyle(
+      fontWeight: FontWeight.w500,
       fontSize: 16.0,
       letterSpacing: 0.0,
     ),
-    headlineLarge: TextStyle(
+    headlineLarge: const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 48.0,
       letterSpacing: 0.0,
     ),
-    headlineMedium: TextStyle(
+    headlineMedium: const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 40.0,
       letterSpacing: 0.0,
     ),
-    headlineSmall: TextStyle(
+    headlineSmall: const TextStyle(
       fontWeight: FontWeight.w400,
       fontSize: 24.0,
       letterSpacing: 0.0,
     ),
-    titleLarge: TextStyle(
-      fontWeight: FontWeight.w400,
-      fontSize: 10.0,
+    titleLarge: const TextStyle(
+      fontWeight: FontWeight.w500,
+      fontSize: 20.0,
     ),
-    titleMedium: TextStyle(
-      fontWeight: FontWeight.w300,
-      fontSize: 14.0,
+    titleMedium: const TextStyle(
+      fontWeight: FontWeight.w500,
+      fontSize: 17.0
     ),
-    titleSmall: TextStyle(
+    titleSmall: const TextStyle(
       fontWeight: FontWeight.w500,
 // height: 24.0,
-      fontSize: 13.0,
+      fontSize: 15.0,
       letterSpacing: 0.0,
     ),
     bodyLarge: TextStyle(
@@ -294,32 +295,35 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
 // height: 48.0,
       fontSize: 17.0,
       letterSpacing: 0.0,
+        color: palette.text
     ),
     bodyMedium: TextStyle(
       fontWeight: FontWeight.w500,
 // height: 40.0,
       fontSize: 32.0,
       letterSpacing: 2.0,
+        color: palette.text
     ),
-    bodySmall: TextStyle(
+    bodySmall: const TextStyle(
       fontWeight: FontWeight.w500,
 // height: 24.0,
-      fontSize: 12.0,
+      fontSize: 24.0,
       letterSpacing: 0.0,
     ),
     labelLarge: TextStyle(
       fontWeight: FontWeight.w600,
 // height: 40.0,
+      fontSize: 20.0,
+      letterSpacing: 0.0,
+        color: palette.text
+    ),
+    labelMedium: const TextStyle(
+      fontWeight: FontWeight.w600,
+// height: 32.0,
       fontSize: 16.0,
       letterSpacing: 0.0,
     ),
-    labelMedium: TextStyle(
-      fontWeight: FontWeight.w500,
-// height: 32.0,
-      fontSize: 20.0,
-      letterSpacing: 0.0,
-    ),
-    labelSmall: TextStyle(
+    labelSmall: const TextStyle(
       fontWeight: FontWeight.w400,
 // height: 24.0,
       fontSize: 12.0,

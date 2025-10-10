@@ -1,0 +1,1 @@
+enum Languages { en, uk, selected }

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:esim_mob_app/common/theme/colored_palette/colored_palette.dart';
+import 'package:flutter/material.dart';
 
 class LightColoredPalette implements ColoredPalette {
   @override
@@ -24,7 +25,7 @@ class LightColoredPalette implements ColoredPalette {
   Color get onEnabledPrimaryButton => const Color(0xFF423626);
 
   @override
-  Color get primary => const Color(0xFFD8CCBC);
+  Color get primary => const Color(0xFF0d6efd);
 
   @override
   Color get text => const Color(0xFF000000);
@@ -69,19 +70,16 @@ class LightColoredPalette implements ColoredPalette {
   Color get textDialogButton => const Color(0xFF746858);
 
   @override
-  Color get splashLinearProgressIndicator => const Color(0xFFD8CCBC);
-
-  @override
-  Color get splashLinearProgressIndicatorBackground => const Color(0xFFE5E2E8);
-
-  @override
   Color get textFieldBorder => const Color(0xFFD4D4D9);
+
+  @override
+  Color get cardBorder => const Color(0xFFe5e5e5);
 
   @override
   Color get navBarBackground => const Color(0xFFFFFFFF);
 
   @override
-  Color get disabledNavBarButton => const Color(0xFF5D5050);
+  Color get disabledNavBarButton => const Color(0xFF343a40);
 
   @override
   Color get enabledNavBarButton => const Color(0xFFFFFFFF);
@@ -92,18 +90,20 @@ class LightColoredPalette implements ColoredPalette {
   @override
   Color get darknessBackground => const Color(0xFFF5F5F5);
 
-
   @override
-  Color get searchIcon => const Color(0xFFE1E1DA);
+  Color get searchIcon => const Color(0xFF2E89F6);
 
   @override
   Color get searchCursor => const Color(0xFF9B9B94);
 
   @override
-  Color get dividerSaveActionButton => const Color(0xFFE4E4E6);
+  Color get icon => const Color(0xFF2E89F6);
 
   @override
-  Color get miniPlayerScaffoldButton => const Color(0xFF675A5A);
+  Color get toggleCircle => const Color(0xFF002847);
+
+  @override
+  Color get toggleActive => const Color(0xFF2E89F6);
 
   @override
   Color get selectedTabLabel => const Color(0xFF928676);
@@ -111,5 +111,9 @@ class LightColoredPalette implements ColoredPalette {
   @override
   Color get avatarBackground => const Color(0xFFC4B8A8);
 
+  @override
+  Color get splashBackground => const Color(0xFF02101e);
 
+  @override
+  Color get descriptionText => const Color(0xFF343a40);
 }

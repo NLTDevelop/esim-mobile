@@ -28,8 +28,6 @@ class ColorExtension extends ThemeExtension<ColorExtension> with _$ColorExtensio
     required this.shadow,
     required this.textDialog,
     required this.textDialogButton,
-    required this.splashLinearProgressIndicator,
-    required this.splashLinearProgressIndicatorBackground,
     required this.textFieldBorder,
     required this.navBarBackground,
     required this.disabledNavBarButton,
@@ -38,6 +36,12 @@ class ColorExtension extends ThemeExtension<ColorExtension> with _$ColorExtensio
     required this.darknessBackground,
     required this.searchIcon,
     required this.searchCursor,
+    required this.splashBackground,
+    required this.cardBorder,
+    required this.icon,
+    required this.toggleCircle,
+    required this.toggleActive,
+    required this.descriptionText,
   });
 
   @override
@@ -83,11 +87,9 @@ class ColorExtension extends ThemeExtension<ColorExtension> with _$ColorExtensio
   @override
   final Color textDialogButton;
   @override
-  final Color splashLinearProgressIndicator;
-  @override
-  final Color splashLinearProgressIndicatorBackground;
-  @override
   final Color textFieldBorder;
+  @override
+  final Color cardBorder;
   @override
   final Color navBarBackground;
   @override
@@ -99,9 +101,17 @@ class ColorExtension extends ThemeExtension<ColorExtension> with _$ColorExtensio
   @override
   final Color darknessBackground;
   @override
+  final Color icon;
+  @override
   final Color searchIcon;
   @override
   final Color searchCursor;
-
-
+  @override
+  final Color splashBackground;
+  @override
+  final Color toggleCircle;
+  @override
+  final Color toggleActive;
+  @override
+  final Color descriptionText;
 }

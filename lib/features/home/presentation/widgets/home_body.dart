@@ -1,4 +1,5 @@
 
+import 'package:esim_mob_app/features/home/presentation/widgets/no_plans_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeBody extends StatelessWidget {
@@ -6,6 +7,6 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return SafeArea(bottom: false, child: NoPlansWidget());
   }
 }

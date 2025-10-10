@@ -1,14 +1,71 @@
-import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/common/routes/routes.dart';
+import 'package:esim_mob_app/features/connection_checker/bloc/connection_checker_cubit.dart';
+import 'package:esim_mob_app/features/connection_checker/widgets/offline_widget.dart';
+import 'package:esim_mob_app/features/localization/presentation/cubit/localization_cubit.dart';
+import 'package:esim_mob_app/features/splash/presentation/widgets/splash_widget.dart';
+import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-class SplashBody extends StatelessWidget {
+class SplashBody extends StatefulWidget {
   const SplashBody({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: DefaultText.bodyMedium('Splash',fontWeight: FontWeight.w500,
-        maxLines: 2,),
+  State<SplashBody> createState() => _SplashBodyState();
+}
+
+class _SplashBodyState extends State<SplashBody> {
+
+  bool _isUserSet = true;
+  bool _isConnected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+          (_) {
+        initializeDependencies(
+          // onAuth: (user) {
+          //   if (_isConnected) {
+          //     _setUser(context);
+          //   } else {
+          //     _isUserSet = true; // Mark user as set but not authenticated yet
+          //   }
+          // },
+        );
+      },
     );
+  }
+
+  @override
+  Widget build(BuildContext context) => BlocConsumer<ConnectionCheckerCubit, ConnectionCheckerState>(
+    listener: (context, state) {
+      state.maybeWhen(
+        connected: () {
+          _isConnected = true;
+          if (_isUserSet) {
+            _setUser(context);
+          }
+        },
+        orElse: () {
+          _isConnected = false;
+        },
+      );
+    },
+    builder: (context, state) => state.maybeMap(
+      connected: (_) => const SplashWidget(),
+      offline: (_) => const OfflineWidget(),
+      orElse: () => const SizedBox.shrink(),
+    ),
+  );
+
+  Future<void> _setUser(BuildContext context) async {
+    await context.read<LocalizationCubit>().changeLanguage('en');
+    await Future.delayed(const Duration(milliseconds: 1000));
+    // final user = await fetchCurrentUser();
+    // _isUserSet = true;
+    // context.read<AuthenticationBloc>().add(AuthenticationEvent.setUser(user: user));
+    context.go(Routes.home);
   }
 }

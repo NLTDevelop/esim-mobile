@@ -30,16 +30,20 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
   Color get shadow;
   Color get textDialog;
   Color get textDialogButton;
-  Color get splashLinearProgressIndicator;
-  Color get splashLinearProgressIndicatorBackground;
   Color get textFieldBorder;
+  Color get cardBorder;
   Color get navBarBackground;
   Color get disabledNavBarButton;
   Color get enabledNavBarButton;
   Color get actionButton;
   Color get darknessBackground;
+  Color get icon;
   Color get searchIcon;
   Color get searchCursor;
+  Color get splashBackground;
+  Color get toggleCircle;
+  Color get toggleActive;
+  Color get descriptionText;
 
   @override
   ColorExtension copyWith({
@@ -64,16 +68,20 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
     Color? shadow,
     Color? textDialog,
     Color? textDialogButton,
-    Color? splashLinearProgressIndicator,
-    Color? splashLinearProgressIndicatorBackground,
     Color? textFieldBorder,
+    Color? cardBorder,
     Color? navBarBackground,
     Color? disabledNavBarButton,
     Color? enabledNavBarButton,
     Color? actionButton,
     Color? darknessBackground,
+    Color? icon,
     Color? searchIcon,
     Color? searchCursor,
+    Color? splashBackground,
+    Color? toggleCircle,
+    Color? toggleActive,
+    Color? descriptionText,
   }) {
     return ColorExtension(
       primary: primary ?? this.primary,
@@ -104,19 +112,20 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
       shadow: shadow ?? this.shadow,
       textDialog: textDialog ?? this.textDialog,
       textDialogButton: textDialogButton ?? this.textDialogButton,
-      splashLinearProgressIndicator:
-          splashLinearProgressIndicator ?? this.splashLinearProgressIndicator,
-      splashLinearProgressIndicatorBackground:
-          splashLinearProgressIndicatorBackground ??
-              this.splashLinearProgressIndicatorBackground,
       textFieldBorder: textFieldBorder ?? this.textFieldBorder,
+      cardBorder: cardBorder ?? this.cardBorder,
       navBarBackground: navBarBackground ?? this.navBarBackground,
       disabledNavBarButton: disabledNavBarButton ?? this.disabledNavBarButton,
       enabledNavBarButton: enabledNavBarButton ?? this.enabledNavBarButton,
       actionButton: actionButton ?? this.actionButton,
       darknessBackground: darknessBackground ?? this.darknessBackground,
+      icon: icon ?? this.icon,
       searchIcon: searchIcon ?? this.searchIcon,
       searchCursor: searchCursor ?? this.searchCursor,
+      splashBackground: splashBackground ?? this.splashBackground,
+      toggleCircle: toggleCircle ?? this.toggleCircle,
+      toggleActive: toggleActive ?? this.toggleActive,
+      descriptionText: descriptionText ?? this.descriptionText,
     );
   }
 
@@ -155,13 +164,8 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
       textDialog: Color.lerp(textDialog, other.textDialog, t)!,
       textDialogButton:
           Color.lerp(textDialogButton, other.textDialogButton, t)!,
-      splashLinearProgressIndicator: Color.lerp(splashLinearProgressIndicator,
-          other.splashLinearProgressIndicator, t)!,
-      splashLinearProgressIndicatorBackground: Color.lerp(
-          splashLinearProgressIndicatorBackground,
-          other.splashLinearProgressIndicatorBackground,
-          t)!,
       textFieldBorder: Color.lerp(textFieldBorder, other.textFieldBorder, t)!,
+      cardBorder: Color.lerp(cardBorder, other.cardBorder, t)!,
       navBarBackground:
           Color.lerp(navBarBackground, other.navBarBackground, t)!,
       disabledNavBarButton:
@@ -171,8 +175,14 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
       actionButton: Color.lerp(actionButton, other.actionButton, t)!,
       darknessBackground:
           Color.lerp(darknessBackground, other.darknessBackground, t)!,
+      icon: Color.lerp(icon, other.icon, t)!,
       searchIcon: Color.lerp(searchIcon, other.searchIcon, t)!,
       searchCursor: Color.lerp(searchCursor, other.searchCursor, t)!,
+      splashBackground:
+          Color.lerp(splashBackground, other.splashBackground, t)!,
+      toggleCircle: Color.lerp(toggleCircle, other.toggleCircle, t)!,
+      toggleActive: Color.lerp(toggleActive, other.toggleActive, t)!,
+      descriptionText: Color.lerp(descriptionText, other.descriptionText, t)!,
     );
   }
 
@@ -217,13 +227,10 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
                 .equals(textDialog, other.textDialog) &&
             const DeepCollectionEquality()
                 .equals(textDialogButton, other.textDialogButton) &&
-            const DeepCollectionEquality().equals(splashLinearProgressIndicator,
-                other.splashLinearProgressIndicator) &&
-            const DeepCollectionEquality().equals(
-                splashLinearProgressIndicatorBackground,
-                other.splashLinearProgressIndicatorBackground) &&
             const DeepCollectionEquality()
                 .equals(textFieldBorder, other.textFieldBorder) &&
+            const DeepCollectionEquality()
+                .equals(cardBorder, other.cardBorder) &&
             const DeepCollectionEquality()
                 .equals(navBarBackground, other.navBarBackground) &&
             const DeepCollectionEquality()
@@ -234,10 +241,19 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
                 .equals(actionButton, other.actionButton) &&
             const DeepCollectionEquality()
                 .equals(darknessBackground, other.darknessBackground) &&
+            const DeepCollectionEquality().equals(icon, other.icon) &&
             const DeepCollectionEquality()
                 .equals(searchIcon, other.searchIcon) &&
             const DeepCollectionEquality()
-                .equals(searchCursor, other.searchCursor));
+                .equals(searchCursor, other.searchCursor) &&
+            const DeepCollectionEquality()
+                .equals(splashBackground, other.splashBackground) &&
+            const DeepCollectionEquality()
+                .equals(toggleCircle, other.toggleCircle) &&
+            const DeepCollectionEquality()
+                .equals(toggleActive, other.toggleActive) &&
+            const DeepCollectionEquality()
+                .equals(descriptionText, other.descriptionText));
   }
 
   @override
@@ -265,17 +281,20 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
       const DeepCollectionEquality().hash(shadow),
       const DeepCollectionEquality().hash(textDialog),
       const DeepCollectionEquality().hash(textDialogButton),
-      const DeepCollectionEquality().hash(splashLinearProgressIndicator),
-      const DeepCollectionEquality()
-          .hash(splashLinearProgressIndicatorBackground),
       const DeepCollectionEquality().hash(textFieldBorder),
+      const DeepCollectionEquality().hash(cardBorder),
       const DeepCollectionEquality().hash(navBarBackground),
       const DeepCollectionEquality().hash(disabledNavBarButton),
       const DeepCollectionEquality().hash(enabledNavBarButton),
       const DeepCollectionEquality().hash(actionButton),
       const DeepCollectionEquality().hash(darknessBackground),
+      const DeepCollectionEquality().hash(icon),
       const DeepCollectionEquality().hash(searchIcon),
       const DeepCollectionEquality().hash(searchCursor),
+      const DeepCollectionEquality().hash(splashBackground),
+      const DeepCollectionEquality().hash(toggleCircle),
+      const DeepCollectionEquality().hash(toggleActive),
+      const DeepCollectionEquality().hash(descriptionText),
     ]);
   }
 }
@@ -305,16 +324,18 @@ extension ColorExtensionBuildContextProps on BuildContext {
   Color get shadow => colorExtension.shadow;
   Color get textDialog => colorExtension.textDialog;
   Color get textDialogButton => colorExtension.textDialogButton;
-  Color get splashLinearProgressIndicator =>
-      colorExtension.splashLinearProgressIndicator;
-  Color get splashLinearProgressIndicatorBackground =>
-      colorExtension.splashLinearProgressIndicatorBackground;
   Color get textFieldBorder => colorExtension.textFieldBorder;
+  Color get cardBorder => colorExtension.cardBorder;
   Color get navBarBackground => colorExtension.navBarBackground;
   Color get disabledNavBarButton => colorExtension.disabledNavBarButton;
   Color get enabledNavBarButton => colorExtension.enabledNavBarButton;
   Color get actionButton => colorExtension.actionButton;
   Color get darknessBackground => colorExtension.darknessBackground;
+  Color get icon => colorExtension.icon;
   Color get searchIcon => colorExtension.searchIcon;
   Color get searchCursor => colorExtension.searchCursor;
+  Color get splashBackground => colorExtension.splashBackground;
+  Color get toggleCircle => colorExtension.toggleCircle;
+  Color get toggleActive => colorExtension.toggleActive;
+  Color get descriptionText => colorExtension.descriptionText;
 }

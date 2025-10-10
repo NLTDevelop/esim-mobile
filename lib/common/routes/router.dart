@@ -1,4 +1,5 @@
 
+import 'package:esim_mob_app/common/routes/onboarding_route.dart';
 import 'package:esim_mob_app/common/routes/redirect_builder.dart';
 import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/core/utils/logger/logger.dart';
@@ -18,7 +19,9 @@ class AppRouter {
   late final GoRouter router = GoRouter(
     initialLocation: Routes.splash,
     routes: $appRoutes,
-    redirect: const RedirectBuilder({}).call,
+    redirect:  RedirectBuilder({
+      RedirectIfFirstRun(),
+    }).call,
     observers: [
       TalkerRouteObserver(Logger.instance),
     ],
