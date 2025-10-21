@@ -19,6 +19,8 @@ abstract class UserModel {
 
   bool get isNotAuthenticated;
 
+  String get userEmail;
+
   T when<T extends Object?>({
     required final T Function(AuthenticatedUserModel user) authenticated,
     required final T Function() notAuthenticated,
@@ -40,6 +42,9 @@ class AuthenticatedUserModel implements UserModel {
 
   @override
   bool get isNotAuthenticated => id == 0;
+
+  @override
+  String get userEmail => email;
 
   @override
   T when<T extends Object?>({
@@ -80,6 +85,9 @@ class NotAuthenticatedUser implements UserModel {
 
   @override
   bool get isNotAuthenticated => true;
+
+  @override
+  String get userEmail => '';
 
   @override
   T when<T extends Object?>({

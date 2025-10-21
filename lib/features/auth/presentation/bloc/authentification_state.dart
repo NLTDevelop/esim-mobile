@@ -26,5 +26,5 @@ class AuthentificationState with _$AuthentificationState {
     final String? message,
   }) = _NotAuthenticated;
 
-  const factory AuthentificationState.initial() = _Initial;
+
 }

@@ -1,5 +1,6 @@
 
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
+import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/bloc/preview_tariffs_bloc.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/widgets/preview_tariffs_body.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,8 @@ class PreviewTariffsPage extends StatelessWidget {
             },
             child: const Icon(Icons.arrow_back_ios_sharp, size: 24,),
           ),
+          centerTitle: true,
+          title: DefaultText.bodySmall(country,),
         ),
         body: const PreviewTariffsBody(),
       ),

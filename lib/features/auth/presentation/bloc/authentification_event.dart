@@ -11,4 +11,8 @@ class AuthentificationEvent with _$AuthentificationEvent {
 
   const factory AuthentificationEvent.logout() = _AuthentificationEventLogout;
   const factory AuthentificationEvent.getSignedInUser() = _AuthentificationGetSignedInUser;
+
+  const factory AuthentificationEvent.setUser({
+    required final UserModel user,
+  }) = __AuthentificationSetUser;
 }

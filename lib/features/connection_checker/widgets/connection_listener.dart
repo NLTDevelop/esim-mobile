@@ -1,4 +1,5 @@
 import 'package:esim_mob_app/common/widgets/snackbar/default_snackbar.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/connection_checker/bloc/connection_checker_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +25,7 @@ class ConnectionListener extends StatelessWidget {
               );
             }
         );
+        context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
       },
       child: child,
     );

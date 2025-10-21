@@ -18,6 +18,11 @@ List<RouteBase> get $appRoutes => [
       $welcomeRoute,
       $authRoute,
       $previewTariffsRoute,
+      $checkoutRoute,
+      $paymentRoute,
+      $autoTopUpRoute,
+      $contactUsRoute,
+      $faqRoute,
     ];
 
 RouteBase get $bottomNavigationShellRoute => StatefulShellRouteData.$route(
@@ -272,6 +277,118 @@ extension $PreviewTariffsRouteExtension on PreviewTariffsRoute {
 
   String get location => GoRouteData.$location(
         '/tariff',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $checkoutRoute => GoRouteData.$route(
+      path: '/checkout',
+      factory: $CheckoutRouteExtension._fromState,
+    );
+
+extension $CheckoutRouteExtension on CheckoutRoute {
+  static CheckoutRoute _fromState(GoRouterState state) => const CheckoutRoute();
+
+  String get location => GoRouteData.$location(
+        '/checkout',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $paymentRoute => GoRouteData.$route(
+      path: '/payment',
+      factory: $PaymentRouteExtension._fromState,
+    );
+
+extension $PaymentRouteExtension on PaymentRoute {
+  static PaymentRoute _fromState(GoRouterState state) => const PaymentRoute();
+
+  String get location => GoRouteData.$location(
+        '/payment',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $autoTopUpRoute => GoRouteData.$route(
+      path: '/auto-top-up',
+      factory: $AutoTopUpRouteExtension._fromState,
+    );
+
+extension $AutoTopUpRouteExtension on AutoTopUpRoute {
+  static AutoTopUpRoute _fromState(GoRouterState state) =>
+      const AutoTopUpRoute();
+
+  String get location => GoRouteData.$location(
+        '/auto-top-up',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $contactUsRoute => GoRouteData.$route(
+      path: '/contact-us',
+      factory: $ContactUsRouteExtension._fromState,
+    );
+
+extension $ContactUsRouteExtension on ContactUsRoute {
+  static ContactUsRoute _fromState(GoRouterState state) =>
+      const ContactUsRoute();
+
+  String get location => GoRouteData.$location(
+        '/contact-us',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $faqRoute => GoRouteData.$route(
+      path: '/faq',
+      factory: $FaqRouteExtension._fromState,
+    );
+
+extension $FaqRouteExtension on FaqRoute {
+  static FaqRoute _fromState(GoRouterState state) => const FaqRoute();
+
+  String get location => GoRouteData.$location(
+        '/faq',
       );
 
   void go(BuildContext context) => context.go(location);

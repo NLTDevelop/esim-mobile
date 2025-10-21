@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'package:country_codes/country_codes.dart';
+import 'package:esim_mob_app/features/auth/domain/use_cases/login_apple_use_case.dart';
+import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_case.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/localization/data/repository/localization_repository_impl.dart';
 import 'package:esim_mob_app/features/localization/presentation/cubit/localization_cubit.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +22,7 @@ void main() async =>
             () async {
           WidgetsFlutterBinding.ensureInitialized();
           await baseSteps();
+          await CountryCodes.init();
 
           FlutterError.onError =
               (details) => Logger.handle(details.exception, details.stack);
@@ -47,6 +52,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => AuthentificationBloc(loginGoogleUseCase: injector<LoginGoogleUseCase>(), loginAppleUseCase: injector<LoginAppleUseCase>()),
+        ),
         BlocProvider(create: (context) =>
         ConnectionCheckerCubit()
           ..recheckConnection()),

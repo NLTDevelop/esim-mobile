@@ -3,6 +3,7 @@ import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/widgets/snackbar/default_snackbar.dart';
 import 'package:esim_mob_app/common/widgets/state/failure_state.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
+import 'package:esim_mob_app/common/widgets/state/success_state.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/auth/presentation/widgets/login_body.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +21,11 @@ class LoginWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 26),
       child: BlocConsumer<AuthentificationBloc, AuthentificationState>(
         listener: (context, state){
-          print("Current state");
-          print(state);
           state.mapOrNull(
             authenticated: (state) {
-              print('hello');
+              context.go(Routes.home);
+            },
+            success: (state){
               context.go(Routes.home);
             },
             failure: (_) {
@@ -38,12 +39,11 @@ class LoginWidget extends StatelessWidget {
   builder: (context, state) {
 
     return state.map(
-        authenticated: (state) => const LoginBody(),
+        authenticated: (state) => const SuccessState(),
         loading:  (state) => const LoadingState(),
         failure: (state) => FailureState(onTap: () {}),
-        success: (state) => const LoginBody(),
+        success: (state) => const SuccessState(),
         notAuthenticated: (state) =>  const LoginBody(),
-      initial: (state) => const LoginBody()
     );
   },
 ),

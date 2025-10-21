@@ -26,24 +26,24 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
     ),
-    modalBarrierColor: palette.onBackground.withOpacity(0.70),
+    modalBarrierColor: palette.onBackground.withAlpha(130),
   ),
   navigationBarTheme: NavigationBarThemeData(
     indicatorColor: Colors.transparent,
     backgroundColor: palette.navBarBackground,
-    labelTextStyle: MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    labelTextStyle: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return TextStyle(
           color: palette.primary,
           fontWeight: FontWeight.w600,
-          fontSize: 10.0,
+          fontSize: 14.0,
           letterSpacing: 0.0,
         );
       } else {
         return TextStyle(
           color: palette.disabledNavBarButton,
           fontWeight: FontWeight.w600,
-          fontSize: 10.0,
+          fontSize: 14.0,
           letterSpacing: 0.0,
         );
       }
@@ -238,9 +238,9 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
     ),
   ),
   checkboxTheme: CheckboxThemeData(
-    checkColor: MaterialStateProperty.all(palette.background),
-    fillColor: MaterialStateProperty.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    checkColor: WidgetStateProperty.all(palette.background),
+    fillColor: WidgetStateProperty.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return palette.primary;
       }
       return palette.background;
@@ -255,7 +255,11 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
   ),
   textTheme:  TextTheme(
     displayLarge: const TextStyle(),
-    displayMedium:const  TextStyle(),
+    displayMedium:const  TextStyle(
+      fontWeight: FontWeight.w500,
+      fontSize: 18.0,
+      letterSpacing: 0.0,
+    ),
     displaySmall: const TextStyle(
       fontWeight: FontWeight.w500,
       fontSize: 16.0,

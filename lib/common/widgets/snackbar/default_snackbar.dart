@@ -33,17 +33,14 @@ class DefaultSnackBar {
                     color: Colors.transparent,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).extension<ColorExtension>()?.onBackground.withOpacity(0.70),
-                        border: Border.all(
-                          color: Theme.of(context).extension<ColorExtension>()!.onBackground,
-                          width: 1.0,
-                        ),
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: ClipRRect(
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
+                            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
                             child: Row(
                               children: [
                                 Expanded(
@@ -54,15 +51,16 @@ class DefaultSnackBar {
                                         fit: BoxFit.scaleDown,
                                         child: DefaultText.labelLarge(
                                           title ?? 'Error',
-                                          fontWeight: FontWeight.w500,
-                                          color: Theme.of(context).extension<ColorExtension>()?.background,
+                                          fontWeight: FontWeight.w600,
+                                          color: Theme.of(context).extension<ColorExtension>()?.secondaryText,
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
-                                      DefaultText.labelSmall(
+                                      DefaultText.displaySmall(
                                         message ?? 'An error occurred. Please try again.',
-                                        color: Theme.of(context).extension<ColorExtension>()?.background,
+                                        color: Theme.of(context).extension<ColorExtension>()?.secondaryText,
                                         textAlign: TextAlign.center,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ],
                                   ),

@@ -1,8 +1,14 @@
 import 'package:esim_mob_app/core/utils/logger/logger.dart';
 import 'package:esim_mob_app/features/auth/presentation/page/auth_page.dart';
+import 'package:esim_mob_app/features/auto_top_up/presentation/page/auto_top_up_page.dart';
+import 'package:esim_mob_app/features/checkout/presentation/pages/checkout_page.dart';
+import 'package:esim_mob_app/features/contact_us/presentation/pages/contact_us_page.dart';
 import 'package:esim_mob_app/features/credits/presentation/page/credits_page.dart';
+import 'package:esim_mob_app/features/faq/presentation/pages/faq_page.dart';
 import 'package:esim_mob_app/features/help/presentation/page/help_page.dart';
 import 'package:esim_mob_app/features/home/presentation/page/home_page.dart';
+import 'package:esim_mob_app/features/payment/presentation/page/payment_page.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/page/preview_tariffs_page.dart';
 import 'package:esim_mob_app/features/splash/presentation/page/splash_page.dart';
 import 'package:esim_mob_app/features/store/presentation/page/store_page.dart';
@@ -29,6 +35,11 @@ class Routes {
   static const tariffs = '/tariff';
   static const onboarding = '/onboarding';
   static const auth = '/auth';
+  static const autoTopUp = '/auto-top-up';
+  static const contactUs = '/contact-us';
+  static const faq = '/faq';
+  static const checkout = '/checkout';
+  static const payment = '/payment';
 }
 
 class BranchHomeData extends StatefulShellBranchData {
@@ -176,3 +187,59 @@ class PreviewTariffsRoute extends GoRouteData {
     );
   }
 }
+
+
+@TypedGoRoute<CheckoutRoute>(path: Routes.checkout)
+class CheckoutRoute extends GoRouteData {
+  const CheckoutRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>;
+    final tariff = extra['tariff'] as TariffModel;
+    return CheckoutPage(
+      tariff: tariff,
+    );
+  }
+}
+
+@TypedGoRoute<PaymentRoute>(path: Routes.payment)
+class PaymentRoute extends GoRouteData {
+  const PaymentRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>;
+    final tariff = extra['tariff'] as TariffModel;
+    return PaymentPage(
+      tariffModel: tariff,
+    );
+  }
+}
+
+
+@TypedGoRoute<AutoTopUpRoute>(path: Routes.autoTopUp)
+class AutoTopUpRoute extends GoRouteData {
+  const AutoTopUpRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const AutoTopUpPage();
+}
+
+
+@TypedGoRoute<ContactUsRoute>(path: Routes.contactUs)
+class ContactUsRoute extends GoRouteData {
+  const ContactUsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const ContactUsPage();
+}
+
+@TypedGoRoute<FaqRoute>(path: Routes.faq)
+class FaqRoute extends GoRouteData {
+  const FaqRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => FaqPage();
+}
+

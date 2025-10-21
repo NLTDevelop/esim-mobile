@@ -1,4 +1,6 @@
 import 'package:esim_mob_app/common/routes/routes.dart';
+import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/connection_checker/bloc/connection_checker_cubit.dart';
 import 'package:esim_mob_app/features/connection_checker/widgets/offline_widget.dart';
 import 'package:esim_mob_app/features/localization/presentation/cubit/localization_cubit.dart';
@@ -17,7 +19,7 @@ class SplashBody extends StatefulWidget {
 
 class _SplashBodyState extends State<SplashBody> {
 
-  bool _isUserSet = true;
+  bool _isUserSet = false;
   bool _isConnected = false;
 
   @override
@@ -26,13 +28,13 @@ class _SplashBodyState extends State<SplashBody> {
     WidgetsBinding.instance.addPostFrameCallback(
           (_) {
         initializeDependencies(
-          // onAuth: (user) {
-          //   if (_isConnected) {
-          //     _setUser(context);
-          //   } else {
-          //     _isUserSet = true; // Mark user as set but not authenticated yet
-          //   }
-          // },
+          onAuth: (user) {
+            if (_isConnected) {
+              _setUser(context, user);
+            } else {
+              _isUserSet = true; // Mark user as set but not authenticated yet
+            }
+          },
         );
       },
     );
@@ -42,10 +44,11 @@ class _SplashBodyState extends State<SplashBody> {
   Widget build(BuildContext context) => BlocConsumer<ConnectionCheckerCubit, ConnectionCheckerState>(
     listener: (context, state) {
       state.maybeWhen(
-        connected: () {
+        connected: () async{
           _isConnected = true;
           if (_isUserSet) {
-            _setUser(context);
+            final user = await fetchCurrentUser();
+            _setUser(context, user);
           }
         },
         orElse: () {
@@ -60,12 +63,17 @@ class _SplashBodyState extends State<SplashBody> {
     ),
   );
 
-  Future<void> _setUser(BuildContext context) async {
+  Future<void> _setUser(BuildContext context, UserModel user) async {
     await context.read<LocalizationCubit>().changeLanguage('en');
-    await Future.delayed(const Duration(milliseconds: 1000));
-    // final user = await fetchCurrentUser();
-    // _isUserSet = true;
-    // context.read<AuthenticationBloc>().add(AuthenticationEvent.setUser(user: user));
-    context.go(Routes.home);
+    _isUserSet = true;
+    context.read<AuthentificationBloc>().add(AuthentificationEvent.setUser(user: user));
+    if(mounted){
+      if(user.userEmail.isEmpty){
+        context.go(Routes.auth);
+      } else {
+        context.go(Routes.home);
+      }
+    }
+
   }
 }

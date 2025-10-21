@@ -1,10 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:esim_mob_app/core/exceptions/wrong_coupon_exception.dart';
 
 class ErrorMapper {
   static String mapError(dynamic error) {
     if (error is DioException) {
       return _mapErrorByDioException(error);
-    } 
+    } else if(error is WrongCouponException){
+      return 'Invalid promo code';
+    }
     return 'An unexpected error occurred';
   }
 

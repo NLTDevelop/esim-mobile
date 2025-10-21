@@ -1,11 +1,14 @@
+import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:esim_mob_app/features/profile/presentation/widgets/profile_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfileBody extends StatelessWidget {
   const ProfileBody({super.key});
@@ -50,7 +53,7 @@ class ProfileBody extends StatelessWidget {
                       width: 6,
                     ),
                     DefaultText.displaySmall(
-                      'test@gmail.com',
+                      context.read<AuthentificationBloc>().state.user.userEmail,
                       color: Theme.of(context)
                           .extension<ColorExtension>()!
                           .descriptionText,
@@ -115,10 +118,21 @@ class ProfileBody extends StatelessWidget {
                     const SizedBox(
                       height: 14,
                     ),
-                    ProfileButton(
-                        text: 'Logout',
-                        iconPath: AppIcons.logout,
-                        onTap: () {}),
+                    BlocListener<AuthentificationBloc, AuthentificationState>(
+                      listener: (context, state) {
+                        if (state.user.isNotAuthenticated) {
+                          context.go(Routes.auth);
+                        }
+                      },
+                      child: ProfileButton(
+                          text: 'Logout',
+                          iconPath: AppIcons.logout,
+                          onTap: () {
+                            context
+                                .read<AuthentificationBloc>()
+                                .add(const AuthentificationEvent.logout());
+                          }),
+                    ),
                     const SizedBox(
                       height: 14,
                     ),
