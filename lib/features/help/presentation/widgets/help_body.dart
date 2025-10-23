@@ -3,6 +3,7 @@ import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/help/presentation/widgets/help_button_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,7 +60,9 @@ class HelpBody extends StatelessWidget {
               title: 'Request refund',
               iconPath: AppIcons.refund,
               isWebSite: true,
-              onTap: () {},
+              onTap: () {
+                HapticFeedback.lightImpact();
+              },
             ),
             const SizedBox(
               height: 12,
@@ -69,6 +72,7 @@ class HelpBody extends StatelessWidget {
               iconPath: AppIcons.instructions,
               isWebSite: true,
               onTap: () {
+                HapticFeedback.lightImpact();
                 _askQuestion(context);
               },
             ),
@@ -79,6 +83,7 @@ class HelpBody extends StatelessWidget {
               title: 'Contact us',
               iconPath: AppIcons.troubleShooting,
               onTap: () {
+                HapticFeedback.lightImpact();
                 context.push(Routes.contactUs);
               },
             ),

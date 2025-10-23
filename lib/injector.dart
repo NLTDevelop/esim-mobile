@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:esim_mob_app/core/client/secure_storage_dao/flutter_secure_storage_dao.dart';
-import 'package:esim_mob_app/core/use_case/use_case.dart';
 import 'package:esim_mob_app/core/utils/logger/logger.dart';
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_case.dart';
@@ -21,6 +20,7 @@ import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repo
 import 'package:esim_mob_app/features/user/data/data_sources/remote/user_remote_data_source.dart';
 import 'package:esim_mob_app/features/user/data/repository/user_repository_impl.dart';
 import 'package:esim_mob_app/features/user/domain/repository/user_repository.dart';
+import 'package:esim_mob_app/features/user/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/fetch_user_use_case.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -55,7 +55,8 @@ final Map<String, _InitializationStep> _initializationSteps = {
     final loginAppleUseCase = LoginAppleUseCase(authRepository: injector<AuthRepository>());
     injector.registerLazySingleton(() => loginAppleUseCase);
     injector.registerLazySingleton(() => CheckPromoCodeUseCase(promoCodeRepository: injector<PromoCodeRepository>()));
-  },
+    injector.registerLazySingleton(() => DeleteAccountUseCase(userRepository: injector<UserRepository>()));
+    },
   'Token': () async {
     injector
         .registerLazySingleton<FcmTokenRemoteDataSource>(() => FcmTokenRemoteDataSource());
@@ -65,7 +66,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     ));
     // injector.registerLazySingleton(() => TokenAuthUserUseCase(tokenRepository: injector<TokenRepositoryImpl>()));
     // injector.registerLazySingleton(() => TokenInitialUseCase(tokenRepository: injector<TokenRepositoryImpl>()));
-    injector.registerLazySingleton(() => TokenLogoutUseCase(tokenRepository: injector<TokenRepositoryImpl>()));
+    injector.registerLazySingleton(() => TokenLogoutUseCase(tokenRepository: injector<TokenRepository>()));
   },
 };
 
@@ -98,10 +99,10 @@ FutureOr<UserModel> fetchCurrentUser() async {
   final token = await injector<SessionStorage>().getAccessToken();
   // injector<SlonovaApi>().token = token;
   try {
-    if (token != null) {
-      final customer = await injector<FetchCurrentUserUseCase>().call(NoParams());
-      return customer;
-    }
+    // if (token != null) {
+    //   final customer = await injector<FetchCurrentUserUseCase>().call(NoParams());
+    //   return customer;
+    // }
     return UserModel.notAuthenticated();
   } on Object catch (e) {
     Logger.error('Error fetching current user', e);

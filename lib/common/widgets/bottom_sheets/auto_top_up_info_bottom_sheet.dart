@@ -4,6 +4,7 @@ import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class AutoTopUpInfoBottomSheet extends StatelessWidget {
@@ -53,6 +54,7 @@ class AutoTopUpInfoBottomSheet extends StatelessWidget {
             const DefaultText.bodySmall('Your data renews automatically when you run out so you don\'t have to top up manually'),
             const SizedBox(height: 14,),
             PrimaryButton(onTap: (){
+              HapticFeedback.lightImpact();
               context.pop();
               context.push(Routes.autoTopUp);
             }, text: 'Got it', isExpanded: true,),

@@ -12,7 +12,7 @@ part 'preview_tariffs_bloc.freezed.dart';
 
 class PreviewTariffsBloc
     extends Bloc<PreviewTariffsEvent, PreviewTariffsState> {
-  PreviewTariffsBloc({required String country, required String iconPath})
+  PreviewTariffsBloc({required String country, required String iconPath, this.isFromWelcome = false})
       : _country = country,
         _iconPath = iconPath,
         super(const PreviewTariffsState.initial()) {
@@ -23,6 +23,7 @@ class PreviewTariffsBloc
 
   final String _country;
   final String _iconPath;
+  final bool isFromWelcome;
 
   String get country => _country;
   String get iconPath => _iconPath;

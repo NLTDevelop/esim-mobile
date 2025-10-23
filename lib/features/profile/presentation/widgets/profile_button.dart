@@ -17,8 +17,14 @@ class ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
+    return TextButton(
+      onPressed: onTap,
+      style: ButtonStyle(
+    padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+      EdgeInsets.zero,
+    ),
+    // tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    ),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(

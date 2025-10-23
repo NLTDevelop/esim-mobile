@@ -7,9 +7,9 @@ class UserRemoteDataSource {
   // factory UserRemoteDataSource(Dio dio, {String? baseUrl}) = _UserRemoteDataSource;
 
   //@GET('users/me')
-  Future<AuthenticatedUserModel> getUser() async {
+  Future<UserModel> getUser() async {
     await Future.delayed(const Duration(milliseconds: 1000));
-    return const AuthenticatedUserModel(id: 1, email: 'pavlo@gmail.com');
+    return const AuthenticatedUserModel(id: 1, email: 'test@gmail.com', eSims: []);
   }
 
   ///@DELETE('users')

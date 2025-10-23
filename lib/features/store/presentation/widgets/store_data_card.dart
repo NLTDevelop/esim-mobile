@@ -75,22 +75,29 @@ class StoreDataCard extends StatelessWidget {
                               )),
                         )
                       : const SizedBox.shrink(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DefaultText.labelMedium(
-                    title,
-                    color: Theme.of(context).extension<ColorExtension>()!.text,
-                  ),
-                  const SizedBox(
-                    height: 3,
-                  ),
-                  DefaultText.displaySmall('Price: from $price \$',
-                      color:
-                          Theme.of(context).extension<ColorExtension>()!.text)
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: DefaultText.labelMedium(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        color: Theme.of(context).extension<ColorExtension>()!.text,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 3,
+                    ),
+                    DefaultText.displaySmall('Price: from $price \$',
+                        overflow: TextOverflow.visible,
+                        maxLines: 1,
+                        color:
+                            Theme.of(context).extension<ColorExtension>()!.text)
+                  ],
+                ),
               ),
-              const Spacer(),
               const Icon(
                 Icons.arrow_forward_ios,
                 size: 24,

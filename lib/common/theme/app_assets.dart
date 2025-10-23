@@ -39,4 +39,5 @@ class AppIcons{
   static const allPlans = '$_svgPath/all_plans.svg';
   static const refund = '$_svgPath/refund.svg';
   static const troubleShooting = '$_svgPath/troubleshooting.svg';
+  static const eSim = '$_svgPath/esim.svg';
 }

@@ -6,4 +6,5 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.fetchESims() =
   _HomeEventFetchESims;
 
+  const factory HomeEvent.installFirstESim() = _HomeEventInstallFirstESim;
 }

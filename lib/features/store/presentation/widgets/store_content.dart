@@ -1,15 +1,17 @@
 import 'package:esim_mob_app/common/routes/routes.dart';
+import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_switcher_button.dart';
 import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
 import 'package:esim_mob_app/features/store/presentation/bloc/store_bloc.dart';
 import 'package:esim_mob_app/features/store/presentation/widgets/search_widget.dart';
 import 'package:esim_mob_app/features/store/presentation/widgets/store_data_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class StoreContent extends StatelessWidget {
-  const StoreContent({super.key});
+  const StoreContent({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +20,9 @@ class StoreContent extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: SearchWidget()),
+           Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: SearchWidget(onChange: context.read<StoreBloc>().onChangeSearchText,)),
           Expanded(
             child: BlocBuilder<StoreBloc, StoreState>(
               builder: (context, state) {
@@ -33,6 +35,8 @@ class StoreContent extends StatelessWidget {
                     : state.planModels
                         .where((e) => e.isLocal == state.isLocal)
                         .toList();
+                final bloc = context
+                    .read<StoreBloc>();
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,8 +45,7 @@ class StoreContent extends StatelessWidget {
                       PrimarySwitcherButton(
                         text: 'Local eSIM',
                         onTap: () {
-                          context
-                              .read<StoreBloc>()
+                          bloc
                               .add(const StoreEvent.changePlansType(true));
                         },
                         isActive: state.isLocal,
@@ -53,8 +56,7 @@ class StoreContent extends StatelessWidget {
                       PrimarySwitcherButton(
                         text: 'Regional eSIM',
                         onTap: () {
-                          context
-                              .read<StoreBloc>()
+                          bloc
                               .add(const StoreEvent.changePlansType(false));
                         },
                         isActive: !state.isLocal,
@@ -71,7 +73,8 @@ class StoreContent extends StatelessWidget {
                             price: plans[index].price,
                             isLocal: plans[index].isLocal,
                             onTap: () {
-                              context.push(Routes.tariffs, extra: { 'country': plans[index].title, 'icon_path': plans[index].iconPath});
+                              HapticFeedback.lightImpact();
+                              context.push(Routes.tariffs, extra: { 'country': plans[index].title, 'icon_path': plans[index].iconPath ?? AppIcons.world, 'is_from_welcome': bloc.isFromWelcome});
                             },
                             iconPath: plans[index].iconPath,
                           );

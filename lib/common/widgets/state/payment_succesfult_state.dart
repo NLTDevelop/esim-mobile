@@ -56,7 +56,7 @@ class PaymentSuccessfulState extends StatelessWidget {
                 height: 60,
               ),
               PrimaryButton(onTap: () {
-                context.go(Routes.home);
+                context.go(Routes.home, extra: {'user_tariffs': []});
               }, text: 'Go to plans'),
             ],
           ),

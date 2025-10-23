@@ -16,6 +16,7 @@ List<RouteBase> get $appRoutes => [
       $helpRoute,
       $storeRoute,
       $welcomeRoute,
+      $welcomeStoreRoute,
       $authRoute,
       $previewTariffsRoute,
       $checkoutRoute,
@@ -232,6 +233,29 @@ extension $WelcomeRouteExtension on WelcomeRoute {
 
   String get location => GoRouteData.$location(
         '/welcome',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $welcomeStoreRoute => GoRouteData.$route(
+      path: '/welcome-store',
+      factory: $WelcomeStoreRouteExtension._fromState,
+    );
+
+extension $WelcomeStoreRouteExtension on WelcomeStoreRoute {
+  static WelcomeStoreRoute _fromState(GoRouterState state) =>
+      const WelcomeStoreRoute();
+
+  String get location => GoRouteData.$location(
+        '/welcome-store',
       );
 
   void go(BuildContext context) => context.go(location);

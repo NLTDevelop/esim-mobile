@@ -25,7 +25,7 @@ final class AuthRepositoryImpl  implements AuthRepository {
     //   },
     // );
 
-    //await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     return TokenModel(accessToken: token);
   }
 

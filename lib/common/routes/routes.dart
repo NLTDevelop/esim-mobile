@@ -40,6 +40,7 @@ class Routes {
   static const faq = '/faq';
   static const checkout = '/checkout';
   static const payment = '/payment';
+  static const welcomeStore = '/welcome-store';
 }
 
 class BranchHomeData extends StatefulShellBranchData {
@@ -101,7 +102,13 @@ class HomeRoute extends GoRouteData {
   const HomeRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const HomePage();
+  Widget build(BuildContext context, GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>;
+    final tariffs = extra['user_tariffs'] as List<TariffModel>? ?? [];
+    return HomePage(
+      userTariffs: tariffs,
+    );
+  }
 }
 
 @TypedGoRoute<LoggerRoute>(path: Routes.logger)
@@ -154,6 +161,7 @@ class StoreRoute extends GoRouteData {
   Widget build(BuildContext context, GoRouterState state) => const StorePage();
 }
 
+
 @TypedGoRoute<WelcomeRoute>(path: Routes.welcome)
 class WelcomeRoute extends GoRouteData {
   const WelcomeRoute();
@@ -161,6 +169,15 @@ class WelcomeRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) => const WelcomePage();
 }
+
+@TypedGoRoute<WelcomeStoreRoute>(path: Routes.welcomeStore)
+class WelcomeStoreRoute extends GoRouteData {
+  const WelcomeStoreRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const StorePage(isFromWelcome: true,);
+}
+
 
 @TypedGoRoute<AuthRoute>(path: Routes.auth)
 class AuthRoute extends GoRouteData {
@@ -181,9 +198,11 @@ class PreviewTariffsRoute extends GoRouteData {
     final extra = state.extra as Map<String, dynamic>;
     final country = extra['country'] as String;
     final iconPath = extra['icon_path'] as String;
+    final isFromWelcome = extra['is_from_welcome'] as bool? ?? false;
     return PreviewTariffsPage(
       country: country,
       iconPath: iconPath,
+      isFromWelcome: isFromWelcome,
     );
   }
 }

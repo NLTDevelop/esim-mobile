@@ -5,6 +5,7 @@ import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/core/constants/variables.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsBody extends StatefulWidget {
@@ -42,7 +43,7 @@ class _ContactUsBodyState extends State<ContactUsBody> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Theme.of(context).extension<ColorExtension>()!.cardBorder, width: 2),
+        borderSide: BorderSide(color: Theme.of(context).extension<ColorExtension>()!.primary, width: 2),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -65,6 +66,7 @@ class _ContactUsBodyState extends State<ContactUsBody> {
   }
 
   void _submitForm() async {
+    HapticFeedback.lightImpact();
     if (_formKey.currentState!.validate()) {
       await sendEmail(toEmail: _emailController.text, name: _nameController.text, message: _messageController.text);
       if(mounted){
@@ -196,8 +198,10 @@ class _ContactUsBodyState extends State<ContactUsBody> {
                   const DefaultText.displaySmall('- For existing users in case of emergency. Available 24/7 (Dutch and English) WhatsApp\n - For non-urgent support requests, text only.'),
                   const Spacer(),
                   PrimaryButton(onTap: _submitForm, text: 'Send', isExpanded: true,),
-                  const SizedBox(
-                    height: 20,
+                  Flexible(
+                    child: const SizedBox(
+                      height: 20,
+                    ),
                   ),
                 ],
               )),

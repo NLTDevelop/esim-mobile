@@ -2,11 +2,13 @@ import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/core/constants/launch_links.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:esim_mob_app/features/profile/presentation/widgets/profile_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -92,7 +94,10 @@ class ProfileBody extends StatelessWidget {
                     ProfileButton(
                       text: 'Terms of condition',
                       iconPath: AppIcons.termsOfCondition,
-                      onTap: () {},
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        context.read<ProfileBloc>().openLink(Uri.parse(LaunchLinks.termsOfConditions));
+                      },
                       leadingIcon: Icon(
                         Icons.arrow_forward_ios,
                         size: 22,
@@ -107,7 +112,10 @@ class ProfileBody extends StatelessWidget {
                     ProfileButton(
                         text: 'Privacy policy',
                         iconPath: AppIcons.privacyPolicy,
-                        onTap: () {},
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          context.read<ProfileBloc>().openLink(Uri.parse(LaunchLinks.privacyPolicy));
+                        },
                         leadingIcon: Icon(
                           Icons.arrow_forward_ios,
                           size: 22,
@@ -128,6 +136,7 @@ class ProfileBody extends StatelessWidget {
                           text: 'Logout',
                           iconPath: AppIcons.logout,
                           onTap: () {
+                            HapticFeedback.lightImpact();
                             context
                                 .read<AuthentificationBloc>()
                                 .add(const AuthentificationEvent.logout());
@@ -139,7 +148,10 @@ class ProfileBody extends StatelessWidget {
                     ProfileButton(
                       text: 'Delete account',
                       iconPath: AppIcons.delete,
-                      onTap: () {},
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        context.read<AuthentificationBloc>().onDeleteAccount();
+                      },
                       textColor:
                           Theme.of(context).extension<ColorExtension>()!.error,
                     ),

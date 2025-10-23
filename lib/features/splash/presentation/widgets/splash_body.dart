@@ -67,13 +67,8 @@ class _SplashBodyState extends State<SplashBody> {
     await context.read<LocalizationCubit>().changeLanguage('en');
     _isUserSet = true;
     context.read<AuthentificationBloc>().add(AuthentificationEvent.setUser(user: user));
-    if(mounted){
-      if(user.userEmail.isEmpty){
-        context.go(Routes.auth);
-      } else {
-        context.go(Routes.home);
-      }
-    }
+
+    context.go(Routes.home, extra: {'user_tariffs': user.userTariffs});
 
   }
 }

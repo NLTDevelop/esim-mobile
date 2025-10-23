@@ -7,6 +7,7 @@ import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -41,7 +42,10 @@ class WelcomePage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: PrimaryButton(
-                            onTap: (){},
+                            onTap: (){
+                              HapticFeedback.lightImpact();
+                              context.push(Routes.welcomeStore,);
+                            },
                             text: 'Explore plans'
                         ),
                       ),
@@ -55,6 +59,7 @@ class WelcomePage extends StatelessWidget {
                       Expanded(
                         child: PrimaryButton(
                           onTap: (){
+                            HapticFeedback.lightImpact();
                             context.push(Routes.auth);
                           },
                           text: 'Login or sign up',

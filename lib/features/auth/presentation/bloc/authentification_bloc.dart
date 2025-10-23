@@ -6,7 +6,7 @@ import 'package:esim_mob_app/features/auth/domain/use_cases/login_apple_use_case
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_case.dart';
 import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout_use_case.dart';
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
-import 'package:esim_mob_app/features/onboarding/domain/repository/onboarding_repository.dart';
+import 'package:esim_mob_app/features/user/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/fetch_user_use_case.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,9 +22,12 @@ class AuthentificationBloc
     extends Bloc<AuthentificationEvent, AuthentificationState> {
   AuthentificationBloc(
       {required LoginGoogleUseCase loginGoogleUseCase,
-      required LoginAppleUseCase loginAppleUseCase})
+      required LoginAppleUseCase loginAppleUseCase, required DeleteAccountUseCase deleteAccountUseCase, required TokenLogoutUseCase tokenLogoutUseCase, required SessionStorage sessionStorage})
       : _loginAppleUseCase = loginAppleUseCase,
         _loginGoogleUseCase = loginGoogleUseCase,
+        _deleteAccountUseCase = deleteAccountUseCase,
+        _tokenLogoutUseCase = tokenLogoutUseCase,
+        _sessionStorage = sessionStorage,
         super(const AuthentificationState.loading()) {
     on<AuthentificationEvent>((event, emit) async{
       await event.map(
@@ -33,13 +36,16 @@ class AuthentificationBloc
         logout: (event) async => _onLogOut(event, emit),
         getSignedInUser: (event) async => _onGetSignedInCustomer(event, emit),
         loginApple: (event) async => _onLoginApple(event, emit),
-        setUser: (event) async => _onSetUser(event, emit),
+        setUser: (event) async => _onSetUser(event, emit), deleteUser: (event) async => _onDeleteUser(event, emit),
       );
     });
   }
 
   final LoginGoogleUseCase _loginGoogleUseCase;
   final LoginAppleUseCase _loginAppleUseCase;
+  final DeleteAccountUseCase _deleteAccountUseCase;
+  final TokenLogoutUseCase _tokenLogoutUseCase;
+  final SessionStorage _sessionStorage;
 
   final String email = 'pavelsejcenko@gmail.com';
   final String password = '12345678';
@@ -52,8 +58,8 @@ class AuthentificationBloc
           const AuthentificationState.loading(user: NotAuthenticatedUser())
       );
       final token = await _loginGoogleUseCase.call(LoginAndPasswordParamsGoogle(email: email, password: password));
-      await injector<SessionStorage>().saveAccessToken(token.accessToken);
-      await injector<OnBoardingRepository>().setFirstRun(false);
+      await _sessionStorage.saveAccessToken(token.accessToken);
+      await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
       final user = await injector<FetchCurrentUserUseCase>().call(NoParams());
       emit(
         user.when<AuthentificationState>(
@@ -76,7 +82,7 @@ class AuthentificationBloc
           const AuthentificationState.loading(user: NotAuthenticatedUser())
       );
       final token = await _loginAppleUseCase.call(LoginAndPasswordParams(email: email, password: password));
-      await injector<SessionStorage>().saveAccessToken(token.accessToken);
+      await _sessionStorage.saveAccessToken(token.accessToken);
       await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
       final user = await injector<FetchCurrentUserUseCase>().call(NoParams());
       emit(
@@ -98,7 +104,7 @@ class AuthentificationBloc
       await injector<SessionStorage>().cleanSession();
       // injector<SlonovaApi>().token = null;
       emit(const _Success(user: NotAuthenticatedUser()));
-      await injector<TokenLogoutUseCase>().call(NoParams());
+      _tokenLogoutUseCase.call(NoParams());
       // injector<NotificationBloc>().add(const NotificationEvent.fetchNotification());
     } on Object catch (error) {
       emit(_Failure(message: ErrorMapper.mapError(error)));
@@ -143,7 +149,7 @@ class AuthentificationBloc
   }
 
   Future<void> _onSetUser(
-      __AuthentificationSetUser event,
+      _AuthentificationSetUser event,
       Emitter<AuthentificationState> emit,
       ) async {
     emit(_Loading(user: state.user));
@@ -156,10 +162,38 @@ class AuthentificationBloc
     );
   }
 
+  Future<void> _onDeleteUser(
+      _AuthentificationEventDeleteUser event,
+      Emitter<AuthentificationState> emit,
+      ) async {
+    try {
+      emit(_Loading(user: state.user));
+      await _deleteAccountUseCase.call(NoParams());
+      await _sessionStorage.cleanSession();
+      ///injector<SlonovaApi>().token = null;
+      _tokenLogoutUseCase.call(NoParams());
+      ///injector<NotificationBloc>().add(const NotificationEvent.fetchNotification());
+      emit(const _NotAuthenticated());
+    } on Object catch (error) {
+      emit(_Failure(message: ErrorMapper.mapError(error)));
+    } finally {
+      emit(
+        state.user.when<AuthentificationState>(
+          authenticated: (customer) => _Authenticated(user: customer),
+          notAuthenticated: () => const _NotAuthenticated(),
+        ),
+      );
+    }
+  }
+
   void onLoginGoogleTap(){
     add(const _AuthentificationEventLoginGoogle());
   }
   void onLoginAppleTap(){
     add(const _AuthentificationEventLoginApple());
+  }
+
+  void onDeleteAccount(){
+    add(const _AuthentificationEventDeleteUser());
   }
 }

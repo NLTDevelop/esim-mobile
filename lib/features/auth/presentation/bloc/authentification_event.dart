@@ -14,5 +14,7 @@ class AuthentificationEvent with _$AuthentificationEvent {
 
   const factory AuthentificationEvent.setUser({
     required final UserModel user,
-  }) = __AuthentificationSetUser;
+  }) = _AuthentificationSetUser;
+
+  const factory AuthentificationEvent.deleteUser() = _AuthentificationEventDeleteUser;
 }

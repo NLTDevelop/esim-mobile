@@ -14,7 +14,7 @@ final class RedirectIfFirstRun extends Guard {
   @override
   String? redirect(BuildContext context, GoRouterState state) {
     final bool isFirstRun = injector<OnBoardingRepositoryImpl>().isFirstRun();
-
+    print('Is first run ? $isFirstRun');
     if (isFirstRun) {
       return Routes.welcome;
     }

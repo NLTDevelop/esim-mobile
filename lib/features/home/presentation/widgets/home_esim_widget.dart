@@ -5,6 +5,8 @@ import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_my_esims_bottom_sheet.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_text_button.dart';
+import 'package:esim_mob_app/features/install_esim/presentation/cubit/install_esim_cubit.dart';
+import 'package:esim_mob_app/features/install_esim/presentation/widgets/bottom_sheets/install_esim_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +17,7 @@ class HomeESimWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc =context.read<HomeBloc>();
     return Column(
       children: [
         Container(
@@ -32,14 +35,19 @@ class HomeESimWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          image: const DecorationImage(
-                              image: AssetImage(AppImages.logo),
-                              fit: BoxFit.cover)),
+                    GestureDetector(
+                      onTap: (){
+                        _showInstallESimBottomSheet(context);
+                      },
+                      child: Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            image: const DecorationImage(
+                                image: AssetImage(AppImages.logo),
+                                fit: BoxFit.cover)),
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -138,6 +146,7 @@ class HomeESimWidget extends StatelessWidget {
                 children: [
                   Flexible(
                       child: HomeTextButton(
+                        key: bloc.autoTopUpButtonKey,
                     text: 'Auto top-up',
                     iconPath: AppIcons.autoTopUp,
                     onPressed: () {
@@ -146,13 +155,17 @@ class HomeESimWidget extends StatelessWidget {
                   )),
                   Flexible(
                       child: HomeTextButton(
+                        key: bloc.installESimButtonKey,
                     text: 'Install eSIM',
                     iconPath: AppIcons.install,
-                    onPressed: () {},
+                    onPressed: () {
+                      _showInstallESimBottomSheet(context);
+                    },
                         isHighlight: true,
                   )),
                   Flexible(
                       child: HomeTextButton(
+                        key: bloc.myESimsButtonKey,
                     text: 'My eSims',
                     iconPath: AppIcons.allPlans,
                     onPressed: () {
@@ -177,5 +190,9 @@ class HomeESimWidget extends StatelessWidget {
 
   void _showMyESimsBottomSheet(BuildContext context){
     showModalBottomSheet(context: context, useRootNavigator: true, useSafeArea: true, isScrollControlled: true, builder: (ctx) => BlocProvider.value(value:  context.read<HomeBloc>(),child: const HomeMyESimsBottomSheet()));
+  }
+
+  void _showInstallESimBottomSheet(BuildContext context){
+    showModalBottomSheet(context: context, useRootNavigator: true, useSafeArea: true, isScrollControlled: true, builder: (ctx) => BlocProvider(create: (ctx) => InstallESimCubit(title: 'eSIM #1'), child: const InstallESimBottomSheet(title: 'eSIM #1'),));
   }
 }

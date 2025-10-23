@@ -1,3 +1,4 @@
+import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_model.g.dart';
 
@@ -9,15 +10,19 @@ abstract class UserModel {
   factory UserModel.authenticated({
     required final int id,
     required final String email,
+    required final List<TariffModel> eSims,
   }) =>
       AuthenticatedUserModel(
         id: id,
         email: email,
+        eSims: eSims,
       );
 
   bool get isAuthenticated;
 
   bool get isNotAuthenticated;
+
+  List<TariffModel> get userTariffs;
 
   String get userEmail;
 
@@ -32,10 +37,12 @@ class AuthenticatedUserModel implements UserModel {
   const AuthenticatedUserModel({
     required this.id,
     required this.email,
+    required this.eSims
   });
 
   final int id;
   final String email;
+  final List<TariffModel> eSims;
 
   @override
   bool get isAuthenticated => !isNotAuthenticated;
@@ -72,7 +79,11 @@ class AuthenticatedUserModel implements UserModel {
       AuthenticatedUserModel(
         id: id,
         email: email,
+        eSims: eSims,
       );
+
+  @override
+  List<TariffModel> get userTariffs => eSims;
 }
 
 @immutable
@@ -88,6 +99,9 @@ class NotAuthenticatedUser implements UserModel {
 
   @override
   String get userEmail => '';
+
+  @override
+  List<TariffModel> get userTariffs => [];
 
   @override
   T when<T extends Object?>({

@@ -23,14 +23,16 @@ class ActivationInfoCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(AppIcons.info, height: 18, width: 18,),
-              const SizedBox(width: 12,),
-                DefaultText.labelLarge(title, maxLines: 2,),
-            ],
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(AppIcons.info, height: 18, width: 18,),
+                const SizedBox(width: 12,),
+                  Flexible(child: DefaultText.labelLarge(title, maxLines: 2, overflow: TextOverflow.ellipsis,)),
+              ],
+            ),
           ),
           const SizedBox(height: 8,),
           DefaultText.displaySmall(description),
