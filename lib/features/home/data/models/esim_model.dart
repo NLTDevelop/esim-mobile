@@ -29,4 +29,5 @@ class ESimModel extends Equatable{
   List<Object?> get props => [name, dataInGB, days, isActive, createdAt, iconPath];
 
   factory ESimModel.fromJson(Map<String, dynamic> json) => _$ESimModelFromJson(json);
+  Map<String, dynamic> toJson() => _$ESimModelToJson(this);
 }

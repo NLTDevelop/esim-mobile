@@ -55,8 +55,8 @@ class PreviewTariffsContent extends StatelessWidget {
                     return index != state.tariffs.length
                         ? PreviewTariffCard(
                             price: state.tariffs[index].price,
-                            dataInGb: state.tariffs[index].dataInGB,
-                            days: state.tariffs[index].durationInDays,
+                            dataInGb: state.tariffs[index].eSim.dataInGB,
+                            days: state.tariffs[index].eSim.days,
                             isActive: index == state.selectedIndex,
                             onTap: () {
                               HapticFeedback.lightImpact();

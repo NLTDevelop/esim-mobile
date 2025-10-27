@@ -73,11 +73,11 @@ class CheckoutBody extends StatelessWidget {
                               )
                             ],
                           )),
-                      OrderSummaryDataRow(data: '${bloc.state.tariff.dataInGB} GB', typeName: 'Plan'),
+                      OrderSummaryDataRow(data: '${bloc.state.tariff.eSim.dataInGB} GB', typeName: 'Plan'),
                       const OrderSummaryDataRow(
                           data: 'Data only', typeName: 'Type'),
                       OrderSummaryDataRow(
-                          data: '${bloc.state.tariff.durationInDays} days', typeName: 'Duration'),
+                          data: '${bloc.state.tariff.eSim.days} days', typeName: 'Duration'),
                        OrderSummaryDataRow(
                         data: CountryCodes.detailsForLocale().name ?? 'Unknown',
                         typeName: 'Tax country',

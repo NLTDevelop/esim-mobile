@@ -1,7 +1,7 @@
-import 'package:esim_mob_app/common/widgets/state/failure_state.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/common/widgets/targets/get_target.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_esim_widget.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/no_plans_widget.dart';
@@ -16,26 +16,30 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomeBloc, HomeState>(
-      listener: (context, state) {
-        if (!state.isFirstESim) {
-          _showTutorialTargets(context);
-        }
-      },
-      listenWhen: (previous, next) {
-        return previous.isFirstESim != next.isFirstESim && !next.isFirstESim;
-      },
-      builder: (context, state) {
-        return state.map(
-            loading: (_) => const LoadingState(),
-            failure: (_) => FailureState(onTap: () {}),
-            success: (state) => state.tariffs.isEmpty ? const NoPlansWidget() : const HomeESimWidget(),
-            initial: (state) => state.tariffs.isEmpty ? const NoPlansWidget() : const HomeESimWidget(),);
-      },
-    );
+    return BlocListener<HomeBloc, HomeState>(listener: (context, state) {
+      if (!state.isFirstESim) {
+        _showTutorialTargets(context);
+      }
+    }, listenWhen: (previous, next) {
+      return previous.isFirstESim != next.isFirstESim && !next.isFirstESim;
+    }, child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
+        builder: (context, state) {
+      return state.mapOrNull(
+              authenticated: (s) => s.user.userTariffs.isEmpty
+                  ? const NoPlansWidget()
+                  : const HomeESimWidget(),
+              loading: (_) => const LoadingState(),
+              failure: (s) => s.user.userTariffs.isEmpty
+                  ? const NoPlansWidget()
+                  : const HomeESimWidget(),
+              success: (s) => s.user.userTariffs.isEmpty
+                  ? const NoPlansWidget()
+                  : const HomeESimWidget()) ??
+          const NoPlansWidget();
+    }));
   }
 
-  void _showTutorialTargets(BuildContext context){
+  void _showTutorialTargets(BuildContext context) {
     final bloc = context.read<HomeBloc>();
     bloc.tutorialCoachMark = TutorialCoachMark(
       targets: [
@@ -73,16 +77,15 @@ class HomeBody extends StatelessWidget {
                         height: 6,
                       ),
                       RowDotText(
-                        text:
-                        'Choose "primary" if you asked about line setup',
+                        text: 'Choose "primary" if you asked about line setup',
                       ),
                     ],
                   ),
                 ),
-                    () {
+                () {
                   bloc.tutorialCoachMark.next();
                 },
-                    () {
+                () {
                   bloc.tutorialCoachMark.skip();
                 },
                 false,
@@ -101,14 +104,14 @@ class HomeBody extends StatelessWidget {
               getTargetContent(
                 context,
                 const Padding(
-                  padding:  EdgeInsets.only(bottom: 10.0),
-                  child:  DefaultText.displaySmall(
+                  padding: EdgeInsets.only(bottom: 10.0),
+                  child: DefaultText.displaySmall(
                       'You can find all the data plans here.'),
                 ),
-                    () {
+                () {
                   bloc.tutorialCoachMark.next();
                 },
-                    () {
+                () {
                   bloc.tutorialCoachMark.skip();
                 },
                 true,
@@ -131,10 +134,10 @@ class HomeBody extends StatelessWidget {
                   child: DefaultText.displayMedium(
                       'This is button for auto-top up eSim plan'),
                 ),
-                    () {
+                () {
                   bloc.tutorialCoachMark.next();
                 },
-                    () {
+                () {
                   bloc.tutorialCoachMark.skip();
                 },
                 false,
@@ -151,7 +154,12 @@ class HomeBody extends StatelessWidget {
     )..show(context: context);
   }
 
-  void _showNotificationBottomSheet(BuildContext context){
-    showModalBottomSheet(context: context, useSafeArea: true, useRootNavigator: true, isScrollControlled: true, builder: (ctx) => const NotificationBottomSheet());
+  void _showNotificationBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        useSafeArea: true,
+        useRootNavigator: true,
+        isScrollControlled: true,
+        builder: (ctx) => const NotificationBottomSheet());
   }
 }

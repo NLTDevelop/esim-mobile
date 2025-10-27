@@ -24,10 +24,10 @@ class AutoTopUpBloc extends Bloc<AutoTopUpEvent, AutoTopUpState> {
     try{
       emit(const AutoTopUpState.loading());
       List<TariffModel> tariffs = [
-        TariffModel(dataInGB: 1, price: 2.49, durationInDays: 7, eSim: ESimModel(name: 'Netherlands', dataInGB: 1, days: 7, createdAt: DateTime.now(), iconPath: AppIcons.netherlands)),
-        TariffModel(dataInGB: 3, price: 10.49, durationInDays: 30, eSim: ESimModel(name: 'USA', dataInGB: 3, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.usa)),
-        TariffModel(dataInGB: 5, price: 19.49, durationInDays: 30, eSim: ESimModel(name: 'Indonesia', dataInGB: 5, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.indonesia)),
-        TariffModel(dataInGB: 50, price: 95.99, durationInDays: 90, eSim: ESimModel(name: 'USA', dataInGB: 3, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.usa)),
+        TariffModel( price: 2.49, eSim: ESimModel(name: 'Netherlands', dataInGB: 1, days: 7, createdAt: DateTime.now(), iconPath: AppIcons.netherlands)),
+        TariffModel( price: 10.49, eSim: ESimModel(name: 'USA', dataInGB: 3, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.usa)),
+        TariffModel( price: 19.49, eSim: ESimModel(name: 'Indonesia', dataInGB: 5, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.indonesia)),
+        TariffModel( price: 95.99,  eSim: ESimModel(name: 'USA', dataInGB: 13, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.usa)),
       ];
       emit(AutoTopUpState.success(tariffs: tariffs, selectedIndex: state.selectedIndex));
     } on Object catch (error) {

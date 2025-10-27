@@ -8,15 +8,16 @@ part 'tariff_model.g.dart';
 @JsonSerializable()
 class TariffModel extends Equatable{
 
-  const TariffModel({required this.dataInGB, required this.price, required this.durationInDays, required this.eSim});
-  final int dataInGB;
-  final int durationInDays;
+  const TariffModel({ required this.price,required this.eSim, this.currency = 'USD'});
   final double price;
+  final String? currency;
   final ESimModel eSim;
 
   @override
-  List<Object?> get props => [dataInGB, durationInDays, price, eSim];
+  List<Object?> get props => [price, eSim];
 
   factory TariffModel.fromJson(Map<String, dynamic> json) =>
       _$TariffModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TariffModelToJson(this);
 }

@@ -1,18 +1,18 @@
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
-import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/esim_plan_container.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeMyESimsBottomSheet extends StatelessWidget {
-  const HomeMyESimsBottomSheet({super.key});
+  const HomeMyESimsBottomSheet({super.key, required this.tariffs});
+
+  final List<TariffModel> tariffs;
 
   @override
   Widget build(BuildContext context) {
-    final eSims = context.read<HomeBloc>().eSims;
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -56,11 +56,11 @@ class HomeMyESimsBottomSheet extends StatelessWidget {
               child: ListView.separated(
 
                   itemBuilder: (context, index) {
-                    return ESimPlanContainer(eSim: eSims[index]);
+                    return ESimPlanContainer(eSim: tariffs[index].eSim);
                   },
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 20),
-                  itemCount: eSims.length),
+                  itemCount: tariffs.length),
             ),
             Padding(
               padding: EdgeInsets.only(top: 10.0, bottom: MediaQuery.of(context).padding.bottom + 10,),

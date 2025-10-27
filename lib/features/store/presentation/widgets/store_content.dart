@@ -74,7 +74,7 @@ class StoreContent extends StatelessWidget {
                             isLocal: plans[index].isLocal,
                             onTap: () {
                               HapticFeedback.lightImpact();
-                              context.push(Routes.tariffs, extra: { 'country': plans[index].title, 'icon_path': plans[index].iconPath ?? AppIcons.world, 'is_from_welcome': bloc.isFromWelcome});
+                              context.push(Routes.tariffs, extra: { 'tariffs': plans[index].tariffs, 'country': plans[index].title, 'icon_path': plans[index].iconPath ?? AppIcons.world, 'is_from_welcome': bloc.isFromWelcome});
                             },
                             iconPath: plans[index].iconPath,
                           );

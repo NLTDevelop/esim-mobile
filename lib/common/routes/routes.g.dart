@@ -24,6 +24,7 @@ List<RouteBase> get $appRoutes => [
       $autoTopUpRoute,
       $contactUsRoute,
       $faqRoute,
+      $historyRoute,
     ];
 
 RouteBase get $bottomNavigationShellRoute => StatefulShellRouteData.$route(
@@ -413,6 +414,28 @@ extension $FaqRouteExtension on FaqRoute {
 
   String get location => GoRouteData.$location(
         '/faq',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $historyRoute => GoRouteData.$route(
+      path: '/history',
+      factory: $HistoryRouteExtension._fromState,
+    );
+
+extension $HistoryRouteExtension on HistoryRoute {
+  static HistoryRoute _fromState(GoRouterState state) => const HistoryRoute();
+
+  String get location => GoRouteData.$location(
+        '/history',
       );
 
   void go(BuildContext context) => context.go(location);

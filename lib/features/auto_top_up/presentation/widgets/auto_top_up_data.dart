@@ -29,7 +29,7 @@ class AutoTopUpData extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12,),
-          ...tariffs.asMap().entries.map((e) => Padding(padding: const EdgeInsets.only(bottom: 10), child: PreviewTariffCard(price: e.value.price, dataInGb: e.value.dataInGB, days: e.value.durationInDays, isActive: e.key == selectedIndex, onTap: () {
+          ...tariffs.asMap().entries.map((e) => Padding(padding: const EdgeInsets.only(bottom: 10), child: PreviewTariffCard(price: e.value.price, dataInGb: e.value.eSim.dataInGB, days: e.value.eSim.days, isActive: e.key == selectedIndex, onTap: () {
             onTap(e.key);
           }))),
           const SizedBox(height: 22,),

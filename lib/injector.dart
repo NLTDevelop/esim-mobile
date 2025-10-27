@@ -17,6 +17,8 @@ import 'package:esim_mob_app/features/notifcations/domain/repository/token_repos
 import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout_use_case.dart';
 import 'package:esim_mob_app/features/onboarding/data/data_sources/local/first_start_app_storage_impl.dart';
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
+import 'package:esim_mob_app/features/user/data/data_sources/local/user_local_data_source.dart';
+import 'package:esim_mob_app/features/user/data/data_sources/local/user_local_data_source_impl.dart';
 import 'package:esim_mob_app/features/user/data/data_sources/remote/user_remote_data_source.dart';
 import 'package:esim_mob_app/features/user/data/repository/user_repository_impl.dart';
 import 'package:esim_mob_app/features/user/domain/repository/user_repository.dart';
@@ -125,5 +127,5 @@ Future<void> baseSteps() async{
   injector.registerLazySingleton<FcmTokenStorage>(() => FcmTokenStorageImpl(secureStorageDao: storageDao));
   injector.registerLazySingleton(() => FirstStartAppStorageImpl(secureStorageDao: storageDao));
   injector.registerLazySingleton(() => OnBoardingRepositoryImpl(firstStartAppStorage: injector<FirstStartAppStorageImpl>()));
-
+  injector.registerLazySingleton<UserLocalDataSource>(() => UserLocalDataSourceImpl(secureStorageDao: storageDao));
 }

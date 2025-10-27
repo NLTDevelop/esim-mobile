@@ -6,6 +6,8 @@ import 'package:esim_mob_app/features/contact_us/presentation/pages/contact_us_p
 import 'package:esim_mob_app/features/credits/presentation/page/credits_page.dart';
 import 'package:esim_mob_app/features/faq/presentation/pages/faq_page.dart';
 import 'package:esim_mob_app/features/help/presentation/page/help_page.dart';
+import 'package:esim_mob_app/features/history/data/model/transaction_model.dart';
+import 'package:esim_mob_app/features/history/presentation/pages/history_page.dart';
 import 'package:esim_mob_app/features/home/presentation/page/home_page.dart';
 import 'package:esim_mob_app/features/payment/presentation/page/payment_page.dart';
 import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
@@ -41,6 +43,7 @@ class Routes {
   static const checkout = '/checkout';
   static const payment = '/payment';
   static const welcomeStore = '/welcome-store';
+  static const history = '/history';
 }
 
 class BranchHomeData extends StatefulShellBranchData {
@@ -193,18 +196,45 @@ class AuthRoute extends GoRouteData {
 class PreviewTariffsRoute extends GoRouteData {
   const PreviewTariffsRoute();
 
+
   @override
-  Widget build(BuildContext context, GoRouterState state) {
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>;
     final country = extra['country'] as String;
     final iconPath = extra['icon_path'] as String;
     final isFromWelcome = extra['is_from_welcome'] as bool? ?? false;
-    return PreviewTariffsPage(
-      country: country,
-      iconPath: iconPath,
-      isFromWelcome: isFromWelcome,
+    final tariffs = extra['tariffs'] as List<TariffModel>? ?? [];
+    return CustomTransitionPage(
+      key: state.pageKey,
+      child: PreviewTariffsPage(
+        country: country,
+        iconPath: iconPath,
+        isFromWelcome: isFromWelcome,
+        tariffs: tariffs,
+      ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
     );
   }
+
+  // @override
+  // Widget build(BuildContext context, GoRouterState state) {
+  //   final extra = state.extra as Map<String, dynamic>;
+  //   final country = extra['country'] as String;
+  //   final iconPath = extra['icon_path'] as String;
+  //   final isFromWelcome = extra['is_from_welcome'] as bool? ?? false;
+  //   final tariffs = extra['tariffs'] as List<TariffModel>? ?? [];
+  //   return PreviewTariffsPage(
+  //     country: country,
+  //     iconPath: iconPath,
+  //     isFromWelcome: isFromWelcome,
+  //     tariffs: tariffs,
+  //   );
+  // }
 }
 
 
@@ -262,3 +292,23 @@ class FaqRoute extends GoRouteData {
   Widget build(BuildContext context, GoRouterState state) => FaqPage();
 }
 
+@TypedGoRoute<HistoryRoute>(path: Routes.history)
+class HistoryRoute extends GoRouteData {
+  const HistoryRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>;
+    final transactions = extra['transactions'] as List<TransactionModel>;
+    return CustomTransitionPage(
+      key: state.pageKey,
+      child: HistoryPage(transactions: transactions,),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
+  }
+}
