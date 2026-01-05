@@ -1,18 +1,24 @@
 import 'package:esim_mob_app/core/utils/logger/logger.dart';
+import 'package:esim_mob_app/features/add_balance/presentation/pages/add_balance_page.dart';
 import 'package:esim_mob_app/features/auth/presentation/page/auth_page.dart';
 import 'package:esim_mob_app/features/auto_top_up/presentation/page/auto_top_up_page.dart';
 import 'package:esim_mob_app/features/checkout/presentation/pages/checkout_page.dart';
 import 'package:esim_mob_app/features/contact_us/presentation/pages/contact_us_page.dart';
 import 'package:esim_mob_app/features/credits/presentation/page/credits_page.dart';
+import 'package:esim_mob_app/features/deletion_account/presentation/pages/delete_account_page.dart';
+import 'package:esim_mob_app/features/esim_list/presentation/pages/esim_list_page.dart';
 import 'package:esim_mob_app/features/faq/presentation/pages/faq_page.dart';
 import 'package:esim_mob_app/features/help/presentation/page/help_page.dart';
 import 'package:esim_mob_app/features/history/data/model/transaction_model.dart';
 import 'package:esim_mob_app/features/history/presentation/pages/history_page.dart';
 import 'package:esim_mob_app/features/home/presentation/page/home_page.dart';
 import 'package:esim_mob_app/features/payment/presentation/page/payment_page.dart';
-import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/page/preview_tariffs_page.dart';
 import 'package:esim_mob_app/features/splash/presentation/page/splash_page.dart';
+import 'package:esim_mob_app/features/store/data/models/country_model.dart';
+import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
+import 'package:esim_mob_app/features/store/data/models/region_model.dart';
 import 'package:esim_mob_app/features/store/presentation/page/store_page.dart';
 import 'package:esim_mob_app/features/welcome/presentation/page/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +50,9 @@ class Routes {
   static const payment = '/payment';
   static const welcomeStore = '/welcome-store';
   static const history = '/history';
+  static const addBalance = '/add-balance';
+  static const eSimList = '/esims';
+  static const deleteAccount = '/delete-account';
 }
 
 class BranchHomeData extends StatefulShellBranchData {
@@ -106,8 +115,8 @@ class HomeRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final extra = state.extra as Map<String, dynamic>;
-    final tariffs = extra['user_tariffs'] as List<TariffModel>? ?? [];
+    final extra = state.extra as Map<String, dynamic>?;
+    final tariffs = extra?['user_tariffs'] as List<PackageModel>? ?? [];
     return HomePage(
       userTariffs: tariffs,
     );
@@ -200,17 +209,15 @@ class PreviewTariffsRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>;
-    final country = extra['country'] as String;
-    final iconPath = extra['icon_path'] as String;
+    final countryEntity = extra['country_entity'];
     final isFromWelcome = extra['is_from_welcome'] as bool? ?? false;
-    final tariffs = extra['tariffs'] as List<TariffModel>? ?? [];
+    final plan = extra['plan'] as PlanModel;
     return CustomTransitionPage(
       key: state.pageKey,
       child: PreviewTariffsPage(
-        country: country,
-        iconPath: iconPath,
         isFromWelcome: isFromWelcome,
-        tariffs: tariffs,
+        plan: plan,
+        countryEntity: countryEntity is CountryModel ? countryEntity : (countryEntity as RegionModel),
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         return FadeTransition(
@@ -245,9 +252,13 @@ class CheckoutRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>;
-    final tariff = extra['tariff'] as TariffModel;
+    final tariff = extra['tariff'] as PackageModel;
+    final image = extra['image'] as String;
+    final country = extra['country'] as String;
     return CheckoutPage(
       tariff: tariff,
+      image: image,
+      country: country,
     );
   }
 }
@@ -259,7 +270,7 @@ class PaymentRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>;
-    final tariff = extra['tariff'] as TariffModel;
+    final tariff = extra['tariff'] as PackageModel;
     return PaymentPage(
       tariffModel: tariff,
     );
@@ -292,6 +303,14 @@ class FaqRoute extends GoRouteData {
   Widget build(BuildContext context, GoRouterState state) => FaqPage();
 }
 
+@TypedGoRoute<AddBalanceRoute>(path: Routes.addBalance)
+class AddBalanceRoute extends GoRouteData {
+  const AddBalanceRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const AddBalancePage();
+}
+
 @TypedGoRoute<HistoryRoute>(path: Routes.history)
 class HistoryRoute extends GoRouteData {
   const HistoryRoute();
@@ -311,4 +330,32 @@ class HistoryRoute extends GoRouteData {
       },
     );
   }
+}
+
+@TypedGoRoute<ESimListRoute>(path: Routes.eSimList)
+class ESimListRoute extends GoRouteData {
+  const ESimListRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>;
+    final baseCountry = extra['country_entity'];
+    final currencyType = extra['currency_type'];
+    final isFromWelcome = extra['is_from_welcome'] as bool? ?? false;
+    print(baseCountry.runtimeType);
+
+    return ESimListPage(
+      baseCountry: baseCountry is CountryModel ? baseCountry : (baseCountry as RegionModel),
+      currencyType: currencyType,
+      isFromWelcome: isFromWelcome,
+    );
+  }
+}
+
+@TypedGoRoute<DeleteAccountRoute>(path: Routes.deleteAccount)
+class DeleteAccountRoute extends GoRouteData {
+  const DeleteAccountRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const DeleteAccountPage();
 }

@@ -4,6 +4,8 @@ import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bl
 import 'package:esim_mob_app/features/connection_checker/bloc/connection_checker_cubit.dart';
 import 'package:esim_mob_app/features/connection_checker/widgets/offline_widget.dart';
 import 'package:esim_mob_app/features/localization/presentation/cubit/localization_cubit.dart';
+import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:esim_mob_app/features/splash/presentation/widgets/splash_widget.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
@@ -68,7 +70,12 @@ class _SplashBodyState extends State<SplashBody> {
     _isUserSet = true;
     context.read<AuthentificationBloc>().add(AuthentificationEvent.setUser(user: user));
 
-    context.go(Routes.home, extra: {'user_tariffs': user.userTariffs});
+    user.when(authenticated: (_) {
+      context.go(Routes.home, extra: {'user_tariffs': <PackageModel>[PackageModel(price: 1.99, currency: 'USD', packageIndex: 2, dataInMb: 1024, validDays: 1)]});
+    }, notAuthenticated: () {
+      bool isFirstStart = injector<OnBoardingRepositoryImpl>().isFirstRun();
+      context.go(isFirstStart ? Routes.welcome : Routes.auth);
+    });
 
   }
 }

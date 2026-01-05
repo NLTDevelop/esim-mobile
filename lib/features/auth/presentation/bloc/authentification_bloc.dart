@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:esim_mob_app/core/client/rest/awinst_rest_api.dart';
 import 'package:esim_mob_app/core/use_case/use_case.dart';
 import 'package:esim_mob_app/core/utils/error/error_mapper.dart';
 import 'package:esim_mob_app/features/auth/data/data_sources/local/session_storage.dart';
@@ -6,7 +8,7 @@ import 'package:esim_mob_app/features/auth/domain/use_cases/login_apple_use_case
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_case.dart';
 import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout_use_case.dart';
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
-import 'package:esim_mob_app/features/user/domain/use_cases/delete_account_use_case.dart';
+import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/fetch_user_use_case.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +24,7 @@ class AuthentificationBloc
     extends Bloc<AuthentificationEvent, AuthentificationState> {
   AuthentificationBloc(
       {required LoginGoogleUseCase loginGoogleUseCase,
-      required LoginAppleUseCase loginAppleUseCase, required DeleteAccountUseCase deleteAccountUseCase, required TokenLogoutUseCase tokenLogoutUseCase, required SessionStorage sessionStorage})
+      required LoginIOSUseCase loginAppleUseCase, required DeleteAccountUseCase deleteAccountUseCase, required TokenLogoutUseCase tokenLogoutUseCase, required SessionStorage sessionStorage})
       : _loginAppleUseCase = loginAppleUseCase,
         _loginGoogleUseCase = loginGoogleUseCase,
         _deleteAccountUseCase = deleteAccountUseCase,
@@ -36,13 +38,13 @@ class AuthentificationBloc
         logout: (event) async => _onLogOut(event, emit),
         getSignedInUser: (event) async => _onGetSignedInCustomer(event, emit),
         loginApple: (event) async => _onLoginApple(event, emit),
-        setUser: (event) async => _onSetUser(event, emit), deleteUser: (event) async => _onDeleteUser(event, emit),
+        setUser: (event) async => _onSetUser(event, emit), deleteUser: (event) async => _onDeleteUser(event, emit), tryAgain: (_AuthentificationEventTryAgain value) {  },
       );
     });
   }
 
   final LoginGoogleUseCase _loginGoogleUseCase;
-  final LoginAppleUseCase _loginAppleUseCase;
+  final LoginIOSUseCase _loginAppleUseCase;
   final DeleteAccountUseCase _deleteAccountUseCase;
   final TokenLogoutUseCase _tokenLogoutUseCase;
   final SessionStorage _sessionStorage;
@@ -50,17 +52,20 @@ class AuthentificationBloc
   final String email = 'pavelsejcenko@gmail.com';
   final String password = '12345678';
 
+
   Future<void> _onLoginGoogle(_AuthentificationEventLoginGoogle event, Emitter<AuthentificationState> emit) async{
-    String? message;
     try{
-      print('LOGIN');
       emit(
           const AuthentificationState.loading(user: NotAuthenticatedUser())
       );
-      final token = await _loginGoogleUseCase.call(LoginAndPasswordParamsGoogle(email: email, password: password));
+      final token = await _loginGoogleUseCase.call(NoParams());
+
+
       await _sessionStorage.saveAccessToken(token.accessToken);
+      injector<AwinstApi>().token = token.accessToken;
       await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
       final user = await injector<FetchCurrentUserUseCase>().call(NoParams());
+
       emit(
         user.when<AuthentificationState>(
           authenticated: (customer) => _Authenticated(user: customer),
@@ -68,9 +73,14 @@ class AuthentificationBloc
         ),
       );
 
-    } on Object catch (error) {
-      message = ErrorMapper.mapError(error);
-      emit(AuthentificationState.failure(message: message));
+    } on Exception catch (error) {
+      // print(error);
+      // print(stack);
+      var errorMessage = 'Unexpected error';
+      if(error is DioException){
+        errorMessage = error.message!;
+      }
+      emit(AuthentificationState.failure(message: errorMessage));
     }
 
   }
@@ -81,7 +91,7 @@ class AuthentificationBloc
       emit(
           const AuthentificationState.loading(user: NotAuthenticatedUser())
       );
-      final token = await _loginAppleUseCase.call(LoginAndPasswordParams(email: email, password: password));
+      final token = await _loginAppleUseCase.call(NoParams());
       await _sessionStorage.saveAccessToken(token.accessToken);
       await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
       final user = await injector<FetchCurrentUserUseCase>().call(NoParams());
@@ -93,6 +103,8 @@ class AuthentificationBloc
       );
 
     } on Object catch (error) {
+      // print(error);
+      // print(stack);
       message = ErrorMapper.mapError(error);
       emit(AuthentificationState.failure(message: message));
     }
@@ -125,10 +137,14 @@ class AuthentificationBloc
     try {
 
       emit(_Loading(user: state.user));
-      final token = injector<SessionStorage>().getAccessToken();
+      final token = await injector<SessionStorage>().getAccessToken();
       if (token != null) {
         // injector<SlonovaApi>().token = token;
         final customer = await injector<FetchCurrentUserUseCase>().call(NoParams());
+
+        print(customer);
+        print(customer.userTariffs);
+
         emit(
           customer.when<AuthentificationState>(
             authenticated: (customer) => _Authenticated(user: customer),
@@ -168,7 +184,7 @@ class AuthentificationBloc
       ) async {
     try {
       emit(_Loading(user: state.user));
-      await _deleteAccountUseCase.call(NoParams());
+      // await _deleteAccountUseCase.call(NoParams());
       await _sessionStorage.cleanSession();
       ///injector<SlonovaApi>().token = null;
       _tokenLogoutUseCase.call(NoParams());
@@ -186,6 +202,14 @@ class AuthentificationBloc
     }
   }
 
+  // void _onTryAgain(_AuthentificationEventTryAgain event, Emitter<AuthentificationState> emit){
+  //   try{
+  //
+  //   } on Object catch (error) {
+  //   emit(_Failure(message: ErrorMapper.mapError(error)));
+  //   }
+  // }
+
   void onLoginGoogleTap(){
     add(const _AuthentificationEventLoginGoogle());
   }
@@ -195,5 +219,10 @@ class AuthentificationBloc
 
   void onDeleteAccount(){
     add(const _AuthentificationEventDeleteUser());
+  }
+
+  @override
+  void onEvent(AuthentificationEvent event) {
+    super.onEvent(event);
   }
 }

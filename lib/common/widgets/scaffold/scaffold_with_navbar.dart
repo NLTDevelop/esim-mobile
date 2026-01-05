@@ -128,20 +128,11 @@ class BottomNavigationIcon extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     mainAxisSize: MainAxisSize.min,
     children: [
-      AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        margin: const EdgeInsets.only(top: 8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          color: isSelected ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor : Colors.transparent
-        ),
-        child: SvgPicture.asset(
-          asset,
-          width: 25,
-          height: 25,
-          colorFilter: ColorFilter.mode(Theme.of(context).bottomNavigationBarTheme.unselectedIconTheme?.color ?? Colors.transparent, BlendMode.srcIn),
-        ),
+      SvgPicture.asset(
+        asset,
+        width: 25,
+        height: 25,
+        colorFilter: ColorFilter.mode(isSelected ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor! : (Theme.of(context).bottomNavigationBarTheme.unselectedIconTheme?.color ?? Colors.transparent), BlendMode.srcIn),
       ),
     ],
   );

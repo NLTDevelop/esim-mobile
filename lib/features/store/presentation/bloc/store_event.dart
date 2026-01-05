@@ -10,7 +10,7 @@ class StoreEvent with _$StoreEvent {
 
   const factory StoreEvent.changeCurrencyType(CurrencyType type) = _StoreEventChangeCurrencyType;
 
-  const factory StoreEvent.changePlansType(bool isLocal) =
+  const factory StoreEvent.changePlansType({required bool isLocal}) =
   _StoreEventChangePlansType;
 
 }

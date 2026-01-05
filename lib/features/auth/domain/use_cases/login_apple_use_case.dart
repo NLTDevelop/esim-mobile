@@ -2,29 +2,17 @@ import 'package:esim_mob_app/core/use_case/use_case.dart';
 import 'package:esim_mob_app/features/auth/data/models/token_model.dart';
 import 'package:esim_mob_app/features/auth/domain/repository/auth_repository.dart';
 
-class LoginAppleUseCase extends UseCase<TokenModel, LoginAndPasswordParams> {
+class LoginIOSUseCase extends UseCase<TokenModel, NoParams> {
   final AuthRepository _authRepository;
 
-  const LoginAppleUseCase({
+  const LoginIOSUseCase({
     required final AuthRepository authRepository,
   }) : _authRepository = authRepository;
 
   @override
   Future<TokenModel> call(
-      final LoginAndPasswordParams params,
+      final NoParams params,
       ) async =>
-      await _authRepository.loginWithApple(
-        email: params.email,
-        password: params.password,
-      );
+      await _authRepository.loginWithIOS();
 }
 
-class LoginAndPasswordParams {
-  final String email;
-  final String password;
-
-  const LoginAndPasswordParams({
-    required this.email,
-    required this.password,
-  });
-}

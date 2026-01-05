@@ -21,7 +21,7 @@ class PrimarySwitcherButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             border: Border.all(color: Theme.of(context).primaryColor, width: 2),
         ),
-        child: DefaultText.displaySmall(text, color: isActive ? Theme.of(context).extension<ColorExtension>()!.secondaryText : Theme.of(context).extension<ColorExtension>()!.text, fontWeight: FontWeight.w500,),
+        child: DefaultText.titleSmall(text, color: isActive ? Theme.of(context).extension<ColorExtension>()!.secondaryText : Theme.of(context).extension<ColorExtension>()!.text, fontWeight: FontWeight.w500,),
       ),
     );
   }

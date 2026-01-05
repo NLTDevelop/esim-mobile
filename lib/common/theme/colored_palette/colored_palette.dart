@@ -40,6 +40,7 @@ abstract interface class ColoredPalette {
     required this.toggleActive,
     required this.toggleCircle,
     required this.descriptionText,
+    required this.addBalance,
   });
 
   final Brightness brightness;
@@ -80,4 +81,5 @@ abstract interface class ColoredPalette {
   final Color splashBackground;
   final Color toggleCircle;
   final Color toggleActive;
+  final Color addBalance;
 }

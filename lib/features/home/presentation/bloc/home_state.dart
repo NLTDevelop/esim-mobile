@@ -5,7 +5,7 @@ class HomeState with _$HomeState {
   const HomeState._();
 
   @override
-  List<TariffModel> get tariffs => when(
+  List<PackageModel> get tariffs => when(
         initial: (tariffs) => tariffs,
         loading: (tariffs, __) => tariffs,
         success: (tariffs, __) => tariffs,
@@ -19,20 +19,20 @@ class HomeState with _$HomeState {
       initial: (_) => true);
 
   const factory HomeState.loading({
-    @Default([]) final List<TariffModel> tariffs,
+    @Default([]) final List<PackageModel> tariffs,
     @Default(true) bool isFirstESim,
   }) = _Loading;
 
   const factory HomeState.failure({
-    @Default([]) final List<TariffModel> tariffs,
+    @Default([]) final List<PackageModel> tariffs,
     @Default(true) bool isFirstESim,
     required final String message,
   }) = _Failure;
 
   const factory HomeState.success({
-    @Default([]) final List<TariffModel> tariffs,
+    @Default([]) final List<PackageModel> tariffs,
     @Default(true) bool isFirstESim,
   }) = _Success;
 
-  const factory HomeState.initial({@Default([]) final List<TariffModel> tariffs,}) = _Initial;
+  const factory HomeState.initial({@Default([]) final List<PackageModel> tariffs,}) = _Initial;
 }

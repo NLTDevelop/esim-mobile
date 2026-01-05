@@ -1,3 +1,4 @@
+import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/login/login_widget.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
@@ -11,9 +12,14 @@ class AuthPage extends StatelessWidget {
     return DefaultScaffold(
       backgroundColor: Theme.of(context).extension<ColorExtension>()!
           .splashBackground,
-      body: SafeArea(
-          child:
-      LoginWidget()
+      body: Stack(
+        children: [
+          Positioned.fill(child: Image.asset(AppImages.loginBackground, fit: BoxFit.cover,)),
+          SafeArea(
+              child:
+          LoginWidget()
+          ),
+        ],
       ),
     );
   }

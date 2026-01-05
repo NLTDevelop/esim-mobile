@@ -116,4 +116,7 @@ class LightColoredPalette implements ColoredPalette {
 
   @override
   Color get descriptionText => const Color(0xFF343a40);
+
+  @override
+  Color get addBalance => const Color(0xFF198754);
 }

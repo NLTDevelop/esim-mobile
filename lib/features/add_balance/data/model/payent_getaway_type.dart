@@ -1,0 +1,4 @@
+
+enum PaymentGetawayType{
+  stripe
+}

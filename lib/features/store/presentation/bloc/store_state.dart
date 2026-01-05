@@ -4,12 +4,19 @@ part of 'store_bloc.dart';
 class StoreState with _$StoreState {
   const StoreState._();
 
-  List<PlanModel> get planModels => when(
+  List<CountryModel> get countryModels => when(
         initial: () => [],
-        loading: (planModels, __, ___, ____) => planModels,
-        success: (planModels, __, ___, ____) => planModels,
-        failure: (__, planModels, ___, ____, _____) => planModels,
+        loading: (countryModels, __, ___, ____, _____) => countryModels,
+        success: (countryModels, __, ___, ____, _____) => countryModels,
+        failure: (__, countryModels, ___, ____, ______, _______) => countryModels,
       );
+
+  List<RegionModel> get regionModels => when(
+    initial: () => [],
+    loading: (__, regionModels, ___, ____, _____) => regionModels,
+    success: (__, regionModels, ___, ____, _____) => regionModels,
+    failure: (__, ___, regionModels, ____, ______, _______) => regionModels,
+  );
 
   bool get isLoading => maybeMap(
         orElse: () => false,
@@ -18,33 +25,35 @@ class StoreState with _$StoreState {
 
   String get text => when(
         initial: () => '',
-        loading: (__, ___, text, ____) => text,
-        success: (__, ___, text, ____) => text,
-        failure: (__, ___, ____, text, _____) => text,
+        loading: (__, ___, ____, text, _____) => text,
+        success: (__, ___, ____, text, _____) => text,
+        failure: (__, ___, ____, _____, text, ______) => text,
       );
 
   bool get isLocal => when(
         initial: () => true,
-        loading: (__, isLocal, ____, _____) => isLocal,
-        success: (__, isLocal, ____, _____) => isLocal,
-        failure: (__, ___, isLocal, _____, ______) => isLocal,
+        loading: (__, ___, isLocal, ____, _____) => isLocal,
+        success: (__, ___, isLocal, ____, _____) => isLocal,
+        failure: (__, ___, ____, isLocal, _____, ______) => isLocal,
       );
 
   CurrencyType get currencyType => when(
-      success: (__, ___, ____, currencyType) => currencyType,
-      loading: (__, ___, ____, currencyType) => currencyType,
-      failure: (__, ___, ____, _____, currencyType) => currencyType,
+      success: (__, ___, ____, _____, currencyType) => currencyType,
+      loading: (__, ___, ____, _____, currencyType) => currencyType,
+      failure: (__, ___, ____, _____, ______, currencyType) => currencyType,
       initial: () => CurrencyType.usd);
 
   const factory StoreState.success({
-    @Default([]) List<PlanModel> planModels,
+    @Default([]) List<CountryModel> countryModels,
+    @Default([]) List<RegionModel> regionModels,
     @Default(true) bool isLocal,
     @Default('') String text,
     @Default(CurrencyType.usd) CurrencyType currencyType,
   }) = StoreStateSuccess;
 
   const factory StoreState.loading({
-    @Default([]) List<PlanModel> planModels,
+    @Default([]) List<CountryModel> countryModels,
+    @Default([]) List<RegionModel> regionModels,
     @Default(true) bool isLocal,
     @Default('') String text,
     @Default(CurrencyType.usd) CurrencyType currencyType,
@@ -52,7 +61,8 @@ class StoreState with _$StoreState {
 
   const factory StoreState.failure(
     String message, {
-    @Default([]) List<PlanModel> planModels,
+    @Default([]) List<CountryModel> countryModels,
+        @Default([]) List<RegionModel> regionModels,
     @Default(true) bool isLocal,
     @Default('') String text,
     @Default(CurrencyType.usd) CurrencyType currencyType,

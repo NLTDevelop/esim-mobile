@@ -4,16 +4,18 @@ import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/check_promo_code_use_case.dart';
 import 'package:esim_mob_app/features/checkout/presentation/bloc/checkout_bloc.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/checkout_body.dart';
-import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:go_router/go_router.dart';
 
 class CheckoutPage extends StatelessWidget {
-  const CheckoutPage({super.key, required this.tariff});
+  const CheckoutPage({super.key, required this.tariff, required this.image, required this.country,});
 
-  final TariffModel tariff;
+  final PackageModel tariff;
+  final String image;
+  final String country;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class CheckoutPage extends StatelessWidget {
               color: Theme.of(context).extension<ColorExtension>()!.text,),
           ),
         ),
-        body: CheckoutBody(),
+        body: CheckoutBody(country: country, image: image,),
       ),
     );
   }

@@ -34,12 +34,12 @@ class _ContactUsBodyState extends State<ContactUsBody> {
       labelText: label,
       hintText: hint,
       errorStyle: const TextStyle(fontSize: 14, color: Colors.redAccent),
-      hintStyle: TextStyle(fontSize: 14, color: Theme.of(context).extension<ColorExtension>()!.hintText),
+      hintStyle: TextStyle(fontSize: 14, color: Theme.of(context).extension<ColorExtension>()!.descriptionText),
       filled: true,
       fillColor: Theme.of(context).extension<ColorExtension>()!.background,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Theme.of(context).extension<ColorExtension>()!.cardBorder, width: 2),
+        borderSide: BorderSide(color: Theme.of(context).extension<ColorExtension>()!.splashBackground, width: 2),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -47,11 +47,11 @@ class _ContactUsBodyState extends State<ContactUsBody> {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Theme.of(context).extension<ColorExtension>()!.cardBorder, width: 2),
+        borderSide: BorderSide(color: Theme.of(context).extension<ColorExtension>()!.splashBackground, width: 2),
       ),
       disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Theme.of(context).extension<ColorExtension>()!.cardBorder, width: 2),
+        borderSide: BorderSide(color: Theme.of(context).extension<ColorExtension>()!.splashBackground, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -198,7 +198,7 @@ class _ContactUsBodyState extends State<ContactUsBody> {
                   const DefaultText.displaySmall('- For existing users in case of emergency. Available 24/7 (Dutch and English) WhatsApp\n - For non-urgent support requests, text only.'),
                   const Spacer(),
                   PrimaryButton(onTap: _submitForm, text: 'Send', isExpanded: true,),
-                  Flexible(
+                  const Flexible(
                     child: const SizedBox(
                       height: 20,
                     ),

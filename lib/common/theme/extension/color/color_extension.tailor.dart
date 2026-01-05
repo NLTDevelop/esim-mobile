@@ -44,6 +44,7 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
   Color get toggleCircle;
   Color get toggleActive;
   Color get descriptionText;
+  Color get addBalance;
 
   @override
   ColorExtension copyWith({
@@ -82,6 +83,7 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
     Color? toggleCircle,
     Color? toggleActive,
     Color? descriptionText,
+    Color? addBalance,
   }) {
     return ColorExtension(
       primary: primary ?? this.primary,
@@ -126,6 +128,7 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
       toggleCircle: toggleCircle ?? this.toggleCircle,
       toggleActive: toggleActive ?? this.toggleActive,
       descriptionText: descriptionText ?? this.descriptionText,
+      addBalance: addBalance ?? this.addBalance,
     );
   }
 
@@ -183,6 +186,7 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
       toggleCircle: Color.lerp(toggleCircle, other.toggleCircle, t)!,
       toggleActive: Color.lerp(toggleActive, other.toggleActive, t)!,
       descriptionText: Color.lerp(descriptionText, other.descriptionText, t)!,
+      addBalance: Color.lerp(addBalance, other.addBalance, t)!,
     );
   }
 
@@ -253,7 +257,9 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
             const DeepCollectionEquality()
                 .equals(toggleActive, other.toggleActive) &&
             const DeepCollectionEquality()
-                .equals(descriptionText, other.descriptionText));
+                .equals(descriptionText, other.descriptionText) &&
+            const DeepCollectionEquality()
+                .equals(addBalance, other.addBalance));
   }
 
   @override
@@ -295,6 +301,7 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
       const DeepCollectionEquality().hash(toggleCircle),
       const DeepCollectionEquality().hash(toggleActive),
       const DeepCollectionEquality().hash(descriptionText),
+      const DeepCollectionEquality().hash(addBalance),
     ]);
   }
 }
@@ -338,4 +345,5 @@ extension ColorExtensionBuildContextProps on BuildContext {
   Color get toggleCircle => colorExtension.toggleCircle;
   Color get toggleActive => colorExtension.toggleActive;
   Color get descriptionText => colorExtension.descriptionText;
+  Color get addBalance => colorExtension.addBalance;
 }

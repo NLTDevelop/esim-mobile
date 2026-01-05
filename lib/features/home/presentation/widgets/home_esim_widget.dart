@@ -24,7 +24,7 @@ class HomeESimWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         DecoratedBox(
-          decoration: BoxDecoration(color: Theme.of(context).extension<ColorExtension>()!.splashBackground),
+          decoration: BoxDecoration(color: Theme.of(context).extension<ColorExtension>()!.toggleCircle),
           child: Padding(
             padding: EdgeInsets.only(left: 14, right: 14, top: MediaQuery.of(context).padding.top ),
             child: Row(
@@ -35,52 +35,39 @@ class HomeESimWidget extends StatelessWidget {
                     _showInstallESimBottomSheet(context);
                   },
                   child: Container(
-                    width: 56,
-                    height: 56,
+                    width: 64,
+                    height: 64,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
                         image: const DecorationImage(
-                            image: AssetImage(AppImages.logo),
+                            image: AssetImage(AppImages.logoTransparent),
                             fit: BoxFit.cover)),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 6, horizontal: 10),
+                      vertical: 9, horizontal: 12),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      color: Theme.of(context).primaryColor),
+                      color: Theme.of(context).extension<ColorExtension>()!.background),
                   child: Row(
                     children: [
-                      DefaultText.bodySmall('eSIM',
+                      DefaultText.displaySmall('eSIM #1 not installed',
                           color: Theme.of(context)
                               .extension<ColorExtension>()!
-                              .secondaryText),
-                      Container(
-                        width: 3,
-                        height: 3,
-                        margin:
-                        const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context)
-                                .extension<ColorExtension>()!
-                                .secondaryText),
-                      ),
-                      DefaultText.bodySmall('#1',
-                          color: Theme.of(context)
-                              .extension<ColorExtension>()!
-                              .secondaryText),
+                              .text),
                     ],
                   ),
                 ),
                 SizedBox(
                   width: 56,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      context.read<HomeBloc>().add(const HomeEvent.installFirstESim());
+                    },
                     child: Container(
-                      width: 34,
-                      height: 34,
+                      width: 35,
+                      height: 35,
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
@@ -112,23 +99,23 @@ class HomeESimWidget extends StatelessWidget {
                   padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                   decoration: BoxDecoration(
                     color:
-                        Theme.of(context).extension<ColorExtension>()!.splashBackground,
+                        Theme.of(context).extension<ColorExtension>()!.toggleCircle,
                   ),
                   child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
                     builder: (context, state) {
-                      final activeESims = state.user.userTariffs
-                          .where((e) => e.eSim.isActive)
-                          .map((e) => e.eSim)
-                          .toList();
-                      final currentESim = activeESims.isEmpty
-                          ? state.user.userTariffs.last.eSim
-                          : activeESims.last;
+                      // final activeESims = state.user.userTariffs
+                      //     .where((e) => true)
+                      //     .map((e) => e)
+                      //     .toList();
+                      // final currentESim = activeESims.isEmpty
+                      //     ? state.user.userTariffs.last
+                      //     : activeESims.last;
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(
-                            height: 30,
+                            height: 20,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -139,12 +126,13 @@ class HomeESimWidget extends StatelessWidget {
                                   decoration:
                                       const BoxDecoration(shape: BoxShape.circle),
                                   child: SvgPicture.asset(
-                                    currentESim.iconPath,
+                                    AppIcons.japan,
+                                    colorFilter:  AppIcons.japan == AppIcons.world ? ColorFilter.mode(Theme.of(context).extension<ColorExtension>()!.background, BlendMode.srcIn) : null,
                                   )),
                               const SizedBox(
                                 width: 8,
                               ),
-                              DefaultText.bodySmall(currentESim.name,
+                              DefaultText.bodySmall('Test',
                                   color: Theme.of(context)
                                       .extension<ColorExtension>()!
                                       .secondaryText),
@@ -153,7 +141,8 @@ class HomeESimWidget extends StatelessWidget {
                           const SizedBox(
                             height: 24,
                           ),
-                          DefaultText.bodyMedium('${currentESim.dataInGB} GB',
+                          DefaultText.bodyMedium('${(1024 / 1024).toStringAsFixed(2)} GB',
+                              fontWeight: FontWeight.w600,
                               color: Theme.of(context)
                                   .extension<ColorExtension>()!
                                   .secondaryText),
@@ -161,7 +150,7 @@ class HomeESimWidget extends StatelessWidget {
                             height: 28,
                           ),
                           DefaultText.labelMedium(
-                            'Due to ${DateFormat('d MMM').format(currentESim.createdAt.add(Duration(days: currentESim.days)))}',
+                            'Due to ${DateFormat('d MMM').format(DateTime.now().add(Duration(days: 7)))}',
                             color: Theme.of(context)
                                 .extension<ColorExtension>()!
                                 .cardBorder,
@@ -172,7 +161,7 @@ class HomeESimWidget extends StatelessWidget {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Flexible(
+                              Expanded(
                                   child: HomeTextButton(
                                 key: bloc.autoTopUpButtonKey,
                                 text: 'Auto top-up',
@@ -181,7 +170,7 @@ class HomeESimWidget extends StatelessWidget {
                                   _showAutoTopUpBottomSheet(context);
                                 },
                               )),
-                              Flexible(
+                              Expanded(
                                   child: HomeTextButton(
                                 key: bloc.installESimButtonKey,
                                 text: 'Install eSIM',
@@ -189,12 +178,11 @@ class HomeESimWidget extends StatelessWidget {
                                 onPressed: () {
                                   _showInstallESimBottomSheet(context);
                                 },
-                                isHighlight: true,
                               )),
-                              Flexible(
+                              Expanded(
                                   child: HomeTextButton(
                                 key: bloc.myESimsButtonKey,
-                                text: 'My eSims',
+                                text: 'My eSIMs',
                                 iconPath: AppIcons.allPlans,
                                 onPressed: () {
                                   _showMyESimsBottomSheet(context);

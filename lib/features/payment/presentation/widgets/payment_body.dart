@@ -15,6 +15,7 @@ class PaymentBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
+            const Spacer(),
             DefaultText.bodySmall('Payment for ${context.read<PaymentBloc>().state.price}'),
             const Spacer(),
             PrimaryButton(onTap: context.read<PaymentBloc>().onPay, text: 'Pay', isExpanded: true,),

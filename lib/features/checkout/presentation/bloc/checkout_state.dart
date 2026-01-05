@@ -6,7 +6,7 @@ class CheckoutState with _$CheckoutState {
   const CheckoutState._();
 
   @override
-  TariffModel get tariff => when(
+  PackageModel get tariff => when(
     loading: (tariff,__, ___) => tariff,
     success: (tariff, __, ___) => tariff,
     failure: (tariff, __, ___, ____) => tariff,
@@ -28,19 +28,19 @@ class CheckoutState with _$CheckoutState {
 
 
   const factory CheckoutState.success({
-    required final TariffModel tariff,
+    required final PackageModel tariff,
     required final bool isOpenPromoCode,
     final PromoCode? promoCode
   }) = _Success;
 
   const factory CheckoutState.loading({
-    required final TariffModel tariff,
+    required final PackageModel tariff,
     @Default(false) final bool isOpenPromoCode,
     @Default(null) final PromoCode? promoCode
   }) = _Loading;
 
   const factory CheckoutState.failure({
-    required final TariffModel tariff,
+    required final PackageModel tariff,
     @Default(false) final bool isOpenPromoCode,
     @Default(null) PromoCode? promoCode,
     String? message

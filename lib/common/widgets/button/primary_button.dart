@@ -20,7 +20,7 @@ class PrimaryButton extends StatelessWidget {
         onPressed: onTap,
         child:  Container(
           width: isExpanded ? MediaQuery.of(context).size.width : null,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
           decoration: BoxDecoration(
               color: isActive ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(12),
@@ -31,7 +31,7 @@ class PrimaryButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if(icon != null)
-                Padding( padding: const EdgeInsets.only(right: 8), child: icon!),
+                Padding( padding: const EdgeInsets.only(right: 3), child: icon!),
               Flexible(child: DefaultText.displayMedium(text, maxLines: 2, overflow: TextOverflow.visible, color: isActive ? Theme.of(context).extension<ColorExtension>()!.secondaryText : Theme.of(context).extension<ColorExtension>()!.text, fontWeight: FontWeight.w500,textAlign: TextAlign.center,)),
             ],
           ),

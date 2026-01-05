@@ -1,7 +1,5 @@
 import 'package:esim_mob_app/common/routes/routes.dart';
-import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_switcher_button.dart';
-import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
 import 'package:esim_mob_app/features/store/presentation/bloc/store_bloc.dart';
 import 'package:esim_mob_app/features/store/presentation/widgets/search_widget.dart';
 import 'package:esim_mob_app/features/store/presentation/widgets/store_data_card.dart';
@@ -26,15 +24,6 @@ class StoreContent extends StatelessWidget {
           Expanded(
             child: BlocBuilder<StoreBloc, StoreState>(
               builder: (context, state) {
-                List<PlanModel> plans = state.text.isNotEmpty
-                    ? state.planModels
-                        .where((e) =>
-                            e.title.contains(state.text) &&
-                            e.isLocal == state.isLocal)
-                        .toList()
-                    : state.planModels
-                        .where((e) => e.isLocal == state.isLocal)
-                        .toList();
                 final bloc = context
                     .read<StoreBloc>();
                 return Column(
@@ -46,7 +35,7 @@ class StoreContent extends StatelessWidget {
                         text: 'Local eSIM',
                         onTap: () {
                           bloc
-                              .add(const StoreEvent.changePlansType(true));
+                              .add(const StoreEvent.changePlansType(isLocal: true));
                         },
                         isActive: state.isLocal,
                       ),
@@ -57,7 +46,7 @@ class StoreContent extends StatelessWidget {
                         text: 'Regional eSIM',
                         onTap: () {
                           bloc
-                              .add(const StoreEvent.changePlansType(false));
+                              .add(const StoreEvent.changePlansType(isLocal: false));
                         },
                         isActive: !state.isLocal,
                       )
@@ -69,20 +58,20 @@ class StoreContent extends StatelessWidget {
                       child: ListView.separated(
                         itemBuilder: (context, index) {
                           return StoreDataCard(
-                            title: plans[index].title,
-                            price: plans[index].price,
-                            isLocal: plans[index].isLocal,
+                            name: state.isLocal ? state.countryModels[index].name : state.regionModels[index].name,
+                            isLocal: state.isLocal,
+                            code: state.isLocal ? state.countryModels[index].code : null,
                             onTap: () {
                               HapticFeedback.lightImpact();
-                              context.push(Routes.tariffs, extra: { 'tariffs': plans[index].tariffs, 'country': plans[index].title, 'icon_path': plans[index].iconPath ?? AppIcons.world, 'is_from_welcome': bloc.isFromWelcome});
+                              // context.push(Routes.tariffs, extra: { 'plan': plans[index], 'country': plans[index].title, 'icon_path': plans[index].image, 'is_local': plans[index].coverages.length == 1, 'is_from_welcome': bloc.isFromWelcome});
+                              context.push(Routes.eSimList, extra: { 'currency_type': state.currencyType.name.toUpperCase(), 'country_entity': state.isLocal ? state.countryModels[index] : state.regionModels[index], 'is_from_welcome': bloc.isFromWelcome});
                             },
-                            iconPath: plans[index].iconPath,
                           );
                         },
                         separatorBuilder: (context, index) => const SizedBox(
                           height: 10,
                         ),
-                        itemCount: plans.length,
+                        itemCount: state.isLocal ? state.countryModels.length : state.regionModels.length,
                         shrinkWrap: true,
                       ),
                     ),

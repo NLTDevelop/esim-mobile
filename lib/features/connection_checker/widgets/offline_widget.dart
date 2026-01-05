@@ -31,9 +31,9 @@ class OfflineWidget extends StatelessWidget {
             ), Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  DefaultText.displayMedium('No internet', color: Theme.of(context).extension<ColorExtension>()!.text,),
+                  DefaultText.bodySmall('No internet', color: Theme.of(context).extension<ColorExtension>()!.secondaryText,),
                   const SizedBox(height: 16,),
-                  const DefaultText.bodySmall('You need to be online to access the app. But you can still check the instructions on how to use your eSim.', textAlign: TextAlign.center,
+                  DefaultText.titleLarge('You need to be online to access the app. But you can still check the instructions on how to use your eSim.', textAlign: TextAlign.center, color: Theme.of(context).extension<ColorExtension>()!.secondaryText,
                   )
                 ],
               ),

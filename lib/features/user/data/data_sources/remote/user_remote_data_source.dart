@@ -1,22 +1,31 @@
 
 
-// @RestApi(baseUrl: RestApi.baseUrl)
+
+import 'package:dio/dio.dart';
+import 'package:esim_mob_app/core/client/rest/awinst_rest_api.dart';
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
-import 'package:esim_mob_app/features/user/data/data_sources/local/user_local_data_source.dart';
-import 'package:esim_mob_app/injector.dart';
+import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
+import 'package:retrofit/error_logger.dart';
+import 'package:retrofit/http.dart';
 
-class UserRemoteDataSource {
-  // factory UserRemoteDataSource(Dio dio, {String? baseUrl}) = _UserRemoteDataSource;
+part 'user_remote_data_source.g.dart';
 
-  //@GET('users/me')
-  Future<UserModel> getUser() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
+@RestApi(baseUrl: AwinstApi.baseUrl)
+abstract class UserRemoteDataSource {
+   factory UserRemoteDataSource(Dio dio, {String? baseUrl}) = _UserRemoteDataSource;
 
-    return await injector<UserLocalDataSource>().getUser() ?? const AuthenticatedUserModel(id: 1, email: 'test@gmail.com', eSims: []);
-  }
+  @GET('v1/profile')
+  Future<AuthenticatedUserModel> getUser();
 
-  ///@DELETE('users')
-  Future<void> deleteUserAccount() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
-  }
+  @GET('v1/esim')
+  Future<List<UserESimModel>> getESimList();
+
+  @GET('v1/esim/{id}')
+  Future<UserESimModel> getESimById({@Path() required int id});
+
+  @POST('v1/profile/delete/request')
+  Future<void> requestDeletingAccount();
+
+  @POST('v1/profile/delete/confirm')
+  Future<void> sendDeleteCode({@Body() required Map<String, dynamic> data});
 }

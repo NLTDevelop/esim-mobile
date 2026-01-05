@@ -16,46 +16,51 @@ class LoginBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<AuthentificationBloc>();
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(
-          height: 30,
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.2,
         ),
-        Padding(
-            padding: const EdgeInsets.symmetric(vertical: 22),
-            child: Container(
-              width: 75,
-              height: 75,
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), image: const DecorationImage(image: AssetImage(AppImages.logo), fit: BoxFit.cover)),
-            )),
+        // Padding(
+        //     padding: const EdgeInsets.symmetric(vertical: 22),
+        //     child: Container(
+        //       width: 75,
+        //       height: 75,
+        //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(14), image: const DecorationImage(image: AssetImage(AppImages.logo), fit: BoxFit.cover)),
+        //     )),
         DefaultText.bodySmall(
           'Login or sign up to access your eSIMs',
           color: Theme.of(context).extension<ColorExtension>()!.secondaryText,
           fontSize: 22,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(
-          height: 30,
+        const Spacer(),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PrimaryButton(
+                onTap: bloc.onLoginGoogleTap,
+                text: 'Continue with Google',
+                icon: SvgPicture.asset(
+                  AppIcons.google,
+                  width: 24,
+                  height: 24,
+                )),
+            const SizedBox(
+              height: 20,
+            ),
+            PrimaryButton(
+                onTap: bloc.onLoginAppleTap,
+                text: 'Continue with Apple',
+                icon: SvgPicture.asset(
+                  AppIcons.ios,
+                  width: 24,
+                  height: 24,
+                )),
+          ],
         ),
-        PrimaryButton(
-            onTap: bloc.onLoginGoogleTap,
-            text: 'Continue with Google',
-            icon: SvgPicture.asset(
-              AppIcons.google,
-              width: 24,
-              height: 24,
-            )),
         const SizedBox(
-          height: 20,
+          height: 45,
         ),
-        PrimaryButton(
-            onTap: bloc.onLoginAppleTap,
-            text: 'Continue with Apple',
-            icon: SvgPicture.asset(
-              AppIcons.ios,
-              width: 24,
-              height: 24,
-            )),
       ],
     );
   }

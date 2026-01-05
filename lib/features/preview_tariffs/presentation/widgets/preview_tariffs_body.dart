@@ -7,14 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PreviewTariffsBody extends StatelessWidget {
-  const PreviewTariffsBody({super.key});
+  const PreviewTariffsBody({super.key,});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PreviewTariffsBloc, PreviewTariffsState>(builder: (context, state){
-      final bloc = context.read<PreviewTariffsBloc>();
       return state.map(
-          success: (_) => PreviewTariffsContent(country: bloc.country, iconPath: bloc.iconPath),
+          success: (_) => PreviewTariffsContent(),
           loading: (_) => const LoadingState(),
           failure: (_) => FailureState(onTap: () {
             context.read<PreviewTariffsBloc>().add(const PreviewTariffsEvent.fetchTariffs());

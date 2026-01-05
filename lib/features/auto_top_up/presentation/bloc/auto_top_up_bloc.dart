@@ -1,9 +1,7 @@
 
-import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/core/utils/error/error_mapper.dart';
-import 'package:esim_mob_app/features/home/data/models/esim_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'auto_top_up_event.dart';
@@ -23,11 +21,11 @@ class AutoTopUpBloc extends Bloc<AutoTopUpEvent, AutoTopUpState> {
     String? message;
     try{
       emit(const AutoTopUpState.loading());
-      List<TariffModel> tariffs = [
-        TariffModel( price: 2.49, eSim: ESimModel(name: 'Netherlands', dataInGB: 1, days: 7, createdAt: DateTime.now(), iconPath: AppIcons.netherlands)),
-        TariffModel( price: 10.49, eSim: ESimModel(name: 'USA', dataInGB: 3, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.usa)),
-        TariffModel( price: 19.49, eSim: ESimModel(name: 'Indonesia', dataInGB: 5, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.indonesia)),
-        TariffModel( price: 95.99,  eSim: ESimModel(name: 'USA', dataInGB: 13, days: 30, createdAt: DateTime.now(), iconPath: AppIcons.usa)),
+      List<PackageModel> tariffs = [
+        PackageModel( price: 2.49, currency: 'USD', packageIndex: 1, dataInMb: 2048, validDays: 7, ),
+        PackageModel( price: 10.49, currency: 'USD', packageIndex: 1, dataInMb: 2048, validDays: 7,),
+        PackageModel( price: 19.49, currency: 'USD', packageIndex: 1, dataInMb: 2048, validDays: 7,),
+        PackageModel( price: 95.99, currency: 'USD', packageIndex: 1, dataInMb: 2048, validDays: 7,),
       ];
       emit(AutoTopUpState.success(tariffs: tariffs, selectedIndex: state.selectedIndex));
     } on Object catch (error) {

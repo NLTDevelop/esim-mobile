@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+import 'package:esim_mob_app/features/store/data/models/coverage_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'plan_model.g.dart';
@@ -7,25 +8,25 @@ part 'plan_model.g.dart';
 @JsonSerializable()
 class PlanModel extends Equatable{
   const PlanModel({
-    required this.id,
     required this.title,
-    required this.isLocal,
-    required this.price,
-    required this.tariffs,
+    required this.slug,
+    required this.packages,
+    required this.coverages,
+    required this.image,
     this.iconPath,
   });
 
-  final int id;
+  final String slug;
   final String title;
-  final bool isLocal;
-  final double price;
   final String? iconPath;
-  final List<TariffModel> tariffs;
+  final String image;
+  final List<PackageModel> packages;
+  final List<CoverageModel> coverages;
 
   factory PlanModel.fromJson(Map<String, dynamic> json) =>
       _$PlanModelFromJson(json);
 
   @override
-  List<Object?> get props => [id, title, isLocal, price, iconPath, tariffs];
+  List<Object?> get props => [slug, title, iconPath, packages, image, coverages];
 
 }

@@ -1,13 +1,19 @@
 
 import 'dart:async';
 
+import 'package:esim_mob_app/core/client/rest/awinst_rest_api.dart';
 import 'package:esim_mob_app/core/client/secure_storage_dao/flutter_secure_storage_dao.dart';
 import 'package:esim_mob_app/core/utils/logger/logger.dart';
+import 'package:esim_mob_app/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_case.dart';
+import 'package:esim_mob_app/features/auto_top_up/data/data_sources/remote/auto_top_up_remote_data_source.dart';
+import 'package:esim_mob_app/features/auto_top_up/domain/repositories/auto_top_up_repository.dart';
+import 'package:esim_mob_app/features/auto_top_up/domain/use_cases/fetch_activation_topup_list_use_case.dart';
 import 'package:esim_mob_app/features/checkout/data/repository/promocode_repository_impl.dart';
 import 'package:esim_mob_app/features/checkout/domain/repository/promo_code_repository.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/check_promo_code_use_case.dart';
+import 'package:esim_mob_app/features/home/domain/use_cases/fetch_user_esim_use_case.dart';
 import 'package:esim_mob_app/features/localization/data/repository/localization_repository_impl.dart';
 import 'package:esim_mob_app/features/notifcations/data/data_sources/local/fcm_token_storage.dart';
 import 'package:esim_mob_app/features/notifcations/data/data_sources/local/fcm_token_storage_impl.dart';
@@ -17,22 +23,35 @@ import 'package:esim_mob_app/features/notifcations/domain/repository/token_repos
 import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout_use_case.dart';
 import 'package:esim_mob_app/features/onboarding/data/data_sources/local/first_start_app_storage_impl.dart';
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
+import 'package:esim_mob_app/features/profile/domain/use_cases/confirm_deletion_account_use_case.dart';
+import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
+import 'package:esim_mob_app/features/store/data/data_sources/remote/countries_remote_data_source.dart';
+import 'package:esim_mob_app/features/store/data/data_sources/remote/plans_remote_data_source.dart';
+import 'package:esim_mob_app/features/store/data/repositoty/countries_repository_impl.dart';
+import 'package:esim_mob_app/features/store/data/repositoty/plan_esim_repository_impl.dart';
+import 'package:esim_mob_app/features/store/domain/repository/countries_repository.dart';
+import 'package:esim_mob_app/features/store/domain/repository/plan_esim_repository.dart';
+import 'package:esim_mob_app/features/store/domain/use_cases/fetch_countries_use_case.dart';
+import 'package:esim_mob_app/features/store/domain/use_cases/fetch_local_esims_use_case.dart';
+import 'package:esim_mob_app/features/store/domain/use_cases/fetch_regional_esims_use_case.dart';
+import 'package:esim_mob_app/features/store/domain/use_cases/fetch_regions_use_case.dart';
 import 'package:esim_mob_app/features/user/data/data_sources/local/user_local_data_source.dart';
 import 'package:esim_mob_app/features/user/data/data_sources/local/user_local_data_source_impl.dart';
 import 'package:esim_mob_app/features/user/data/data_sources/remote/user_remote_data_source.dart';
 import 'package:esim_mob_app/features/user/data/repository/user_repository_impl.dart';
 import 'package:esim_mob_app/features/user/domain/repository/user_repository.dart';
-import 'package:esim_mob_app/features/user/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/fetch_user_use_case.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/use_case/use_case.dart';
 import 'features/auth/data/data_sources/local/session_storage.dart';
 import 'features/auth/data/data_sources/local/session_storage_impl.dart';
 import 'features/auth/data/repository/auth_repository_impl.dart';
 import 'features/auth/domain/repository/auth_repository.dart';
 import 'features/auth/domain/use_cases/login_apple_use_case.dart';
+import 'features/auto_top_up/data/repository/auto_top_up_repository_impl.dart';
 
 typedef _InitializationStep = FutureOr<void> Function();
 
@@ -40,24 +59,44 @@ final injector = GetIt.instance;
 
 final Map<String, _InitializationStep> _initializationSteps = {
   'User': () {
-    injector.registerLazySingleton<UserRemoteDataSource>(() => UserRemoteDataSource());
+    injector.registerLazySingleton<UserRemoteDataSource>(() => UserRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<UserRepository>(
             () => UserRepositoryImpl(userRemoteDataSource: injector<UserRemoteDataSource>()));
     injector.registerLazySingleton(() => FetchCurrentUserUseCase(userRepository: injector<UserRepository>()));
     // injector.registerLazySingleton(() => DeleteCurrentUserUseCase(userRepository: injector<UserRepository>()));
     // injector.registerLazySingleton(() => UpdateCurrentUserUseCase(userRepository: injector<UserRepository>()));
   },
-  'Repository': (){
-    injector.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
-    injector.registerLazySingleton<PromoCodeRepository>(() => PromoCodeRepositoryImpl());
+  'RemoteDataSource': (){
+    final authRemoteDataSource = AuthRemoteDataSource(injector<AwinstApi>().dio);
+    injector.registerLazySingleton<AuthRemoteDataSource>(() => authRemoteDataSource);
+    injector.registerLazySingleton<PlansRemoteDataSource>(() => PlansRemoteDataSource(injector<AwinstApi>().dio));
+    injector.registerLazySingleton<CountriesRemoteDataSource>(() => CountriesRemoteDataSource(injector<AwinstApi>().dio));
+    injector.registerLazySingleton<AutoTopUpRemoteDataSource>(() => AutoTopUpRemoteDataSource(injector<AwinstApi>().dio));
   },
+  'Repository': (){
+    injector.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(authRemoteDataSource: injector<AuthRemoteDataSource>()));
+    injector.registerLazySingleton<PromoCodeRepository>(() => PromoCodeRepositoryImpl());
+    injector.registerLazySingleton<PlanESimRepository>(() => PlanESimRepositoryImpl(plansRemoteDataSource: injector<PlansRemoteDataSource>()));
+    injector.registerLazySingleton<CountriesRepository>(() => CountryRepositoryImpl(countriesRemoteDataSource: injector<CountriesRemoteDataSource>()));
+    injector.registerLazySingleton<AutoTopUpRepository>(() => AutoTopUpRepositoryImpl(autoTopUpRemoteDataSource: injector<AutoTopUpRemoteDataSource>()));
+    },
   'UseCases': (){
     final loginGoogleUseCase = LoginGoogleUseCase(authRepository: injector<AuthRepository>());
     injector.registerLazySingleton(() => loginGoogleUseCase);
-    final loginAppleUseCase = LoginAppleUseCase(authRepository: injector<AuthRepository>());
+    final loginAppleUseCase = LoginIOSUseCase(authRepository: injector<AuthRepository>());
     injector.registerLazySingleton(() => loginAppleUseCase);
     injector.registerLazySingleton(() => CheckPromoCodeUseCase(promoCodeRepository: injector<PromoCodeRepository>()));
     injector.registerLazySingleton(() => DeleteAccountUseCase(userRepository: injector<UserRepository>()));
+    injector.registerLazySingleton(() => ConfirmDeletionAccountUseCase(userRepository: injector<UserRepository>()));
+    injector.registerLazySingleton(() => FetchActivationTopupListUseCase(autoTopUpRepository: injector<AutoTopUpRepository>()));
+    final planESimRepository = injector<PlanESimRepository>();
+
+    injector.registerLazySingleton(() => FetchRegionalESimsUseCase(planESimRepository: planESimRepository));
+    injector.registerLazySingleton(() => FetchLocalESimsUseCase(planESimRepository: planESimRepository));
+    final countriesRepository = injector<CountriesRepository>();
+    injector.registerLazySingleton(() => FetchCountriesUseCase(countriesRepository: countriesRepository));
+    injector.registerLazySingleton(() => FetchRegionsUseCase(countriesRepository: countriesRepository));
+    injector.registerLazySingleton(() => FetchUserESimUseCase(userRepository: injector<UserRepository>()));
     },
   'Token': () async {
     injector
@@ -99,12 +138,12 @@ Future<void> initializeDependencies({
 
 FutureOr<UserModel> fetchCurrentUser() async {
   final token = await injector<SessionStorage>().getAccessToken();
-  // injector<SlonovaApi>().token = token;
+  injector<AwinstApi>().token = token;
   try {
-    // if (token != null) {
-    //   final customer = await injector<FetchCurrentUserUseCase>().call(NoParams());
-    //   return customer;
-    // }
+    if (token != null) {
+      final customer = await injector<FetchCurrentUserUseCase>().call(NoParams());
+      return customer;
+    }
     return UserModel.notAuthenticated();
   } on Object catch (e) {
     Logger.error('Error fetching current user', e);
@@ -122,6 +161,12 @@ Future<void> baseSteps() async{
   final storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
   final sharedPreferences = await SharedPreferences.getInstance();
   final storageDao = FlutterSecureStorageDao(secureStorage: storage, sharedPreferences: sharedPreferences);
+  if(storageDao.readBool('first_start_app') ?? true){
+    print('IS FIRST START TRUE!!');
+    await storage.deleteAll();
+    await sharedPreferences.clear();
+  }
+  injector.registerLazySingleton<AwinstApi>(() => AwinstApi());
   injector.registerLazySingleton(() => LocalizationRepositoryImpl());
   injector.registerLazySingleton<SessionStorage>(() => SessionStorageImpl(secureStorageDao: storageDao));
   injector.registerLazySingleton<FcmTokenStorage>(() => FcmTokenStorageImpl(secureStorageDao: storageDao));

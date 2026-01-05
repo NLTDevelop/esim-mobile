@@ -7,10 +7,12 @@ import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bl
 import 'package:esim_mob_app/features/localization/data/repository/localization_repository_impl.dart';
 import 'package:esim_mob_app/features/localization/presentation/cubit/localization_cubit.dart';
 import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout_use_case.dart';
-import 'package:esim_mob_app/features/user/domain/use_cases/delete_account_use_case.dart';
+import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:esim_mob_app/common/routes/router.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_settings.dart';
 import 'common/theme/app_theme.dart';
@@ -25,7 +27,7 @@ void main() async =>
           WidgetsFlutterBinding.ensureInitialized();
           await baseSteps();
           await CountryCodes.init();
-
+          await dotenv.load(fileName: ".env");
           FlutterError.onError =
               (details) => Logger.handle(details.exception, details.stack);
           WidgetsBinding.instance.platformDispatcher.onError =
@@ -38,6 +40,18 @@ void main() async =>
               printEventFullData: false,
             ),
           );
+          SystemChrome.setSystemUIOverlayStyle(
+            const SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.dark,
+            ),
+          );
+          SystemChrome.setPreferredOrientations(
+            <DeviceOrientation>[
+              DeviceOrientation.portraitUp,
+            ],
+          );
+
           runApp(const MyApp());
         }, Logger.handle
     );
@@ -57,7 +71,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AuthentificationBloc(
               loginGoogleUseCase: injector<LoginGoogleUseCase>(),
-              loginAppleUseCase: injector<LoginAppleUseCase>(),
+              loginAppleUseCase: injector<LoginIOSUseCase>(),
               sessionStorage: injector<SessionStorage>(),
               deleteAccountUseCase: injector<DeleteAccountUseCase>(),
             tokenLogoutUseCase: injector<TokenLogoutUseCase>(),

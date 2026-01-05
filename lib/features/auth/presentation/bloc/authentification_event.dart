@@ -17,4 +17,5 @@ class AuthentificationEvent with _$AuthentificationEvent {
   }) = _AuthentificationSetUser;
 
   const factory AuthentificationEvent.deleteUser() = _AuthentificationEventDeleteUser;
+  const factory AuthentificationEvent.tryAgain() = _AuthentificationEventTryAgain;
 }

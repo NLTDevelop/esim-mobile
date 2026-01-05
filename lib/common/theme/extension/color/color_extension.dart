@@ -42,6 +42,7 @@ class ColorExtension extends ThemeExtension<ColorExtension> with _$ColorExtensio
     required this.toggleCircle,
     required this.toggleActive,
     required this.descriptionText,
+    required this.addBalance,
   });
 
   @override
@@ -114,4 +115,6 @@ class ColorExtension extends ThemeExtension<ColorExtension> with _$ColorExtensio
   final Color toggleActive;
   @override
   final Color descriptionText;
+  @override
+  final Color addBalance;
 }

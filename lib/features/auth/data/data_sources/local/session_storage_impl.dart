@@ -18,6 +18,6 @@ class SessionStorageImpl implements SessionStorage {
 
   @override
   Future<void> cleanSession() async {
-    await _secureStorageDao.delete('accessToken');
+    await _secureStorageDao.deleteSecureData('accessToken');
   }
 }

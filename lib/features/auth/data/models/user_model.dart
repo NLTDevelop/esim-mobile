@@ -1,4 +1,4 @@
-import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_model.g.dart';
 
@@ -10,19 +10,23 @@ abstract class UserModel {
   factory UserModel.authenticated({
     required final int id,
     required final String email,
-    required final List<TariffModel> eSims,
+    required final double balance,
+    required final String currency,
+    required final List<PackageModel> eSims,
   }) =>
       AuthenticatedUserModel(
         id: id,
         email: email,
         eSims: eSims,
+        balance: balance,
+        currency: currency,
       );
 
   bool get isAuthenticated;
 
   bool get isNotAuthenticated;
 
-  List<TariffModel> get userTariffs;
+  List<PackageModel> get userTariffs;
 
   String get userEmail;
 
@@ -37,12 +41,18 @@ class AuthenticatedUserModel implements UserModel {
   const AuthenticatedUserModel({
     required this.id,
     required this.email,
-    required this.eSims
+    required this.balance,
+    required this.currency,
+    this.eSims
   });
 
   final int id;
   final String email;
-  final List<TariffModel> eSims;
+  @JsonKey(name: 'e_sims')
+  final List<PackageModel>? eSims;
+  final double balance;
+  @JsonKey(name: 'currency_code')
+  final String currency;
 
   @override
   bool get isAuthenticated => !isNotAuthenticated;
@@ -80,10 +90,12 @@ class AuthenticatedUserModel implements UserModel {
         id: id,
         email: email,
         eSims: eSims,
+        currency: currency,
+        balance: balance
       );
 
   @override
-  List<TariffModel> get userTariffs => eSims;
+  List<PackageModel> get userTariffs => eSims ?? [];
 }
 
 @immutable
@@ -101,7 +113,7 @@ class NotAuthenticatedUser implements UserModel {
   String get userEmail => '';
 
   @override
-  List<TariffModel> get userTariffs => [];
+  List<PackageModel> get userTariffs => [];
 
   @override
   T when<T extends Object?>({

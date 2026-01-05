@@ -5,7 +5,7 @@ class PreviewTariffsState with _$PreviewTariffsState {
   const PreviewTariffsState._();
 
 
-  List<TariffModel> get tariffs => when(
+  List<PackageModel> get tariffs => when(
     initial: () => [],
     loading: (tariffs, __,) => tariffs,
     success: (tariffs, __,) => tariffs,
@@ -25,18 +25,18 @@ class PreviewTariffsState with _$PreviewTariffsState {
   );
 
   const factory PreviewTariffsState.success({
-    @Default([]) List<TariffModel> tariffs,
+    @Default([]) List<PackageModel> tariffs,
     @Default(0) int selectedIndex,
   }) = PreviewTariffsSuccess;
 
   const factory PreviewTariffsState.loading({
-    @Default([]) List<TariffModel> tariffs,
+    @Default([]) List<PackageModel> tariffs,
     @Default(0) int selectedIndex
   }) = PreviewTariffsLoading;
 
   const factory PreviewTariffsState.failure(
       String message, {
-        @Default([]) List<TariffModel> tariffs,
+        @Default([]) List<PackageModel> tariffs,
         @Default(0) int selectedIndex
       }) = PreviewTariffsFailure;
 

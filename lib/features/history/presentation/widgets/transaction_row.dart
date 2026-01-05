@@ -1,5 +1,5 @@
 
-import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
+import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/history/data/model/transaction_model.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +20,12 @@ class TransactionRow extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
           ),
-          child: SvgPicture.asset(transactionModel.tariff.eSim.iconPath),
+          child: SvgPicture.asset(AppIcons.japan),
         ),
         const SizedBox(width: 10,),
-        DefaultText.displaySmall('${transactionModel.tariff.eSim.name}  ${transactionModel.tariff.eSim.dataInGB} GB', color: Theme.of(context).extension<ColorExtension>()!.background, fontWeight: FontWeight.w600,),
+        DefaultText.displaySmall('${transactionModel.tariff.packageIndex}  ${(transactionModel.tariff.dataInMb / 1024).toStringAsFixed(2)} GB', fontWeight: FontWeight.w600,),
         const Spacer(),
-        DefaultText.displaySmall('-${transactionModel.tariff.price.toStringAsFixed(2)} ${transactionModel.tariff.currency}', color: Theme.of(context).extension<ColorExtension>()!.background, fontWeight: FontWeight.w600,),
+        DefaultText.displaySmall('-${transactionModel.tariff.price.toStringAsFixed(2)} ${transactionModel.tariff.currency}', fontWeight: FontWeight.w600,),
       ],
     );
   }

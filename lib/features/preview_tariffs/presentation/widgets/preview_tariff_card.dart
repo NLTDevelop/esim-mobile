@@ -7,7 +7,7 @@ class PreviewTariffCard extends StatelessWidget {
   const PreviewTariffCard({super.key, required this.price, required this.dataInGb, required this.days, required this.isActive, required this.onTap});
 
   final double price;
-  final int dataInGb;
+  final double dataInGb;
   final int days;
   final bool isActive;
   final void Function() onTap;
@@ -24,7 +24,7 @@ class PreviewTariffCard extends StatelessWidget {
             color: Theme.of(context).scaffoldBackgroundColor,
             border: Border.all(
                 color:
-                isActive ? Theme.of(context).extension<ColorExtension>()!.toggleCircle : Theme.of(context).extension<ColorExtension>()!.cardBorder,
+                isActive ? Theme.of(context).extension<ColorExtension>()!.toggleActive : Theme.of(context).extension<ColorExtension>()!.cardBorder,
                 width: isActive ? 2 : 1),
             boxShadow: const [
               BoxShadow(
@@ -63,12 +63,12 @@ class PreviewTariffCard extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      DefaultText.labelMedium('$dataInGb GB'),
+                      DefaultText.labelMedium('${dataInGb.toStringAsFixed(2)} GB'),
                       const Spacer(),
                       DefaultText.labelMedium('US\$$price'),
                     ],
                   ),
-                  DefaultText.displaySmall('$days days'),
+                  DefaultText.displaySmall(days <= 0 ? 'No limits' : '$days days'),
                 ],
               ),
             )

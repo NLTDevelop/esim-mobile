@@ -2,9 +2,12 @@
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/store/data/models/currency_type.dart';
+import 'package:esim_mob_app/features/store/domain/use_cases/fetch_countries_use_case.dart';
+import 'package:esim_mob_app/features/store/domain/use_cases/fetch_regions_use_case.dart';
 import 'package:esim_mob_app/features/store/presentation/bloc/store_bloc.dart';
 import 'package:esim_mob_app/features/store/presentation/widgets/change_currency_popup_button.dart';
 import 'package:esim_mob_app/features/store/presentation/widgets/store_body.dart';
+import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +21,7 @@ class StorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final bloc = StoreBloc(isFromWelcome: isFromWelcome);
+        final bloc = StoreBloc( injector<FetchRegionsUseCase>(), injector<FetchCountriesUseCase>(), isFromWelcome: isFromWelcome);
         bloc.add(const StoreEvent.fetchPlans());
         return bloc;
       },
@@ -37,7 +40,7 @@ class StorePage extends StatelessWidget {
               },
             )
           ],
-          title: const DefaultText.bodySmall('Data store'),
+          title: const DefaultText.bodySmall('Data plans'),
           centerTitle: true,
         ),
         body: StoreBody(),

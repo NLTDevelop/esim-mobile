@@ -3,13 +3,17 @@ import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/core/constants/launch_links.dart';
+import 'package:esim_mob_app/core/use_case/use_case.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
+import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:esim_mob_app/features/profile/presentation/widgets/profile_button.dart';
+import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileBody extends StatelessWidget {
@@ -50,7 +54,7 @@ class ProfileBody extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const DefaultText.titleLarge('Your email address'),
+                    const DefaultText.displaySmall('Your email address'),
                     const SizedBox(
                       width: 6,
                     ),
@@ -58,7 +62,7 @@ class ProfileBody extends StatelessWidget {
                       context.read<AuthentificationBloc>().state.user.userEmail,
                       color: Theme.of(context)
                           .extension<ColorExtension>()!
-                          .descriptionText,
+                          .descriptionText, fontSize: 15,
                     ),
                   ],
                 ),
@@ -77,16 +81,29 @@ class ProfileBody extends StatelessWidget {
                       description:
                           'Enable this option to receive exclusive Awinst Connect offers and promotions.',
                       iconPath: AppIcons.notification,
-                      leadingIcon: CupertinoSwitch(
+                      leadingIcon: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Theme.of(context).extension<ColorExtension>()!.searchCursor, // border color
+                            width: 2,
+                          )),
+                        child: FlutterSwitch(
+                          width: 66.0,
+                          height: 40.0,
+                          toggleSize: 35.0,
                           value: state.isNotify,
-                          activeTrackColor: Theme.of(context).primaryColor,
-                          inactiveTrackColor: Theme.of(context).cardColor,
-                          thumbColor: Theme.of(context).scaffoldBackgroundColor,
-                          onChanged: (value) {
+                          activeColor: Theme.of(context).primaryColor,
+                          inactiveColor: Theme.of(context).extension<ColorExtension>()!.background,
+                          toggleColor: Theme.of(context).extension<ColorExtension>()!.searchCursor,
+                          borderRadius: 30.0,
+                          onToggle: (value) {
                             context.read<ProfileBloc>().add(
                                 ProfileEvent.changeNotificationStatus(
                                     isNotify: value));
-                          }),
+                          },
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: 14,
@@ -148,9 +165,13 @@ class ProfileBody extends StatelessWidget {
                     ProfileButton(
                       text: 'Delete account',
                       iconPath: AppIcons.delete,
-                      onTap: () {
+                      onTap: () async{
                         HapticFeedback.lightImpact();
-                        context.read<AuthentificationBloc>().onDeleteAccount();
+                        await injector<DeleteAccountUseCase>().call(NoParams());
+                        bool? isDeleted = await context.push(Routes.deleteAccount);
+                        if(isDeleted != null && isDeleted){
+                          context.read<AuthentificationBloc>().add(const AuthentificationEvent.deleteUser());
+                        }
                       },
                       textColor:
                           Theme.of(context).extension<ColorExtension>()!.error,

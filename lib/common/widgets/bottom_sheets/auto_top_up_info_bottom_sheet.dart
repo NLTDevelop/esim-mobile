@@ -40,18 +40,24 @@ class AutoTopUpInfoBottomSheet extends StatelessWidget {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.04,),
             Container(
-              height: MediaQuery.of(context).size.height * 0.18,
+              height: MediaQuery.of(context).size.height * 0.24,
+              clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                image: const DecorationImage(image: AssetImage(AppImages.posterHero), fit: BoxFit.cover)
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(child: Image.asset(AppImages.posterHero, fit: BoxFit.cover,)),
+                  Positioned(top: 16 ,right: 0, left: 0, child: Image.asset(AppImages.splash, height: 60,)),
+                ],
               ),
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.03,
             ),
-            const DefaultText.headlineMedium('Stay connected without interruptions', textAlign: TextAlign.center,),
+            const DefaultText.bodySmall('Stay connected without interruptions', fontWeight: FontWeight.w600, textAlign: TextAlign.center, letterSpacing: 1.05,),
             const SizedBox(height: 14,),
-            const DefaultText.bodySmall('Your data renews automatically when you run out so you don\'t have to top up manually'),
+            const DefaultText.headlineSmall('Your data renews automatically when you run out so you don\'t have to top up manually', fontWeight: FontWeight.w500,),
             const SizedBox(height: 14,),
             PrimaryButton(onTap: (){
               HapticFeedback.lightImpact();

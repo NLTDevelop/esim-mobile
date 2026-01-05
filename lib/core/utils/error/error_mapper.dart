@@ -21,6 +21,7 @@ class ErrorMapper {
   // }
 
   static String _mapErrorByDioException(DioException error) {
+    print(error.response?.data);
     if (error.response?.data['message'] != null) {
       return error.response?.data['message'];
     }

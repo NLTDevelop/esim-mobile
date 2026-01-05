@@ -4,15 +4,17 @@ import 'package:dio/dio.dart';
 import 'package:esim_mob_app/core/utils/logger/logger.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 
-class Api {
+class AwinstApi {
   //Host for API requests to dev server
-  //static const baseUrl = 'https://slonova-dev.pp.ua/api/';
+
   //Host for API requests to production server
-  static const baseUrl = 'https://app.christinaslonova.com/api/';
+  // dev
+  //static const baseUrl = 'https://awinstconnect.108labs.co.ua/api/';
 
-  // static const baseUrl = 'http://localhost:4001/api/';
+  // prod
+  static const baseUrl = 'https://awinstconnect.com/api/';
 
-  Api() {
+  AwinstApi() {
     _dio = Dio(_options())
       ..interceptors.addAll([dioLogger, wrapper()]);
   }
@@ -22,17 +24,6 @@ class Api {
   Dio get dio => _dio;
 
   String? _token;
-  String? _guid;
-
-  set guid(String? value) {
-    _guid = value;
-
-    if (value != null && value.isNotEmpty) {
-      _dio.options = _changeGuidInOptions(_guid!);
-    } else {
-      _dio.options.headers.remove('user-guid');
-    }
-  }
 
   set token(String? value) {
     _token = value;
@@ -50,7 +41,6 @@ class Api {
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer $newToken',
         'operating-system': '${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
-        if (_guid != null && _guid!.isNotEmpty) 'user-guid': _guid!,
       },
     );
   }

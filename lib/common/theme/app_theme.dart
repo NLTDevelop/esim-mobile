@@ -35,15 +35,15 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
       if (states.contains(WidgetState.selected)) {
         return TextStyle(
           color: palette.primary,
-          fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontWeight: FontWeight.w500,
+          fontSize: 11.0,
           letterSpacing: 0.0,
         );
       } else {
         return TextStyle(
           color: palette.disabledNavBarButton,
-          fontWeight: FontWeight.w600,
-          fontSize: 14.0,
+          fontWeight: FontWeight.w500,
+          fontSize: 11.0,
           letterSpacing: 0.0,
         );
       }
@@ -127,8 +127,8 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
       toggleActive: palette.toggleActive,
       toggleCircle: palette.toggleCircle,
       icon: palette.icon,
-      descriptionText: palette.descriptionText
-
+      descriptionText: palette.descriptionText,
+      addBalance: palette.addBalance,
     ),
   ],
   dividerTheme: DividerThemeData(

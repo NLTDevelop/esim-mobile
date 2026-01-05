@@ -1,5 +1,8 @@
 
-import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+import 'package:esim_mob_app/features/store/data/models/base_country.dart';
+import 'package:esim_mob_app/features/store/data/models/country_model.dart';
+import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,23 +14,24 @@ part 'preview_tariffs_bloc.freezed.dart';
 
 class PreviewTariffsBloc
     extends Bloc<PreviewTariffsEvent, PreviewTariffsState> {
-  PreviewTariffsBloc({required List<TariffModel> tariffs, required String country, required String iconPath, this.isFromWelcome = false})
-      : _country = country,
-        _iconPath = iconPath,
-  _tariffs = tariffs,
-        super(const PreviewTariffsState.initial()) {
+  PreviewTariffsBloc({required PlanModel plan, required BaseCountry countryEntity, this.isFromWelcome = false})
+      : _countryEntity = countryEntity, _plan = plan, super(const PreviewTariffsState.initial()) {
     on<PreviewTariffsEvent>((event, emit) {
       event.map(fetchTariffs: (event) => _onFetchTariffs(event, emit), selectIndex: (event) => _onSelectIndex(event, emit));
     });
   }
 
-  final String _country;
-  final String _iconPath;
-  final List<TariffModel> _tariffs;
+  final BaseCountry _countryEntity;
+  final PlanModel _plan;
+
+  BaseCountry get countryEntity => _countryEntity;
+  List<PackageModel> get tariffs => _plan.packages;
+  PlanModel get plan => _plan;
+
+  bool get isLocal => _countryEntity is CountryModel;
+
   final bool isFromWelcome;
 
-  String get country => _country;
-  String get iconPath => _iconPath;
 
 
   void _onFetchTariffs(_PreviewTariffsEventFetchTariffs event, Emitter<PreviewTariffsState> emit){
@@ -40,7 +44,7 @@ class PreviewTariffsBloc
 
     emit(
       PreviewTariffsState.success(
-        tariffs: _tariffs,
+        tariffs: _plan.packages,
         selectedIndex: state.selectedIndex,
       )
     );

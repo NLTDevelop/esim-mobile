@@ -28,7 +28,7 @@ class ChangeCurrencyPopupButton extends StatelessWidget {
             value: CurrencyType.usd,
             child: DefaultText.displaySmall('USD | \$')),
         const PopupMenuItem<CurrencyType>(
-            value: CurrencyType.euro,
+            value: CurrencyType.eur,
             child: DefaultText.displaySmall('EUR | €')),
       ],
       child: Container(

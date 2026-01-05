@@ -22,12 +22,12 @@ class OrderSummaryDataRow extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              DefaultText.displayMedium(typeName, color: Theme.of(context).extension<ColorExtension>()!.descriptionText,),
+              DefaultText.titleSmall(typeName, color: Theme.of(context).extension<ColorExtension>()!.descriptionText,),
               if(couponWidget != null)
                 couponWidget!
             ],
           ),
-          DefaultText.displayMedium(data, fontWeight: FontWeight.w600, decoration: dataTextDecoration,),
+          DefaultText.titleMedium(data, fontWeight: FontWeight.w600, decoration: dataTextDecoration,),
         ],
       ),
     );

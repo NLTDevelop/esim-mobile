@@ -7,18 +7,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 class StoreDataCard extends StatelessWidget {
   const StoreDataCard(
       {super.key,
-      required this.title,
-      required this.price,
+      required this.name,
       required this.isLocal,
-      required this.onTap,
-      this.iconPath});
+      required this.onTap, this.code});
 
-  final String title;
-  final double price;
+  final String name;
+  final String? code;
   final bool isLocal;
   final void Function() onTap;
-
-  final String? iconPath;
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +40,15 @@ class StoreDataCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              iconPath != null
+            isLocal
                   ? Padding(
                       padding: const EdgeInsets.only(right: 10.0),
-                      child: SvgPicture.asset(
-                        iconPath!,
+                      child: SvgPicture.network(
+                        'https://myaccount.keepgo.com/img/flags/3x2/${code!.toLowerCase()}.svg',
                         height: 24,
-                      ),
+                      ) ,
                     )
-                  : isLocal == false
-                      ? Padding(
+                  : Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -64,7 +59,7 @@ class StoreDataCard extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   color: Theme.of(context)
                                       .extension<ColorExtension>()!
-                                      .icon),
+                                      .toggleCircle),
                               child: SvgPicture.asset(
                                 AppIcons.world,
                                 colorFilter: ColorFilter.mode(
@@ -73,28 +68,29 @@ class StoreDataCard extends StatelessWidget {
                                         .secondaryText,
                                     BlendMode.srcIn),
                               )),
-                        )
-                      : const SizedBox.shrink(),
+                        ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Flexible(
-                      child: DefaultText.labelMedium(
-                        title,
+                      child: DefaultText.titleSmall(
+                        name,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
+                        fontWeight: FontWeight.w600,
                         color: Theme.of(context).extension<ColorExtension>()!.text,
                       ),
                     ),
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    DefaultText.displaySmall('Price: from $price \$',
-                        overflow: TextOverflow.visible,
-                        maxLines: 1,
-                        color:
-                            Theme.of(context).extension<ColorExtension>()!.text)
+                    // const SizedBox(
+                    //   height: 3,
+                    // ),
+                    // DefaultText.labelSmall('Price: from $price \$',
+                    //     overflow: TextOverflow.visible,
+                    //     maxLines: 1,
+                    //     fontWeight: FontWeight.w500,
+                    //     color:
+                    //         Theme.of(context).extension<ColorExtension>()!.text)
                   ],
                 ),
               ),

@@ -13,7 +13,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class CheckoutBody extends StatelessWidget {
-  const CheckoutBody({super.key});
+  const CheckoutBody({super.key, required this.country, required this.image});
+  final String country;
+  final String image;
 
   @override
   Widget build(BuildContext context) {
@@ -59,25 +61,25 @@ class CheckoutBody extends StatelessWidget {
                                   clipBehavior: Clip.hardEdge,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8)),
-                                  child: SvgPicture.asset(
-                                    bloc.state.tariff.eSim.iconPath,
+                                  child: image.endsWith('svg') ? SvgPicture.network(
+                                    image,
                                     width: 30,
                                     height: 24,
-                                  )),
+                                  ) : Image.network(image, width: 30, height: 24,)),
                               const SizedBox(
                                 width: 10,
                               ),
-                              DefaultText.bodySmall(
-                                bloc.state.tariff.eSim.name,
-                                fontWeight: FontWeight.w600,
+                              DefaultText.displaySmall(
+                                country,
+                                fontWeight: FontWeight.w500,
                               )
                             ],
                           )),
-                      OrderSummaryDataRow(data: '${bloc.state.tariff.eSim.dataInGB} GB', typeName: 'Plan'),
+                      OrderSummaryDataRow(data: '${(bloc.state.tariff.dataInMb / 1024).toStringAsFixed(2)} GB', typeName: 'Plan'),
                       const OrderSummaryDataRow(
                           data: 'Data only', typeName: 'Type'),
                       OrderSummaryDataRow(
-                          data: '${bloc.state.tariff.eSim.days} days', typeName: 'Duration'),
+                          data: '${bloc.state.tariff.validDays} days', typeName: 'Duration'),
                        OrderSummaryDataRow(
                         data: CountryCodes.detailsForLocale().name ?? 'Unknown',
                         typeName: 'Tax country',
@@ -172,7 +174,7 @@ class CheckoutBody extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
-                    flex: 11,
+                    flex: 10,
                       child: PrimaryButton(
                     onTap: () {},
                     text: 'Add balance & Pay',

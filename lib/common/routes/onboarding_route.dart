@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 
+
 final class RedirectIfFirstRun extends Guard {
   // matches login and signup routes
   @override
@@ -21,4 +22,6 @@ final class RedirectIfFirstRun extends Guard {
 
     return null;
   }
+
+
 }

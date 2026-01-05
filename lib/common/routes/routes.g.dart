@@ -24,7 +24,10 @@ List<RouteBase> get $appRoutes => [
       $autoTopUpRoute,
       $contactUsRoute,
       $faqRoute,
+      $addBalanceRoute,
       $historyRoute,
+      $eSimListRoute,
+      $deleteAccountRoute,
     ];
 
 RouteBase get $bottomNavigationShellRoute => StatefulShellRouteData.$route(
@@ -426,6 +429,29 @@ extension $FaqRouteExtension on FaqRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
+RouteBase get $addBalanceRoute => GoRouteData.$route(
+      path: '/add-balance',
+      factory: $AddBalanceRouteExtension._fromState,
+    );
+
+extension $AddBalanceRouteExtension on AddBalanceRoute {
+  static AddBalanceRoute _fromState(GoRouterState state) =>
+      const AddBalanceRoute();
+
+  String get location => GoRouteData.$location(
+        '/add-balance',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 RouteBase get $historyRoute => GoRouteData.$route(
       path: '/history',
       factory: $HistoryRouteExtension._fromState,
@@ -436,6 +462,51 @@ extension $HistoryRouteExtension on HistoryRoute {
 
   String get location => GoRouteData.$location(
         '/history',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $eSimListRoute => GoRouteData.$route(
+      path: '/esims',
+      factory: $ESimListRouteExtension._fromState,
+    );
+
+extension $ESimListRouteExtension on ESimListRoute {
+  static ESimListRoute _fromState(GoRouterState state) => const ESimListRoute();
+
+  String get location => GoRouteData.$location(
+        '/esims',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $deleteAccountRoute => GoRouteData.$route(
+      path: '/delete-account',
+      factory: $DeleteAccountRouteExtension._fromState,
+    );
+
+extension $DeleteAccountRouteExtension on DeleteAccountRoute {
+  static DeleteAccountRoute _fromState(GoRouterState state) =>
+      const DeleteAccountRoute();
+
+  String get location => GoRouteData.$location(
+        '/delete-account',
       );
 
   void go(BuildContext context) => context.go(location);

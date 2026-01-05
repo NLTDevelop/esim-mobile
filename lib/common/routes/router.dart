@@ -19,7 +19,7 @@ class AppRouter {
   late final GoRouter router = GoRouter(
     initialLocation: Routes.splash,
     routes: $appRoutes,
-    redirect:  RedirectBuilder({
+    redirect: RedirectBuilder({
       RedirectIfFirstRun(),
     }).call,
     observers: [

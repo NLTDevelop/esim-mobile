@@ -26,7 +26,7 @@ class ProfileButton extends StatelessWidget {
     // tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     ),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 18),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -40,7 +40,7 @@ class ProfileButton extends StatelessWidget {
         ),
         child: Row(
           children: [
-            SvgPicture.asset(iconPath, colorFilter: textColor != null ? ColorFilter.mode(textColor!, BlendMode.srcIn) : null, height: 22, width: 22,),
+            SvgPicture.asset(iconPath, colorFilter:  ColorFilter.mode(textColor != null ? textColor! : Theme.of(context).extension<ColorExtension>()!.toggleCircle, BlendMode.srcIn), height: 22, width: 22,),
             const SizedBox(width: 18,),
             Expanded(
               flex: 3,
@@ -48,7 +48,7 @@ class ProfileButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DefaultText.titleLarge(text, color: textColor, maxLines: 2,),
+                  DefaultText.displaySmall(text, color: textColor, maxLines: 2,),
                   if(description != null)
                     DefaultText.displaySmall(description!, color: Theme.of(context).extension<ColorExtension>()!.descriptionText,),
                 ],

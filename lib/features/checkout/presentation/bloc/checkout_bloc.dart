@@ -1,7 +1,7 @@
 import 'package:esim_mob_app/core/utils/error/error_mapper.dart';
 import 'package:esim_mob_app/features/checkout/data/model/promocode.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/check_promo_code_use_case.dart';
-import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -15,7 +15,7 @@ part 'checkout_bloc.freezed.dart';
 class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   CheckoutBloc(
       {required CheckPromoCodeUseCase checkPromoCodeUseCase,
-      required TariffModel tariff})
+      required PackageModel tariff})
       : _checkPromoCodeUseCase = checkPromoCodeUseCase,
         super(CheckoutState.success(tariff: tariff, isOpenPromoCode: false)) {
     on<CheckoutEvent>((event, emit) async {

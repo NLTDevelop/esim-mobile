@@ -14,23 +14,14 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).extension<ColorExtension>()!.primary,
+      backgroundColor: Theme.of(context).extension<ColorExtension>()!.background,
       appBar: AppBar(
-        backgroundColor:  Theme.of(context).extension<ColorExtension>()!.primary,
         automaticallyImplyLeading: false,
-        title: DefaultText.bodySmall('History', color: Theme.of(context).extension<ColorExtension>()!.background),
+        title: DefaultText.bodySmall('History', color: Theme.of(context).extension<ColorExtension>()!.toggleCircle),
         centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: GestureDetector(
-              onTap: (){
-                context.pop();
-              },
-              child: Icon(Icons.close, size: 24, color: Theme.of(context).extension<ColorExtension>()!.background,),
-            ),
-          )
-        ],
+        leading: GestureDetector(onTap: (){
+          context.pop();
+        }, child: Icon(Icons.arrow_back_ios, color: Theme.of(context).extension<ColorExtension>()!.toggleCircle)),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 26),

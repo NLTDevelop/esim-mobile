@@ -1,7 +1,6 @@
 
 import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/widgets/snackbar/default_snackbar.dart';
-import 'package:esim_mob_app/common/widgets/state/failure_state.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/common/widgets/state/success_state.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
@@ -31,22 +30,22 @@ class LoginWidget extends StatelessWidget {
             failure: (_) {
               DefaultSnackBar.show(
                 context: context,
-                message: 'Error. Something goes wrong',
+                message: _.message,
               );
             },
           );
         },
-  builder: (context, state) {
+        builder: (context, state) {
 
-    return state.map(
+          return state.map(
         authenticated: (state) => const SuccessState(),
         loading:  (state) => const LoadingState(),
-        failure: (state) => FailureState(onTap: () {}),
+        failure: (state) => const LoginBody(),
         success: (state) => const SuccessState(),
         notAuthenticated: (state) =>  const LoginBody(),
-    );
-  },
-),
+          );
+        },
+      ),
     );
   }
 }

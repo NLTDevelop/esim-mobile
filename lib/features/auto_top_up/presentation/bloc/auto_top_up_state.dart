@@ -5,7 +5,7 @@ part of 'auto_top_up_bloc.dart';
 class AutoTopUpState with _$AutoTopUpState {
   const AutoTopUpState._();
 
-  List<TariffModel> get tariffs => when(
+  List<PackageModel> get tariffs => when(
     initial: () => [],
     loading: (tariffs,__) => tariffs,
     success: (tariffs, __) => tariffs,
@@ -22,17 +22,17 @@ class AutoTopUpState with _$AutoTopUpState {
 
 
   const factory AutoTopUpState.success({
-    required final List<TariffModel> tariffs,
+    required final List<PackageModel> tariffs,
     required final int? selectedIndex,
   }) = _Success;
 
   const factory AutoTopUpState.loading({
-    @Default([]) final List<TariffModel> tariffs,
+    @Default([]) final List<PackageModel> tariffs,
     @Default(null) final int? selectedIndex,
   }) = _Loading;
 
   const factory AutoTopUpState.failure(String message, {
-    @Default([]) final List<TariffModel> tariffs,
+    @Default([]) final List<PackageModel> tariffs,
     @Default(null) final int? selectedIndex
   }) = _Failure;
 

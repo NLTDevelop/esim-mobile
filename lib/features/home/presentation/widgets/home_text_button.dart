@@ -74,14 +74,8 @@ class _HomeTextButtonState extends State<HomeTextButton>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
-        return TextButton(
-          onPressed: widget.onPressed,
-          style: ButtonStyle(
-            padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-              EdgeInsets.zero,
-            ),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
+        return GestureDetector(
+          onTap: widget.onPressed,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             padding: const EdgeInsets.all(18),
@@ -113,8 +107,8 @@ class _HomeTextButtonState extends State<HomeTextButton>
                     ColorFilter.mode(secondaryText, BlendMode.srcIn),
                   ),
                 ),
-                const SizedBox(height: 8),
-                DefaultText.bodySmall(
+                const SizedBox(height: 12),
+                DefaultText.displaySmall(
                   widget.text,
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.visible,

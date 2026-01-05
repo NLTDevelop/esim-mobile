@@ -24,17 +24,18 @@ class HomeBody extends StatelessWidget {
       return previous.isFirstESim != next.isFirstESim && !next.isFirstESim;
     }, child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
         builder: (context, state) {
+          print(state.user);
       return state.mapOrNull(
               authenticated: (s) => s.user.userTariffs.isEmpty
-                  ? const NoPlansWidget()
-                  : const HomeESimWidget(),
+                  ? const HomeESimWidget()
+                  : const NoPlansWidget(),
               loading: (_) => const LoadingState(),
               failure: (s) => s.user.userTariffs.isEmpty
                   ? const NoPlansWidget()
                   : const HomeESimWidget(),
               success: (s) => s.user.userTariffs.isEmpty
-                  ? const NoPlansWidget()
-                  : const HomeESimWidget()) ??
+                  ? const HomeESimWidget()
+                  : const NoPlansWidget()) ??
           const NoPlansWidget();
     }));
   }

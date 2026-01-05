@@ -7,6 +7,8 @@ class AppImages{
   static const regionalCardBackground = '$_imagePath/regional_card_background.jpeg';
   static const posterHero = '$_imagePath/poster_hero.png';
   static const successCheck = '$_imagePath/check.png';
+  static const loginBackground = '$_imagePath/login_background.jpg';
+  static const logoTransparent = '$_imagePath/logo_transparent.png';
 }
 
 class AppIcons{
@@ -40,4 +42,5 @@ class AppIcons{
   static const refund = '$_svgPath/refund.svg';
   static const troubleShooting = '$_svgPath/troubleshooting.svg';
   static const eSim = '$_svgPath/esim.svg';
+  static const history = '$_svgPath/history.svg';
 }

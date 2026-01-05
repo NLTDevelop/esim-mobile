@@ -4,7 +4,7 @@ import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
-import 'package:esim_mob_app/features/preview_tariffs/data/models/tariff_model.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:esim_mob_app/features/user/data/data_sources/local/user_local_data_source.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ import 'package:intl/intl.dart';
 class PaymentSuccessfulState extends StatelessWidget {
   const PaymentSuccessfulState({super.key, required this.tariffModel});
 
-  final TariffModel tariffModel;
+  final PackageModel tariffModel;
 
   @override
   Widget build(BuildContext context) {
@@ -49,21 +49,21 @@ class PaymentSuccessfulState extends StatelessWidget {
               const SizedBox(
                 height: 14,
               ),
-              DefaultText.bodySmall(tariffModel.eSim.name),
+              DefaultText.bodySmall('Test'),
               const SizedBox(
                 height: 6,
               ),
               DefaultText.displayMedium(
-                  'Start date: ${DateFormat.yMd().format(tariffModel.eSim.createdAt)}', textAlign: TextAlign.center,),
+                  'Start date: ${DateFormat.yMd().format(DateTime.now())}', textAlign: TextAlign.center,),
               const SizedBox(height: 6,),
-              DefaultText.displayMedium('End date: ${DateFormat.yMd().format(tariffModel.eSim.createdAt.add(Duration(days: tariffModel.eSim.days)))}', textAlign: TextAlign.center,),
+              DefaultText.displayMedium('End date: ${DateFormat.yMd().format(DateTime.now().add(Duration(days: tariffModel.validDays ?? 0)))}', textAlign: TextAlign.center,),
               const SizedBox(
                 height: 60,
               ),
               PrimaryButton(onTap: () async{
                 final authBloc = context.read<AuthentificationBloc>();
-                List<TariffModel> userTariffs = authBloc.state.user.userTariffs;
-                await injector<UserLocalDataSource>().saveUser(AuthenticatedUserModel(id: 1, email: authBloc.state.user.userEmail, eSims: [...authBloc.state.user.userTariffs, tariffModel]));
+                List<PackageModel> userTariffs = authBloc.state.user.userTariffs;
+                await injector<UserLocalDataSource>().saveUser(AuthenticatedUserModel(id: 1, email: authBloc.state.user.userEmail, eSims: [...authBloc.state.user.userTariffs, tariffModel], currency: 'USD', balance: 0));
                 context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
                 ///context.read<HomeBloc>().add(HomeEvent.addESim(tariff: tariffModel));
                 context.go(Routes.home, extra: {'user_tariffs': [...userTariffs, tariffModel]} );

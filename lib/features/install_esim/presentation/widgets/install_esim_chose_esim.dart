@@ -21,7 +21,7 @@ class InstallESimChoseESim extends StatelessWidget {
       children: [
         const DefaultText.bodySmall('Select or add eSIM'),
         const SizedBox(
-          height: 14,
+          height: 10,
         ),
         Bounce(
           duration: const Duration(milliseconds: 300),
@@ -49,7 +49,7 @@ class InstallESimChoseESim extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                       color: Theme.of(context).extension<ColorExtension>()!.cardBorder
                   ),
-                  child: DefaultText.labelSmall('Not installed'),
+                  child: DefaultText.labelSmall('not Installed'),
                 ),
                 const Spacer(),
                 Container(
@@ -58,6 +58,57 @@ class InstallESimChoseESim extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Theme.of(context).extension<ColorExtension>()!.primary, width: 4),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Bounce(
+          duration: const Duration(milliseconds: 300),
+          onPressed: (){
+            context.read<InstallESimCubit>().chooseESim(0);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Theme.of(context).extension<ColorExtension>()!.primary, width: 2),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(AppIcons.eSim, width: 32, height: 32, colorFilter: ColorFilter.mode(Theme.of(context).extension<ColorExtension>()!.primary,BlendMode.srcIn),),
+                const SizedBox(
+                  width: 12,
+                ),
+                const DefaultText.bodySmall('eSIM # 2'),
+                const SizedBox(width: 12,),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Theme.of(context).extension<ColorExtension>()!.cardBorder
+                  ),
+                  child: DefaultText.labelSmall('Installed'),
+                ),
+                const Spacer(),
+                Container(
+                  width: 20,
+                  height: 20,
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Theme.of(context).extension<ColorExtension>()!.primary, width: 4),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).extension<ColorExtension>()!.primary
+                    ),
                   ),
                 )
               ],
@@ -91,7 +142,7 @@ class InstallESimChoseESim extends StatelessWidget {
         const SizedBox(
           height: 12,
         ),
-        const DefaultText.displayMedium('You can top-up existing eSIM with any destination data plan. Getting a new eSIM comes in handy if you want to use the same Awinst account for management of multple eSIMs across devices.'),
+        const DefaultText.displayMedium('You can top-up existing eSIM with any destination data plan. Getting a new eSIM comes in handy if you want to use the same Awinst Connect account for multple eSIMs.'),
       ],
     );
   }

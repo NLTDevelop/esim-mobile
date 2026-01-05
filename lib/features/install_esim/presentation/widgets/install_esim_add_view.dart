@@ -27,7 +27,7 @@ class InstallESimAddView extends StatelessWidget {
         ),
         PrimaryButton(onTap: (){
           context.read<InstallESimCubit>().shareESim();
-        }, text: 'Share eSIM to other person', isActive: false, isExpanded: true,)
+        }, text: 'Send eSIM to another device', isActive: false, isExpanded: true,)
       ],
     );
   }
