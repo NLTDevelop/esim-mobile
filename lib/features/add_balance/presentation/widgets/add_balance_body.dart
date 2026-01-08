@@ -1,9 +1,11 @@
 
 
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
+import 'package:esim_mob_app/features/add_balance/presentation/bloc/add_balance_cubit.dart';
 import 'package:esim_mob_app/features/add_balance/presentation/widgets/add_money_container.dart';
 import 'package:esim_mob_app/features/add_balance/presentation/widgets/summary_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddBalanceBody extends StatelessWidget {
   const AddBalanceBody({super.key});
@@ -21,7 +23,9 @@ class AddBalanceBody extends StatelessWidget {
             ),
             const SummaryContainer(),
             const Spacer(),
-            PrimaryButton(onTap: (){}, text: 'Proceed', isExpanded: true,),
+            PrimaryButton(onTap: (){
+              context.read<AddBalanceCubit>().addToBalance(context);
+            }, text: 'Proceed', isExpanded: true,),
             const SizedBox(height: 10,),
           ],
         ),

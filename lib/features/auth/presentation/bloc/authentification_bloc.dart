@@ -49,9 +49,6 @@ class AuthentificationBloc
   final TokenLogoutUseCase _tokenLogoutUseCase;
   final SessionStorage _sessionStorage;
 
-  final String email = 'pavelsejcenko@gmail.com';
-  final String password = '12345678';
-
 
   Future<void> _onLoginGoogle(_AuthentificationEventLoginGoogle event, Emitter<AuthentificationState> emit) async{
     try{

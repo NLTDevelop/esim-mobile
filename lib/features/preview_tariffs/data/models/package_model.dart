@@ -8,12 +8,12 @@ class PackageModel extends Equatable {
   const PackageModel(
       {required this.price,
       required this.currency,
-      required this.packageIndex,
+      required this.packageId,
       required this.dataInMb,
       required this.validDays});
 
-  @JsonKey(name: 'package_index')
-  final int packageIndex;
+  @JsonKey(name: 'package_id')
+  final String packageId;
   final double price;
   final String currency;
   @JsonKey(name: 'valid_days')
@@ -23,7 +23,7 @@ class PackageModel extends Equatable {
 
   @override
   List<Object?> get props =>
-      [price, currency, validDays, dataInMb, packageIndex];
+      [price, currency, validDays, dataInMb, packageId];
 
   factory PackageModel.fromJson(Map<String, dynamic> json) =>
       _$PackageModelFromJson(json);

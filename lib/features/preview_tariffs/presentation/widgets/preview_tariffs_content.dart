@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
@@ -111,7 +113,9 @@ class PreviewTariffsContent extends StatelessWidget {
                     context.push(Routes.checkout, extra: {
                       'tariff': bloc.tariffs[bloc.state.selectedIndex],
                       'image': bloc.plan.image,
-                      'country': bloc.countryEntity.name
+                      'country': bloc.countryEntity.name,
+                      'type': bloc.countryEntity is CountryModel ? 'local' : 'regional',
+                      'country_code': PlatformDispatcher.instance.locale.countryCode ?? ''
                     });
                   }
                 },

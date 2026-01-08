@@ -24,12 +24,12 @@ class DeleteAccountPage extends StatelessWidget {
       )..add(const DeleteAccountEvent.requestDeletionAccount()),
       child: DefaultScaffold(
         appBar: AppBar(
-          leading: GestureDetector(
+          leading: Builder(builder: (ctx) => GestureDetector(
             onTap: (){
-              context.pop(context.read<DeleteAccountBloc>().isAccountDeleted);
+              context.pop(ctx.read<DeleteAccountBloc>().isAccountDeleted);
             },
             child: Icon(Icons.arrow_back_ios, size: 24, color: Theme.of(context).extension<ColorExtension>()!.text),
-          ),
+          )),
         ),
         body: BlocBuilder<DeleteAccountBloc,
             DeleteAccountState>(

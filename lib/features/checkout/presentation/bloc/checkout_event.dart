@@ -13,4 +13,8 @@ class CheckoutEvent with _$CheckoutEvent {
   const factory CheckoutEvent.fetchPromoCode() = _CheckoutEventFetchPromoCode;
 
   const factory CheckoutEvent.deletePromoCode() = _CheckoutDeletePromoCode;
+
+  const factory CheckoutEvent.purchaseByBalance() = _PurchaseByBalance;
+
+  const factory CheckoutEvent.purchaseByCard() = _PurchaseByCard;
 }

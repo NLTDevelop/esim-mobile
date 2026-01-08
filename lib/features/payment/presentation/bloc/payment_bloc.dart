@@ -17,6 +17,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     });
   }
 
+
   Future<void> _onProcessPayment(_PaymentEventProcessPayment event, Emitter<PaymentState> emit) async{
     String? message;
     try{

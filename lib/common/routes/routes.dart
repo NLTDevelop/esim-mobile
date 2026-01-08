@@ -4,7 +4,6 @@ import 'package:esim_mob_app/features/auth/presentation/page/auth_page.dart';
 import 'package:esim_mob_app/features/auto_top_up/presentation/page/auto_top_up_page.dart';
 import 'package:esim_mob_app/features/checkout/presentation/pages/checkout_page.dart';
 import 'package:esim_mob_app/features/contact_us/presentation/pages/contact_us_page.dart';
-import 'package:esim_mob_app/features/credits/presentation/page/credits_page.dart';
 import 'package:esim_mob_app/features/deletion_account/presentation/pages/delete_account_page.dart';
 import 'package:esim_mob_app/features/esim_list/presentation/pages/esim_list_page.dart';
 import 'package:esim_mob_app/features/faq/presentation/pages/faq_page.dart';
@@ -12,7 +11,7 @@ import 'package:esim_mob_app/features/help/presentation/page/help_page.dart';
 import 'package:esim_mob_app/features/history/data/model/transaction_model.dart';
 import 'package:esim_mob_app/features/history/presentation/pages/history_page.dart';
 import 'package:esim_mob_app/features/home/presentation/page/home_page.dart';
-import 'package:esim_mob_app/features/payment/presentation/page/payment_page.dart';
+import 'package:esim_mob_app/features/payment/presentation/page/payment_web_view_page.dart';
 import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/page/preview_tariffs_page.dart';
 import 'package:esim_mob_app/features/splash/presentation/page/splash_page.dart';
@@ -149,13 +148,6 @@ class ProfileRoute extends GoRouteData {
   Widget build(BuildContext context, GoRouterState state) => const ProfilePage();
 }
 
-@TypedGoRoute<CreditsRoute>(path: Routes.credits)
-class CreditsRoute extends GoRouteData {
-  const CreditsRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) => const CreditsPage();
-}
 
 @TypedGoRoute<HelpRoute>(path: Routes.help)
 class HelpRoute extends GoRouteData {
@@ -255,10 +247,15 @@ class CheckoutRoute extends GoRouteData {
     final tariff = extra['tariff'] as PackageModel;
     final image = extra['image'] as String;
     final country = extra['country'] as String;
+    final countryCode = extra['country_code'] as String;
+    final type = extra['type'] as String;
+
     return CheckoutPage(
       tariff: tariff,
       image: image,
       country: country,
+      type: type,
+      countryCode: countryCode,
     );
   }
 }
@@ -270,9 +267,13 @@ class PaymentRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>;
-    final tariff = extra['tariff'] as PackageModel;
-    return PaymentPage(
-      tariffModel: tariff,
+    //final tariff = extra['tariff'] as PackageModel;
+    final url = extra['url'] as String;
+    final trx = extra['trx'] as String;
+
+    return PaymentWebViewPage(
+      url: url,
+      trx: trx,
     );
   }
 }
@@ -342,7 +343,6 @@ class ESimListRoute extends GoRouteData {
     final baseCountry = extra['country_entity'];
     final currencyType = extra['currency_type'];
     final isFromWelcome = extra['is_from_welcome'] as bool? ?? false;
-    print(baseCountry.runtimeType);
 
     return ESimListPage(
       baseCountry: baseCountry is CountryModel ? baseCountry : (baseCountry as RegionModel),

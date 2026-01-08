@@ -12,7 +12,6 @@ List<RouteBase> get $appRoutes => [
       $loggerRoute,
       $splashRoute,
       $profileRoute,
-      $creditsRoute,
       $helpRoute,
       $storeRoute,
       $welcomeRoute,
@@ -194,28 +193,6 @@ RouteBase get $profileRoute => GoRouteData.$route(
       path: '/profile',
       factory: $ProfileRouteExtension._fromState,
     );
-
-RouteBase get $creditsRoute => GoRouteData.$route(
-      path: '/credits',
-      factory: $CreditsRouteExtension._fromState,
-    );
-
-extension $CreditsRouteExtension on CreditsRoute {
-  static CreditsRoute _fromState(GoRouterState state) => const CreditsRoute();
-
-  String get location => GoRouteData.$location(
-        '/credits',
-      );
-
-  void go(BuildContext context) => context.go(location);
-
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  void replace(BuildContext context) => context.replace(location);
-}
 
 RouteBase get $helpRoute => GoRouteData.$route(
       path: '/help',

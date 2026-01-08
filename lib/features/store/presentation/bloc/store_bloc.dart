@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:esim_mob_app/core/use_case/use_case.dart';
@@ -53,8 +52,6 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
       final countries = await _fetchCountriesUseCase.call(NoParams());
       final regions = await _fetchRegionsUseCase.call(NoParams());
 
-      print('Countries');
-      print(countries);
       ///await Future.delayed(const Duration(milliseconds: 2000));
       allCountries.addAll(countries);
 

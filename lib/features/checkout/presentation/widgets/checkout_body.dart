@@ -4,9 +4,11 @@ import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/snackbar/default_snackbar.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/checkout/presentation/bloc/checkout_bloc.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/order_coupon_textfield.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/order_summary_data_row.dart';
+import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -75,11 +77,11 @@ class CheckoutBody extends StatelessWidget {
                               )
                             ],
                           )),
-                      OrderSummaryDataRow(data: '${(bloc.state.tariff.dataInMb / 1024).toStringAsFixed(2)} GB', typeName: 'Plan'),
+                      OrderSummaryDataRow(data: '${(bloc.tariff.dataInMb / 1024).toStringAsFixed(2)} GB', typeName: 'Plan'),
                       const OrderSummaryDataRow(
                           data: 'Data only', typeName: 'Type'),
                       OrderSummaryDataRow(
-                          data: '${bloc.state.tariff.validDays} days', typeName: 'Duration'),
+                          data: '${bloc.tariff.validDays} days', typeName: 'Duration'),
                        OrderSummaryDataRow(
                         data: CountryCodes.detailsForLocale().name ?? 'Unknown',
                         typeName: 'Tax country',
@@ -102,21 +104,21 @@ class CheckoutBody extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           OrderSummaryDataRow(
-                              data: 'US\$${blocInternal.state.tariff.price}', typeName: 'Subtotal'),
-                          AnimatedCrossFade(firstChild: Container(), secondChild: OrderSummaryDataRow(data: '-US\$${blocInternal.discount}', typeName: 'Coupon', couponWidget: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                            margin: const EdgeInsets.only(left: 8),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Theme.of(context).extension<ColorExtension>()!.cardBorder), child: Row(
-                              children: [
-                                DefaultText.displaySmall(state.promoCode?.title ?? ''),
-                                const SizedBox(width: 7,),
-                                GestureDetector(
-                                  onTap: blocInternal.deletePromoCode,
-                                  child: Icon(Icons.close, color: Theme.of(context).extension<ColorExtension>()!.text, size: 22,),
-                                )
-                              ],
-                            ),
-                          ),), crossFadeState: state.promoCode != null ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: const Duration(milliseconds: 300)),
+                              data: 'US\$${blocInternal.tariff.price}', typeName: 'Subtotal'),
+                          // AnimatedCrossFade(firstChild: Container(), secondChild: OrderSummaryDataRow(data: '-US\$${blocInternal.discount}', typeName: 'Coupon', couponWidget: Container(
+                          //   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                          //   margin: const EdgeInsets.only(left: 8),
+                          //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Theme.of(context).extension<ColorExtension>()!.cardBorder), child: Row(
+                          //     children: [
+                          //       DefaultText.displaySmall(bloc.promoCode),
+                          //       const SizedBox(width: 7,),
+                          //       GestureDetector(
+                          //         onTap: blocInternal.deletePromoCode,
+                          //         child: Icon(Icons.close, color: Theme.of(context).extension<ColorExtension>()!.text, size: 22,),
+                          //       )
+                          //     ],
+                          //   ),
+                          // ),), crossFadeState: state.isOpenPromoCode ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: const Duration(milliseconds: 300)),
                            Padding(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             child: Row(
@@ -128,7 +130,7 @@ class CheckoutBody extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                                 DefaultText.bodySmall(
-                                 state.promoCode != null ? 'US\$ ${ double.parse((state.tariff.price - blocInternal.discount).toStringAsFixed(4))}' : 'US\$${state.tariff.price}',
+                                 'US\$${bloc.tariff.price}',
                                   fontWeight: FontWeight.w600,
                                 ),
                               ],
@@ -176,7 +178,9 @@ class CheckoutBody extends StatelessWidget {
                   Expanded(
                     flex: 10,
                       child: PrimaryButton(
-                    onTap: () {},
+                    onTap: () {
+                      context.read<CheckoutBloc>().add(const CheckoutEvent.purchaseByBalance());
+                    },
                     text: 'Add balance & Pay',
                     icon: Icon(
                       Icons.wallet,
@@ -192,8 +196,9 @@ class CheckoutBody extends StatelessWidget {
                   Expanded(
                     flex: 10,
                       child: PrimaryButton(
-                          onTap: () {
-                            context.push(Routes.payment, extra: {'tariff': bloc.state.tariff});
+                          onTap: () async {
+                            final purchaseResult = await injector<PurchaseESimByCardUseCase>().call(PurchaseESimParams(type: context.read<CheckoutBloc>().type, location: context.read<CheckoutBloc>().location, package: context.read<CheckoutBloc>().tariff.packageId, promoCode: ''));
+                            context.push(Routes.payment, extra: {'url': purchaseResult.redirectUrl, 'trx': purchaseResult.trx});
                           },
                           text: 'Quick Pay by Card',
                           icon: Icon(

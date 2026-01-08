@@ -88,8 +88,6 @@ final class AuthRepositoryImpl  implements AuthRepository {
     throw UnimplementedError();
   }
 
-  
-
   @override
   Future<TokenModel> refreshToken({
     required final String refreshToken,

@@ -22,10 +22,11 @@ class AutoTopUpBloc extends Bloc<AutoTopUpEvent, AutoTopUpState> {
     try{
       emit(const AutoTopUpState.loading());
       List<PackageModel> tariffs = [
-        PackageModel( price: 2.49, currency: 'USD', packageIndex: 1, dataInMb: 2048, validDays: 7, ),
-        PackageModel( price: 10.49, currency: 'USD', packageIndex: 1, dataInMb: 2048, validDays: 7,),
-        PackageModel( price: 19.49, currency: 'USD', packageIndex: 1, dataInMb: 2048, validDays: 7,),
-        PackageModel( price: 95.99, currency: 'USD', packageIndex: 1, dataInMb: 2048, validDays: 7,),
+        PackageModel( price: 2.49, currency: 'USD', packageId: '1', dataInMb: 2048, validDays: 7, ),
+        PackageModel( price: 10.49, currency: 'USD', packageId: '2', dataInMb: 2048, validDays: 7,),
+        PackageModel( price: 19.49, currency: 'USD', packageId: '3', dataInMb: 2048, validDays: 7,),
+        PackageModel( price: 95.99, currency: 'USD', packageId:
+          '4', dataInMb: 2048, validDays: 7,),
       ];
       emit(AutoTopUpState.success(tariffs: tariffs, selectedIndex: state.selectedIndex));
     } on Object catch (error) {

@@ -1,26 +1,32 @@
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
+import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
+import 'package:esim_mob_app/common/widgets/state/payment_failed_state.dart';
+import 'package:esim_mob_app/common/widgets/state/payment_succesfult_state.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
-import 'package:esim_mob_app/features/checkout/domain/use_cases/check_promo_code_use_case.dart';
+import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_balance.dart';
+import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/checkout/presentation/bloc/checkout_bloc.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/checkout_body.dart';
 import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, BlocProvider;
 import 'package:go_router/go_router.dart';
 
 class CheckoutPage extends StatelessWidget {
-  const CheckoutPage({super.key, required this.tariff, required this.image, required this.country,});
+  const CheckoutPage({super.key, required this.tariff, required this.image, required this.country, required this.type, required this.countryCode});
 
   final PackageModel tariff;
   final String image;
   final String country;
+  final String type;
+  final String countryCode;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CheckoutBloc(checkPromoCodeUseCase: injector<CheckPromoCodeUseCase>(), tariff: tariff),
+      create: (context) => CheckoutBloc(purchaseESimByCardUseCase: injector<PurchaseESimByCardUseCase>(), purchaseESimByBalanceUseCase: injector<PurchaseESimByBalanceUseCase>(), tariff: tariff, esimLocation: countryCode, type: type),
       child: DefaultScaffold(
         backgroundColor: Theme.of(context).extension<ColorExtension>()!
             .cardBorder,
@@ -38,7 +44,11 @@ class CheckoutPage extends StatelessWidget {
               color: Theme.of(context).extension<ColorExtension>()!.text,),
           ),
         ),
-        body: CheckoutBody(country: country, image: image,),
+        body: BlocBuilder<CheckoutBloc, CheckoutState>(
+  builder: (context, state) {
+    return state.map(initial: (_) => CheckoutBody(country: country, image: image,), success: (_) => PaymentSuccessfulState(tariffModel: tariff), loading: (_) => const LoadingState(), failure: (_) => const PaymentFailedState());
+  },
+),
       ),
     );
   }

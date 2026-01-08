@@ -5,7 +5,8 @@ class HistoryState with _$HistoryState {
   const HistoryState._();
 
   List<TransactionModel> get transactions => when(
-    loading: (transactions) => transactions,
+    initial: () => [],
+    loading: (transactions, __) => transactions,
     success: (transactions) => transactions,
     failure: (__, transactions) => transactions,
   );
@@ -15,12 +16,15 @@ class HistoryState with _$HistoryState {
     loading: (state) => true,
   );
 
+  const factory HistoryState.initial() = HistoryStateInitial;
+
   const factory HistoryState.success({
    required List<TransactionModel> transactions,
   }) = HistoryStateSuccess;
 
   const factory HistoryState.loading({
    required List<TransactionModel> transactions,
+    @Default(false) bool isFirstFetch,
   }) = HistoryStateLoading;
 
   const factory HistoryState.failure(

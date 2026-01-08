@@ -71,7 +71,7 @@ class _SplashBodyState extends State<SplashBody> {
     context.read<AuthentificationBloc>().add(AuthentificationEvent.setUser(user: user));
 
     user.when(authenticated: (_) {
-      context.go(Routes.home, extra: {'user_tariffs': <PackageModel>[PackageModel(price: 1.99, currency: 'USD', packageIndex: 2, dataInMb: 1024, validDays: 1)]});
+      context.go(Routes.home, extra: {'user_tariffs': <PackageModel>[PackageModel(price: 1.99, currency: 'USD', packageId: '2', dataInMb: 1024, validDays: 1)]});
     }, notAuthenticated: () {
       bool isFirstStart = injector<OnBoardingRepositoryImpl>().isFirstRun();
       context.go(isFirstStart ? Routes.welcome : Routes.auth);

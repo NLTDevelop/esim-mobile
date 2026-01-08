@@ -6,7 +6,6 @@ import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_esim_widget.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/no_plans_widget.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/row_dot_text.dart';
-import 'package:esim_mob_app/features/notifcations/presentation/wigets/notification_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -27,8 +26,8 @@ class HomeBody extends StatelessWidget {
           print(state.user);
       return state.mapOrNull(
               authenticated: (s) => s.user.userTariffs.isEmpty
-                  ? const HomeESimWidget()
-                  : const NoPlansWidget(),
+                  ? const NoPlansWidget()
+                  : const HomeESimWidget(),
               loading: (_) => const LoadingState(),
               failure: (s) => s.user.userTariffs.isEmpty
                   ? const NoPlansWidget()
@@ -155,12 +154,12 @@ class HomeBody extends StatelessWidget {
     )..show(context: context);
   }
 
-  void _showNotificationBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        useSafeArea: true,
-        useRootNavigator: true,
-        isScrollControlled: true,
-        builder: (ctx) => const NotificationBottomSheet());
-  }
+  // void _showNotificationBottomSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       useSafeArea: true,
+  //       useRootNavigator: true,
+  //       isScrollControlled: true,
+  //       builder: (ctx) => const NotificationBottomSheet());
+  // }
 }

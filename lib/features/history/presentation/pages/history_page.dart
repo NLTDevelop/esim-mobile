@@ -2,7 +2,7 @@
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/history/data/model/transaction_model.dart';
-import 'package:esim_mob_app/features/history/presentation/widgets/transaction_row.dart';
+import 'package:esim_mob_app/features/history/presentation/widgets/history_pagination_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,14 +23,8 @@ class HistoryPage extends StatelessWidget {
           context.pop();
         }, child: Icon(Icons.arrow_back_ios, color: Theme.of(context).extension<ColorExtension>()!.toggleCircle)),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 26),
-        child: Column(
-          children: [
-            ...transactions.map((e) => Padding(padding:const EdgeInsets.symmetric(vertical: 16, horizontal: 14), child: TransactionRow(transactionModel: e,))),
-          ],
-        ),
-      ),
+      body: const HistoryPaginationWidget(),
     );
   }
+
 }

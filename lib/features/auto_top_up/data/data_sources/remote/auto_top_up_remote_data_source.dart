@@ -14,7 +14,7 @@ abstract class AutoTopUpRemoteDataSource{
   @GET('v1/esim/{id}/packages')
   Future<List<UserPackageModel>> fetchAutoTopUpPackages({@Path('id') required int id});
 
-  @POST('v1/esim/{id}/auto_topup')
+  @POST('v1/esim/{id}/auto-topup')
   Future<ActivationTopUpResponse> updateActivationTopUp({@Path('id') required int id, @Body() required Map<String, dynamic> data});
 
 }

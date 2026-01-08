@@ -27,7 +27,12 @@ class HistoryTransactionContainer extends StatelessWidget {
                         color: Theme.of(context).extension<ColorExtension>()!
                             .background,))),
               failure: (s) =>
-                  HistoryTransactionsBody(transactions: state.transactions,));
+                  HistoryTransactionsBody(transactions: state.transactions,), initial: (_) => Center(child: SizedBox(width: 28,
+                  height: 28,
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).extension<ColorExtension>()!
+                        .background,)))
+              );
         },
       ),
     );

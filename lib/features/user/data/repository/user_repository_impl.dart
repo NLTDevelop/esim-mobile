@@ -2,6 +2,7 @@
 
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/user/data/data_sources/remote/user_remote_data_source.dart';
+import 'package:esim_mob_app/features/user/data/models/delete_request_response.dart';
 import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:esim_mob_app/features/user/domain/repository/user_repository.dart';
 
@@ -16,7 +17,7 @@ final class UserRepositoryImpl implements UserRepository {
   Future<UserModel> getCurrentUser() async => await _userRemoteDataSource.getUser();
 
   @override
-  Future<void> deleteUserAccount() async => await _userRemoteDataSource.requestDeletingAccount();
+  Future<DeleteRequestResponse> deleteUserAccount() async => await _userRemoteDataSource.requestDeletingAccount();
 
   @override
   Future<List<UserESimModel>> getESimList() async => await _userRemoteDataSource.getESimList();

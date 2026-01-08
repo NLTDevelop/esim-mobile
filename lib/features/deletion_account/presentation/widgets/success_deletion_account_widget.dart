@@ -7,26 +7,28 @@ class SuccessDeletionAccountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const DefaultText.labelMedium('Account was successfully deleted'),
-        const SizedBox(height: 20,),
-        Container(
-    width: 80,
-    height: 80,
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-    color:
-    Theme.of(context).extension<ColorExtension>()!.toggleCircle,
-    shape: BoxShape.circle),
-    child: Icon(Icons.check,
-    color: Theme.of(context)
-        .extension<ColorExtension>()!
-        .toggleActive, size: 40,),),
-      ],
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const DefaultText.labelLarge('Account was successfully deleted'),
+          const SizedBox(height: 20,),
+          Container(
+      width: 80,
+      height: 80,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+      color:
+      Theme.of(context).extension<ColorExtension>()!.toggleCircle,
+      shape: BoxShape.circle),
+      child: Icon(Icons.check,
+      color: Theme.of(context)
+          .extension<ColorExtension>()!
+          .toggleActive, size: 40,),),
+        ],
+      ),
     );
   }
 }

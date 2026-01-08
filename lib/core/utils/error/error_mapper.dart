@@ -3,6 +3,7 @@ import 'package:esim_mob_app/core/exceptions/wrong_coupon_exception.dart';
 
 class ErrorMapper {
   static String mapError(dynamic error) {
+    print(error);
     if (error is DioException) {
       return _mapErrorByDioException(error);
     } else if(error is WrongCouponException){
@@ -21,7 +22,12 @@ class ErrorMapper {
   // }
 
   static String _mapErrorByDioException(DioException error) {
-    print(error.response?.data);
+    if(error.response?.statusCode == 500){
+      return 'Server error';
+    }
+    if(error.response?.data is String && error.response?.statusCode == 400){
+      return 'Invalid or expired code';
+    }
     if (error.response?.data['message'] != null) {
       return error.response?.data['message'];
     }

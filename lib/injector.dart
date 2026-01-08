@@ -10,9 +10,19 @@ import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_cas
 import 'package:esim_mob_app/features/auto_top_up/data/data_sources/remote/auto_top_up_remote_data_source.dart';
 import 'package:esim_mob_app/features/auto_top_up/domain/repositories/auto_top_up_repository.dart';
 import 'package:esim_mob_app/features/auto_top_up/domain/use_cases/fetch_activation_topup_list_use_case.dart';
-import 'package:esim_mob_app/features/checkout/data/repository/promocode_repository_impl.dart';
-import 'package:esim_mob_app/features/checkout/domain/repository/promo_code_repository.dart';
-import 'package:esim_mob_app/features/checkout/domain/use_cases/check_promo_code_use_case.dart';
+import 'package:esim_mob_app/features/checkout/data/data_sources/remote/checkout_remote_data_source.dart';
+import 'package:esim_mob_app/features/checkout/data/repository/checkout_repository_impl.dart';
+import 'package:esim_mob_app/features/checkout/domain/repository/checkout_repository.dart';
+import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_balance.dart';
+import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
+import 'package:esim_mob_app/features/deposit/data/data_sources/remote/deposit_remote_data_source.dart';
+import 'package:esim_mob_app/features/deposit/data/repository/deposit_repository_impl.dart';
+import 'package:esim_mob_app/features/deposit/domain/repositories/deposit_repository.dart';
+import 'package:esim_mob_app/features/deposit/domain/use_cases/add_balance_use_case.dart';
+import 'package:esim_mob_app/features/history/data/data_sources/remote/history_remote_data_source.dart';
+import 'package:esim_mob_app/features/history/data/repository/history_repository_impl.dart';
+import 'package:esim_mob_app/features/history/domain/repositories/history_repository.dart';
+import 'package:esim_mob_app/features/history/domain/use_cases/fetch_history_use_case.dart';
 import 'package:esim_mob_app/features/home/domain/use_cases/fetch_user_esim_use_case.dart';
 import 'package:esim_mob_app/features/localization/data/repository/localization_repository_impl.dart';
 import 'package:esim_mob_app/features/notifcations/data/data_sources/local/fcm_token_storage.dart';
@@ -72,20 +82,24 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton<PlansRemoteDataSource>(() => PlansRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<CountriesRemoteDataSource>(() => CountriesRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<AutoTopUpRemoteDataSource>(() => AutoTopUpRemoteDataSource(injector<AwinstApi>().dio));
+    injector.registerLazySingleton<CheckoutRemoteDataSource>(() => CheckoutRemoteDataSource(injector<AwinstApi>().dio));
+    injector.registerLazySingleton<DepositRemoteDataSource>(() => DepositRemoteDataSource(injector<AwinstApi>().dio));
+    injector.registerLazySingleton<HistoryRemoteDataSource>(() => HistoryRemoteDataSource(injector<AwinstApi>().dio));
   },
   'Repository': (){
     injector.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(authRemoteDataSource: injector<AuthRemoteDataSource>()));
-    injector.registerLazySingleton<PromoCodeRepository>(() => PromoCodeRepositoryImpl());
     injector.registerLazySingleton<PlanESimRepository>(() => PlanESimRepositoryImpl(plansRemoteDataSource: injector<PlansRemoteDataSource>()));
     injector.registerLazySingleton<CountriesRepository>(() => CountryRepositoryImpl(countriesRemoteDataSource: injector<CountriesRemoteDataSource>()));
     injector.registerLazySingleton<AutoTopUpRepository>(() => AutoTopUpRepositoryImpl(autoTopUpRemoteDataSource: injector<AutoTopUpRemoteDataSource>()));
+    injector.registerLazySingleton<CheckoutRepository>(() => CheckoutRepositoryImpl(checkoutRemoteDataSource: injector<CheckoutRemoteDataSource>()));
+    injector.registerLazySingleton<DepositRepository>(() => DepositRepositoryImpl(depositRemoteDataSource: injector<DepositRemoteDataSource>()));
+    injector.registerLazySingleton<HistoryRepository>(() => HistoryRepositoryImpl(historyRemoteDataSource: injector<HistoryRemoteDataSource>()));
     },
   'UseCases': (){
     final loginGoogleUseCase = LoginGoogleUseCase(authRepository: injector<AuthRepository>());
     injector.registerLazySingleton(() => loginGoogleUseCase);
     final loginAppleUseCase = LoginIOSUseCase(authRepository: injector<AuthRepository>());
     injector.registerLazySingleton(() => loginAppleUseCase);
-    injector.registerLazySingleton(() => CheckPromoCodeUseCase(promoCodeRepository: injector<PromoCodeRepository>()));
     injector.registerLazySingleton(() => DeleteAccountUseCase(userRepository: injector<UserRepository>()));
     injector.registerLazySingleton(() => ConfirmDeletionAccountUseCase(userRepository: injector<UserRepository>()));
     injector.registerLazySingleton(() => FetchActivationTopupListUseCase(autoTopUpRepository: injector<AutoTopUpRepository>()));
@@ -97,6 +111,10 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton(() => FetchCountriesUseCase(countriesRepository: countriesRepository));
     injector.registerLazySingleton(() => FetchRegionsUseCase(countriesRepository: countriesRepository));
     injector.registerLazySingleton(() => FetchUserESimUseCase(userRepository: injector<UserRepository>()));
+    injector.registerLazySingleton(() => PurchaseESimByCardUseCase(checkoutRepository: injector<CheckoutRepository>()));
+    injector.registerLazySingleton(() => PurchaseESimByBalanceUseCase(checkoutRepository: injector<CheckoutRepository>()));
+    injector.registerLazySingleton(() => AddBalanceUseCase(depositRepository: injector<DepositRepository>()));
+    injector.registerLazySingleton(() => FetchHistoryUseCase(historyRepository: injector<HistoryRepository>()));
     },
   'Token': () async {
     injector
@@ -162,7 +180,6 @@ Future<void> baseSteps() async{
   final sharedPreferences = await SharedPreferences.getInstance();
   final storageDao = FlutterSecureStorageDao(secureStorage: storage, sharedPreferences: sharedPreferences);
   if(storageDao.readBool('first_start_app') ?? true){
-    print('IS FIRST START TRUE!!');
     await storage.deleteAll();
     await sharedPreferences.clear();
   }
