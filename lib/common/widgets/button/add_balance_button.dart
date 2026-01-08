@@ -17,7 +17,7 @@ class AddBalanceButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           color: Theme.of(context).extension<ColorExtension>()!.addBalance
         ),
         child: Row(

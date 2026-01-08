@@ -1,7 +1,6 @@
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/common/widgets/targets/get_target.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
-import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_esim_widget.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/no_plans_widget.dart';
@@ -21,18 +20,15 @@ class HomeBody extends StatelessWidget {
       }
     }, listenWhen: (previous, next) {
       return previous.isFirstESim != next.isFirstESim && !next.isFirstESim;
-    }, child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
+    }, child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          print(state.user);
+          // print(state.user);
       return state.mapOrNull(
-              authenticated: (s) => s.user.userTariffs.isEmpty
-                  ? const NoPlansWidget()
-                  : const HomeESimWidget(),
               loading: (_) => const LoadingState(),
-              failure: (s) => s.user.userTariffs.isEmpty
+              failure: (s) => s.tariffs.isNotEmpty
                   ? const NoPlansWidget()
                   : const HomeESimWidget(),
-              success: (s) => s.user.userTariffs.isEmpty
+              success: (s) => s.tariffs.isNotEmpty
                   ? const HomeESimWidget()
                   : const NoPlansWidget()) ??
           const NoPlansWidget();

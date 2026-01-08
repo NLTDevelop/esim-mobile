@@ -31,7 +31,9 @@ class UserESimModel extends Equatable{
   final bool canTopUp;
   @JsonKey(name: 'can_auto_topup')
   final bool canAutoTopUp;
+  @JsonKey(name: 'created_at')
   final DateTime createdAt;
+  @JsonKey(name: 'promo_code')
   final String? promoCode;
   final double? appliedDiscountPercent;
   @JsonKey(name: 'topup_history')

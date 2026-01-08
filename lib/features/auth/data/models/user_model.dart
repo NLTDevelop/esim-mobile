@@ -115,6 +115,7 @@ class NotAuthenticatedUser implements UserModel {
   @override
   List<PackageModel> get userTariffs => [];
 
+
   @override
   T when<T extends Object?>({
     required final T Function(AuthenticatedUserModel user) authenticated,

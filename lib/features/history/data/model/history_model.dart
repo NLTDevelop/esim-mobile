@@ -12,6 +12,7 @@ part 'history_model.g.dart';
 class HistoryModel extends Equatable {
   const HistoryModel({required this.transactions, required this.meta});
 
+  @JsonKey(name: 'data')
   final List<TransactionModel> transactions;
   final MetaModel meta;
 

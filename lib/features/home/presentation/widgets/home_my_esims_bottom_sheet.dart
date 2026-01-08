@@ -7,15 +7,15 @@ import 'package:esim_mob_app/features/history/data/model/transaction_model.dart'
 import 'package:esim_mob_app/features/home/presentation/widgets/add_balance_first_container.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_add_balance_widget.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/latest_activation_list.dart';
-import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeMyESimsBottomSheet extends StatelessWidget {
-  const HomeMyESimsBottomSheet({super.key, required this.tariffs});
+  const HomeMyESimsBottomSheet({super.key, required this.esim});
 
-  final List<PackageModel> tariffs;
+  final UserESimModel esim;
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +72,14 @@ class HomeMyESimsBottomSheet extends StatelessWidget {
             //       itemCount: tariffs.length),
             // ),
             const SizedBox(height: 20,),
-            LatestActivationList(),
+            LatestActivationList(eSim: esim,),
             Padding(
               padding: EdgeInsets.only(top: 10.0, bottom: MediaQuery.of(context).padding.bottom + 10,),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SquareButton(onTap: (){ context.push(Routes.store);}, title: 'Add data', icon: Icon(Icons.add, color: Theme.of(context).extension<ColorExtension>()!.primary),),
+                  SquareButton(onTap: (){ context.pop(); context.push(Routes.store);}, title: 'Add data', icon: Icon(Icons.add, color: Theme.of(context).extension<ColorExtension>()!.primary),),
                   SquareButton(onTap: (){
                     context.push(Routes.history, extra: { 'transactions': <TransactionModel>[]});
                   }, title: 'Payment history', icon: SvgPicture.asset(AppIcons.history, colorFilter: ColorFilter.mode(Theme.of(context).extension<ColorExtension>()!.primary, BlendMode.srcIn),)),

@@ -3,6 +3,7 @@ import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/add_balance_button.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/auto_top_up/presentation/bloc/auto_top_up_bloc.dart';
 import 'package:esim_mob_app/features/auto_top_up/presentation/widgets/auto_top_up_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +39,12 @@ class AutoTopUpBody extends StatelessWidget {
               const SizedBox(
                 height: 14,
               ),
-              const DefaultText.headlineLarge(
-                '5.00 \$', fontWeight: FontWeight.w600,),
+              BlocBuilder<AuthentificationBloc, AuthentificationState>(
+                builder: (context, state) {
+                  return  DefaultText.headlineLarge(
+                    '${state.user.when(authenticated: (s) => s.balance, notAuthenticated: () => 0.00).toStringAsFixed(2)} \$', fontWeight: FontWeight.w600,);
+                }
+              ),
               const SizedBox(
                 height: 26,
               ),

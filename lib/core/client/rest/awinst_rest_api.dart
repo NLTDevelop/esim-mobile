@@ -9,10 +9,10 @@ class AwinstApi {
 
   //Host for API requests to production server
   // dev
-  //static const baseUrl = 'https://awinstconnect.108labs.co.ua/api/';
+  static const baseUrl = 'https://awinstconnect.108labs.co.ua/api/';
 
   // prod
-  static const baseUrl = 'https://awinstconnect.com/api/';
+  //static const baseUrl = 'https://awinstconnect.com/api/';
 
   AwinstApi() {
     _dio = Dio(_options())
@@ -45,14 +45,14 @@ class AwinstApi {
     );
   }
 
-  BaseOptions _changeGuidInOptions(String newGuid) {
-    return _dio.options.copyWith(
-      headers: {
-        'user-guid': newGuid,
-        if (_token != null && _token!.isNotEmpty) HttpHeaders.authorizationHeader: 'Bearer $_token',
-      },
-    );
-  }
+  // BaseOptions _changeGuidInOptions(String newGuid) {
+  //   return _dio.options.copyWith(
+  //     headers: {
+  //       'user-guid': newGuid,
+  //       if (_token != null && _token!.isNotEmpty) HttpHeaders.authorizationHeader: 'Bearer $_token',
+  //     },
+  //   );
+  // }
 
   final dioLogger = TalkerDioLogger(
     talker: Logger.instance,
