@@ -284,7 +284,12 @@ class AutoTopUpRoute extends GoRouteData {
   const AutoTopUpRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const AutoTopUpPage();
+  Widget build(BuildContext context, GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>;
+    final int eSimId = extra['esim_id'] as int;
+    final String? currencyCode = extra['currency_code'] as String?;
+    return AutoTopUpPage(eSimId: eSimId, currencyCode: currencyCode,);
+  }
 }
 
 

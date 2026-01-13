@@ -1,4 +1,5 @@
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
+import 'package:esim_mob_app/common/widgets/state/auto_top_up_successfull_state.dart';
 import 'package:esim_mob_app/common/widgets/state/failure_state.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/features/auto_top_up/presentation/bloc/auto_top_up_bloc.dart';
@@ -30,7 +31,7 @@ class AutoTopUpBottomSheet extends StatelessWidget {
                       ),
                   loading: (_) => const LoadingState(),
                   failure: (_) => FailureState(onTap: () {}),
-                  initial: (_) => const LoadingState());
+                  initial: (_) => const LoadingState(), successAutoTopUp: (_) => const AutoTopUpSuccessfulState(), failedAutoTop: (_) => FailureState(onTap: (){}));
             },
           ),
         );

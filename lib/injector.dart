@@ -9,7 +9,8 @@ import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_case.dart';
 import 'package:esim_mob_app/features/auto_top_up/data/data_sources/remote/auto_top_up_remote_data_source.dart';
 import 'package:esim_mob_app/features/auto_top_up/domain/repositories/auto_top_up_repository.dart';
-import 'package:esim_mob_app/features/auto_top_up/domain/use_cases/fetch_activation_topup_list_use_case.dart';
+import 'package:esim_mob_app/features/auto_top_up/domain/use_cases/fetch_activation_top_up_list_use_case.dart';
+import 'package:esim_mob_app/features/auto_top_up/domain/use_cases/update_auto_top_up_use_case.dart';
 import 'package:esim_mob_app/features/checkout/data/data_sources/remote/checkout_remote_data_source.dart';
 import 'package:esim_mob_app/features/checkout/data/repository/checkout_repository_impl.dart';
 import 'package:esim_mob_app/features/checkout/domain/repository/checkout_repository.dart';
@@ -115,6 +116,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton(() => PurchaseESimByBalanceUseCase(checkoutRepository: injector<CheckoutRepository>()));
     injector.registerLazySingleton(() => AddBalanceUseCase(depositRepository: injector<DepositRepository>()));
     injector.registerLazySingleton(() => FetchHistoryUseCase(historyRepository: injector<HistoryRepository>()));
+    injector.registerLazySingleton(() => UpdateActivationTopUpUseCase(autoTopUpRepository: injector<AutoTopUpRepository>()));
     },
   'Token': () async {
     injector

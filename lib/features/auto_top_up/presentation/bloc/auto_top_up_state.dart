@@ -5,11 +5,13 @@ part of 'auto_top_up_bloc.dart';
 class AutoTopUpState with _$AutoTopUpState {
   const AutoTopUpState._();
 
-  List<PackageModel> get tariffs => when(
+  List<UserPackageModel> get tariffs => when(
     initial: () => [],
     loading: (tariffs,__) => tariffs,
     success: (tariffs, __) => tariffs,
     failure: (__, tariffs, ___) => tariffs,
+    successAutoTopUp: (tariffs, __) => tariffs,
+    failedAutoTop: (__, tariffs, ___) => tariffs,
   );
 
   int? get selectedIndex => when(
@@ -17,22 +19,34 @@ class AutoTopUpState with _$AutoTopUpState {
     loading: (_,selectedIndex) => selectedIndex,
     success: (_, selectedIndex) => selectedIndex,
     failure: (__, ___, selectedIndex) => selectedIndex,
+      successAutoTopUp: (_, selectedIndex) => selectedIndex,
+      failedAutoTop: (_, ___, selectedIndex) => selectedIndex,
   );
 
 
 
   const factory AutoTopUpState.success({
-    required final List<PackageModel> tariffs,
+    required final List<UserPackageModel> tariffs,
     required final int? selectedIndex,
   }) = _Success;
 
+  const factory AutoTopUpState.successAutoTopUp({
+    required final List<UserPackageModel> tariffs,
+    required final int? selectedIndex,
+  }) = _SuccessAutoTopUp;
+
+  const factory AutoTopUpState.failedAutoTop(String message, {
+    @Default([]) final List<UserPackageModel> tariffs,
+    @Default(null) final int? selectedIndex
+  }) = _FailureAutoTopUp;
+
   const factory AutoTopUpState.loading({
-    @Default([]) final List<PackageModel> tariffs,
+    @Default([]) final List<UserPackageModel> tariffs,
     @Default(null) final int? selectedIndex,
   }) = _Loading;
 
   const factory AutoTopUpState.failure(String message, {
-    @Default([]) final List<PackageModel> tariffs,
+    @Default([]) final List<UserPackageModel> tariffs,
     @Default(null) final int? selectedIndex
   }) = _Failure;
 

@@ -22,41 +22,37 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>GIDClientID</key>
-    <string>111365015516-211c7pkv2crl21960l4tgunpu0ctaopd.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
-    <array>
-    	<dict>
-    		<key>CFBundleTypeRole</key>
-    		<string>Editor</string>
-    		<key>CFBundleURLSchemes</key>
-    		<array>
-                        <string>com.esimapp.nlt</string>
-             </array>
-    	</dict>
-    	 <dict>
-                <key>CFBundleTypeRole</key>
-                <string>Editor</string>
-                <key>CFBundleURLSchemes</key>
-                <array>
-                    <string>com.googleusercontent.apps.111365015516-211c7pkv2crl21960l4tgunpu0ctaopd</string>
-                </array>
-            </dict>
-            <dict>
-                    <key>CFBundleTypeRole</key>
-                    <string>Editor</string>
-                    <key>CFBundleURLSchemes</key>
-                    <array>
-                        <string>fb1146524837194979</string>
-                    </array>
-                </dict>
-    </array>
-
-    <key>NSUserTrackingUsageDescription</key>
-    <string>This identifier will be used to deliver personalized ads to you.</string>
-
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.esimapp.nlt</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.111365015516-211c7pkv2crl21960l4tgunpu0ctaopd</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1146524837194979</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GIDClientID</key>
+	<string>111365015516-211c7pkv2crl21960l4tgunpu0ctaopd.apps.googleusercontent.com</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>sms</string>
@@ -66,8 +62,20 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>To scan cards</string>
+	<key>UIBackgroundModes</key>
+     <array>
+     <string>fetch</string>
+      <string>remote-notification</string>
+     </array>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized ads to you.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>fetch</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

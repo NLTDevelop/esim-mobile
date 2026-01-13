@@ -8,7 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class AutoTopUpInfoBottomSheet extends StatelessWidget {
-  const AutoTopUpInfoBottomSheet({super.key});
+  const AutoTopUpInfoBottomSheet({super.key, required this.eSimId, required this.currencyCode});
+  final int eSimId;
+  final String? currencyCode;
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +65,10 @@ class AutoTopUpInfoBottomSheet extends StatelessWidget {
             PrimaryButton(onTap: (){
               HapticFeedback.lightImpact();
               context.pop();
-              context.push(Routes.autoTopUp);
+              context.push(Routes.autoTopUp, extra: {
+                'esim_id': eSimId,
+                'currency_code': currencyCode,
+              });
             }, text: 'Got it', isExpanded: true,),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom,

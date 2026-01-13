@@ -7,4 +7,5 @@ class AutoTopUpEvent with _$AutoTopUpEvent {
   _AutoTopUpEventFetchTariffs;
 
   const factory AutoTopUpEvent.selectTariff({ required int selectedIndex}) = _AutoTopUpEventSelectTariff;
+  const factory AutoTopUpEvent.enableAutoTop() = _EnableAutoTopUp;
 }

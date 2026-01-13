@@ -2,6 +2,7 @@ import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/bottom_sheets/auto_top_up_info_bottom_sheet.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/history/presentation/widgets/history_transaction_container.dart';
 import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_my_esims_bottom_sheet.dart';
@@ -216,7 +217,7 @@ class HomeESimWidget extends StatelessWidget {
         useRootNavigator: true,
         useSafeArea: true,
         isScrollControlled: true,
-        builder: (context) => const AutoTopUpInfoBottomSheet());
+        builder: (ctx) => AutoTopUpInfoBottomSheet(eSimId: context.read<HomeBloc>().userESims.first.id, currencyCode: context.read<AuthentificationBloc>().state.user.when(authenticated: (s) => s.currency, notAuthenticated: () => null),));
   }
 
   void _showMyESimsBottomSheet(BuildContext context) {

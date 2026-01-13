@@ -19,11 +19,11 @@ class UserPackageModel extends Equatable{
 
   @JsonKey(name: 'package_id')
   final String packageId;
-  @JsonKey(name: 'bundle_id')
+  @JsonKey(name: 'bundle_title')
   final String bundleTitle;
   @JsonKey(name: 'bundle_slug')
-  final String bundleSlug;
-  @JsonKey(name: 'data_in_mb')
+  final String? bundleSlug;
+  @JsonKey(name: 'data_mb')
   final int dataInMB;
   @JsonKey(name: 'valid_days')
   final int? validDays;
