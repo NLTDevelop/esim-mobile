@@ -13,7 +13,7 @@ class FetchActivationTopupListUseCase extends UseCase<List<UserPackageModel>, in
   @override
   Future<List<UserPackageModel>> call(
       final int id,
-      ) async => (await _autoTopUpRepository.fetchAutoTopUpActivations(id: id)).data;
+      ) async => await _autoTopUpRepository.fetchAutoTopUpActivations(id: id);
 }
 
 

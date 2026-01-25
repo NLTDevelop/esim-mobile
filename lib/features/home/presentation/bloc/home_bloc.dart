@@ -39,7 +39,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       _HomeEventFetchESims event, Emitter<HomeState> emit) async {
     emit(HomeState.loading(
         tariffs: state.tariffs, isFirstESim: state.isFirstESim));
-    userESims = (await _fetchUserESimUseCase.call(NoParams())).data;
+    userESims = (await _fetchUserESimUseCase.call(NoParams()));
     emit(HomeState.success(tariffs: userESims.map((e) => PackageModel(price: e.price, currency: e.currencyCode ?? 'USD', packageId: e.id.toString(), dataInMb: e.mb, validDays: e.days ?? 1)).toList(), isFirstESim: state.isFirstESim));
   }
 

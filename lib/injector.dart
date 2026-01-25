@@ -16,6 +16,10 @@ import 'package:esim_mob_app/features/checkout/data/repository/checkout_reposito
 import 'package:esim_mob_app/features/checkout/domain/repository/checkout_repository.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_balance.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
+import 'package:esim_mob_app/features/contact_us/data/data_sources/remote/contact_us_remote_data_source.dart';
+import 'package:esim_mob_app/features/contact_us/data/repositories/contact_repository_impl.dart';
+import 'package:esim_mob_app/features/contact_us/domain/repositories/contact_repository.dart';
+import 'package:esim_mob_app/features/contact_us/domain/use_cases/send_message_to_contact_use_case.dart';
 import 'package:esim_mob_app/features/deposit/data/data_sources/remote/deposit_remote_data_source.dart';
 import 'package:esim_mob_app/features/deposit/data/repository/deposit_repository_impl.dart';
 import 'package:esim_mob_app/features/deposit/domain/repositories/deposit_repository.dart';
@@ -86,6 +90,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton<CheckoutRemoteDataSource>(() => CheckoutRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<DepositRemoteDataSource>(() => DepositRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<HistoryRemoteDataSource>(() => HistoryRemoteDataSource(injector<AwinstApi>().dio));
+    injector.registerLazySingleton<ContactUsRemoteDataSource>(() => ContactUsRemoteDataSource(injector<AwinstApi>().dio));
   },
   'Repository': (){
     injector.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(authRemoteDataSource: injector<AuthRemoteDataSource>()));
@@ -95,6 +100,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton<CheckoutRepository>(() => CheckoutRepositoryImpl(checkoutRemoteDataSource: injector<CheckoutRemoteDataSource>()));
     injector.registerLazySingleton<DepositRepository>(() => DepositRepositoryImpl(depositRemoteDataSource: injector<DepositRemoteDataSource>()));
     injector.registerLazySingleton<HistoryRepository>(() => HistoryRepositoryImpl(historyRemoteDataSource: injector<HistoryRemoteDataSource>()));
+    injector.registerLazySingleton<ContactRepository>(() => ContactRepositoryImpl(contactUsRemoteDataSource: injector<ContactUsRemoteDataSource>()));
     },
   'UseCases': (){
     final loginGoogleUseCase = LoginGoogleUseCase(authRepository: injector<AuthRepository>());
@@ -117,6 +123,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton(() => AddBalanceUseCase(depositRepository: injector<DepositRepository>()));
     injector.registerLazySingleton(() => FetchHistoryUseCase(historyRepository: injector<HistoryRepository>()));
     injector.registerLazySingleton(() => UpdateActivationTopUpUseCase(autoTopUpRepository: injector<AutoTopUpRepository>()));
+    injector.registerLazySingleton(() => SendMessageToContactUseCase(contactRepository: injector<ContactRepository>()));
     },
   'Token': () async {
     injector

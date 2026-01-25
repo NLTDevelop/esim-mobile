@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:esim_mob_app/core/client/rest/awinst_rest_api.dart';
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/user/data/models/delete_request_response.dart';
-import 'package:esim_mob_app/features/user/data/models/user_esim_list_model.dart';
 import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
@@ -19,8 +18,11 @@ abstract class UserRemoteDataSource {
   @GET('v1/profile')
   Future<AuthenticatedUserModel> getUser();
 
+  @POST('v1/profile')
+  Future<AuthenticatedUserModel> updateUser({@Body() required Map<String, dynamic> data});
+
   @GET('v1/esim')
-  Future<UserESimListModel> getESimList();
+  Future<List<UserESimModel>> getESimList();
 
   @GET('v1/esim/{id}')
   Future<UserESimModel> getESimById({@Path() required int id});

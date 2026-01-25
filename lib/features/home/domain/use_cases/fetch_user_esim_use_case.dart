@@ -1,8 +1,8 @@
 import 'package:esim_mob_app/core/use_case/use_case.dart';
-import 'package:esim_mob_app/features/user/data/models/user_esim_list_model.dart';
+import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:esim_mob_app/features/user/domain/repository/user_repository.dart';
 
-class FetchUserESimUseCase extends UseCase<UserESimListModel, NoParams> {
+class FetchUserESimUseCase extends UseCase<List<UserESimModel>, NoParams> {
   final UserRepository _userRepository;
 
   const FetchUserESimUseCase({
@@ -10,7 +10,7 @@ class FetchUserESimUseCase extends UseCase<UserESimListModel, NoParams> {
   }) : _userRepository = userRepository;
 
   @override
-  Future<UserESimListModel> call(
+  Future<List<UserESimModel>> call(
       final NoParams params,
       ) async {
     return await _userRepository.getESimList();

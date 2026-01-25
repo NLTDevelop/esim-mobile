@@ -5,6 +5,7 @@ import 'package:esim_mob_app/common/widgets/dialog/alert_adaptive_dialog.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
+import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -29,9 +30,12 @@ class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
     super.initState();
     final NavigationDelegate navigationDelegate = NavigationDelegate(
         onUrlChange: (url) {
-          if(url.url != null && url.url!.contains('success') || url.url!.contains('failure')){
+          if (!mounted) return;
+          if (url.url == null) return;
+
+          if(url.url != null && url.url!.contains(widget.trx)){
             showAdaptiveDialog(context: context, builder: (_) {
-              return PaymentDialog(isSuccess: url.url!.contains('success'));
+              return PaymentDialog(isSuccess: url.url!.contains(widget.trx));
             });
           }
         }
@@ -87,8 +91,10 @@ class PaymentDialog extends StatelessWidget {
                 if (isSuccess) {
                   context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
                 }
+                List<PackageModel> userTariffs = context.read<AuthentificationBloc>().state.user.userTariffs;
                 context.pop();
-                context.go(Routes.home);
+
+                context.go(Routes.home, extra: {'user_tariffs': userTariffs});
               },
             );
           },

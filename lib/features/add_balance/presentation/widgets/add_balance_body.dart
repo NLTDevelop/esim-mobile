@@ -1,5 +1,3 @@
-
-
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/features/add_balance/presentation/bloc/add_balance_cubit.dart';
 import 'package:esim_mob_app/features/add_balance/presentation/widgets/add_money_container.dart';
@@ -12,7 +10,7 @@ class AddBalanceBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  SafeArea(
+    return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -23,8 +21,8 @@ class AddBalanceBody extends StatelessWidget {
             ),
             const SummaryContainer(),
             const Spacer(),
-            PrimaryButton(onTap: (){
-              context.read<AddBalanceCubit>().addToBalance(context);
+            PrimaryButton(onTap: () async {
+              await context.read<AddBalanceCubit>().addToBalance();
             }, text: 'Proceed', isExpanded: true,),
             const SizedBox(height: 10,),
           ],

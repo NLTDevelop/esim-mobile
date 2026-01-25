@@ -14,7 +14,7 @@ class TransactionModel extends Equatable {
   final String amount;
   final String charge;
   @JsonKey(name: 'discount_amount')
-  final String discountAmount;
+  final String? discountAmount;
   @JsonKey(name: 'gateway_name')
   final String gatewayName;
   @JsonKey(name: 'currency_code')

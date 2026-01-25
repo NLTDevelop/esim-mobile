@@ -1,3 +1,4 @@
+import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
 import 'package:esim_mob_app/common/widgets/snackbar/default_snackbar.dart';
@@ -34,6 +35,9 @@ class AddBalancePage extends StatelessWidget {
         }, listener: (context, state){
           if(state.errorMessage.isNotEmpty){
             DefaultSnackBar.show(context: context, message: state.errorMessage);
+          }
+          if(state.paymentUrl.isNotEmpty){
+            context.push(Routes.payment, extra: { 'url': state.paymentUrl, 'trx': state.trx });
           }
         },),
       ),

@@ -4,8 +4,10 @@ import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/core/constants/variables.dart';
+import 'package:esim_mob_app/features/contact_us/presentation/bloc/contact_us_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ContactUsBody extends StatefulWidget {
@@ -65,10 +67,11 @@ class _ContactUsBodyState extends State<ContactUsBody> {
     );
   }
 
-  void _submitForm() async {
+  void _submitForm(BuildContext context) async {
     HapticFeedback.lightImpact();
     if (_formKey.currentState!.validate()) {
-      await sendEmail(toEmail: _emailController.text, name: _nameController.text, message: _messageController.text);
+      // await sendEmail(toEmail: _emailController.text, name: _nameController.text, message: _messageController.text);
+      await context.read<ContactUsCubit>().sendMessageToSupport(_messageController.text);
       if(mounted){
 
       } else{
@@ -197,7 +200,9 @@ class _ContactUsBodyState extends State<ContactUsBody> {
                   ),
                   const DefaultText.displaySmall('- For existing users in case of emergency. Available 24/7 (Dutch and English) WhatsApp\n - For non-urgent support requests, text only.'),
                   const Spacer(),
-                  PrimaryButton(onTap: _submitForm, text: 'Send', isExpanded: true,),
+                  PrimaryButton(onTap: () {
+                    _submitForm(context);
+                  }, text: 'Send', isExpanded: true,),
                   const Flexible(
                     child: const SizedBox(
                       height: 20,
