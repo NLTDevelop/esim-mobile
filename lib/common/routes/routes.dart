@@ -19,6 +19,7 @@ import 'package:esim_mob_app/features/store/data/models/country_model.dart';
 import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
 import 'package:esim_mob_app/features/store/data/models/region_model.dart';
 import 'package:esim_mob_app/features/store/presentation/page/store_page.dart';
+import 'package:esim_mob_app/features/top_up/presentation/top_up_page.dart';
 import 'package:esim_mob_app/features/welcome/presentation/page/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -52,6 +53,7 @@ class Routes {
   static const addBalance = '/add-balance';
   static const eSimList = '/esims';
   static const deleteAccount = '/delete-account';
+  static const topUp = '/top-up';
 }
 
 class BranchHomeData extends StatefulShellBranchData {
@@ -115,9 +117,13 @@ class HomeRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>?;
-    final tariffs = extra?['user_tariffs'] as List<PackageModel>? ?? [];
+    List<PackageModel>? tariffs;
+    if(extra?['user_tariffs'] != null){
+      tariffs = extra?['user_tariffs'].map<PackageModel>((e) => PackageModel.fromJson(e)).toList() as List<PackageModel>;
+    }
+
     return HomePage(
-      userTariffs: tariffs,
+      userTariffs: tariffs ?? [],
     );
   }
 }
@@ -245,7 +251,7 @@ class CheckoutRoute extends GoRouteData {
   Widget build(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>;
     final tariff = extra['tariff'] as PackageModel;
-    final image = extra['image'] as String;
+    final image = extra['image'] as String?;
     final country = extra['country'] as String;
     final countryCode = extra['country_code'] as String;
     final type = extra['type'] as String;
@@ -353,6 +359,28 @@ class ESimListRoute extends GoRouteData {
       baseCountry: baseCountry is CountryModel ? baseCountry : (baseCountry as RegionModel),
       currencyType: currencyType,
       isFromWelcome: isFromWelcome,
+    );
+  }
+}
+
+@TypedGoRoute<TopUpRoute>(path: Routes.topUp)
+class TopUpRoute extends GoRouteData {
+  const TopUpRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>;
+    final int activationId = extra['activation_id'];
+
+    return CustomTransitionPage(
+      key: state.pageKey,
+      child: TopUpPage(activationId: activationId,),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
     );
   }
 }

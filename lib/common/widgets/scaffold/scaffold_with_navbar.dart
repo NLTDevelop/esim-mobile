@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/features/connection_checker/widgets/network_checker_widget.dart';
+import 'package:esim_mob_app/features/esim_compatability_checker/presentation/cubit/esim_installation_checker_cubit.dart';
+import 'package:esim_mob_app/features/esim_compatability_checker/presentation/widgets/cant_install_esim_container.dart';
 import 'package:esim_mob_app/features/localization/data/model/local_keys_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
@@ -53,7 +56,19 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
     return HeroControllerScope(
       controller: MaterialApp.createMaterialHeroController(),
       child: Scaffold(
-        body: NetworkCheckerWidget(connectedChild:  widget.navigationShell),
+        body: NetworkCheckerWidget(connectedChild:  BlocBuilder<EsimInstallationCheckerCubit, EsimInstallationCheckerState>(
+          builder: (context, state) {
+            return state.canInstallESim ? widget.navigationShell : Stack(
+              children: [
+                widget.navigationShell,
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: CantInstallEsimContainer(),
+                )
+              ],
+            );
+          }
+        )),
         bottomNavigationBar: ValueListenableBuilder<int>(
           valueListenable: _index,
           builder: (BuildContext context, int selectedIndex, Widget? child) => NavigationBar(

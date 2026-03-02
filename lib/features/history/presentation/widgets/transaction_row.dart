@@ -10,10 +10,12 @@ class TransactionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final indexOfDot = transactionModel.amount.indexOf('.');
+    final prettifyAmount = transactionModel.amount.substring(0, indexOfDot + 3);
     return Row(
       children: [
         const SizedBox(width: 10,),
-        DefaultText.displaySmall('${transactionModel.amount} ${transactionModel.currencyCode}', fontWeight: FontWeight.w600,),
+        DefaultText.displaySmall('$prettifyAmount ${transactionModel.currencyCode}', fontWeight: FontWeight.w600,),
         // const Spacer(),
         // DefaultText.displaySmall('${getStatusOfPayment(transactionModel.status)} ${DateFormat('d MMM yyyy HH:mm').format(transactionModel.createdAt)}', fontWeight: FontWeight.w600,),
       ],

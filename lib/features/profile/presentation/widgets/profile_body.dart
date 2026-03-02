@@ -1,6 +1,7 @@
 import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
+import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/core/constants/launch_links.dart';
 import 'package:esim_mob_app/core/use_case/use_case.dart';
@@ -8,6 +9,9 @@ import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bl
 import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:esim_mob_app/features/profile/presentation/widgets/profile_button.dart';
+import 'package:esim_mob_app/features/store/data/models/currency_type.dart';
+import 'package:esim_mob_app/features/store/presentation/widgets/change_currency_popup_button.dart';
+import 'package:esim_mob_app/features/user/domain/use_cases/update_user_use_case.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,24 +53,80 @@ class ProfileBody extends StatelessWidget {
                         offset: Offset(0, 3),
                         blurRadius: 5)
                   ]),
-              child: Row(children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const DefaultText.displaySmall('Your email address'),
-                    const SizedBox(
-                      width: 6,
+              child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
+                builder: (context, state) {
+                  return Row(mainAxisSize: MainAxisSize.max, children: [
+                    state.map(
+                      authenticated: (s) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const DefaultText.displaySmall('Your email address'),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          DefaultText.displaySmall(
+                            s.user.userEmail,
+                            color: Theme.of(context)
+                                .extension<ColorExtension>()!
+                                .descriptionText,
+                            fontSize: 15,
+                          ),
+                        ],
+                      ),
+                      loading: (s) => LoadingState(),
+                      failure: (s) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const DefaultText.displaySmall('Your email address'),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          DefaultText.displaySmall(
+                            s.user.userEmail,
+                            color: Theme.of(context)
+                                .extension<ColorExtension>()!
+                                .descriptionText,
+                            fontSize: 15,
+                          ),
+                        ],
+                      ),
+                      success: (s) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const DefaultText.displaySmall('Your email address'),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          DefaultText.displaySmall(
+                            s.user.userEmail,
+                            color: Theme.of(context)
+                                .extension<ColorExtension>()!
+                                .descriptionText,
+                            fontSize: 15,
+                          ),
+                        ],
+                      ),
+                      notAuthenticated: (s) => const SizedBox.shrink(),
                     ),
-                    DefaultText.displaySmall(
-                      context.read<AuthentificationBloc>().state.user.userEmail,
-                      color: Theme.of(context)
-                          .extension<ColorExtension>()!
-                          .descriptionText, fontSize: 15,
+                    const Spacer(),
+                    ChangeCurrencyPopupButton(
+                      onTap: (CurrencyType value) async {
+                        context
+                            .read<AuthentificationBloc>()
+                            .add(AuthentificationEvent.changeCurrencyCode(currencyCode: value.name.toUpperCase()));
+                      },
+                      selectedType: state.user.currencyCode != null
+                          ? state.user.currencyCode == 'USD'
+                              ? CurrencyType.usd
+                              : CurrencyType.eur
+                          : CurrencyType.usd,
                     ),
-                  ],
-                ),
-              ]),
+                  ]);
+                },
+              ),
             ),
             const SizedBox(
               height: 14,
@@ -83,19 +143,26 @@ class ProfileBody extends StatelessWidget {
                       iconPath: AppIcons.notification,
                       leadingIcon: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          border: Border.all(
-                            color: Theme.of(context).extension<ColorExtension>()!.searchCursor, // border color
-                            width: 2,
-                          )),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                              color: Theme.of(context)
+                                  .extension<ColorExtension>()!
+                                  .searchCursor,
+                              // border color
+                              width: 2,
+                            )),
                         child: FlutterSwitch(
                           width: 66.0,
                           height: 40.0,
                           toggleSize: 35.0,
                           value: state.isNotify,
                           activeColor: Theme.of(context).primaryColor,
-                          inactiveColor: Theme.of(context).extension<ColorExtension>()!.background,
-                          toggleColor: Theme.of(context).extension<ColorExtension>()!.searchCursor,
+                          inactiveColor: Theme.of(context)
+                              .extension<ColorExtension>()!
+                              .background,
+                          toggleColor: Theme.of(context)
+                              .extension<ColorExtension>()!
+                              .searchCursor,
                           borderRadius: 30.0,
                           onToggle: (value) {
                             context.read<ProfileBloc>().add(
@@ -113,7 +180,9 @@ class ProfileBody extends StatelessWidget {
                       iconPath: AppIcons.termsOfCondition,
                       onTap: () {
                         HapticFeedback.lightImpact();
-                        context.read<ProfileBloc>().openLink(Uri.parse(LaunchLinks.termsOfConditions));
+                        context
+                            .read<ProfileBloc>()
+                            .openLink(Uri.parse(LaunchLinks.termsOfConditions));
                       },
                       leadingIcon: Icon(
                         Icons.arrow_forward_ios,
@@ -131,7 +200,9 @@ class ProfileBody extends StatelessWidget {
                         iconPath: AppIcons.privacyPolicy,
                         onTap: () {
                           HapticFeedback.lightImpact();
-                          context.read<ProfileBloc>().openLink(Uri.parse(LaunchLinks.privacyPolicy));
+                          context
+                              .read<ProfileBloc>()
+                              .openLink(Uri.parse(LaunchLinks.privacyPolicy));
                         },
                         leadingIcon: Icon(
                           Icons.arrow_forward_ios,
@@ -165,12 +236,15 @@ class ProfileBody extends StatelessWidget {
                     ProfileButton(
                       text: 'Delete account',
                       iconPath: AppIcons.delete,
-                      onTap: () async{
+                      onTap: () async {
                         HapticFeedback.lightImpact();
                         await injector<DeleteAccountUseCase>().call(NoParams());
-                        bool? isDeleted = await context.push(Routes.deleteAccount);
-                        if(isDeleted != null && isDeleted){
-                          context.read<AuthentificationBloc>().add(const AuthentificationEvent.deleteUser());
+                        bool? isDeleted =
+                            await context.push(Routes.deleteAccount);
+                        if (isDeleted != null && isDeleted) {
+                          context
+                              .read<AuthentificationBloc>()
+                              .add(const AuthentificationEvent.deleteUser());
                         }
                       },
                       textColor:

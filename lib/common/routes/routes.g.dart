@@ -26,6 +26,7 @@ List<RouteBase> get $appRoutes => [
       $addBalanceRoute,
       $historyRoute,
       $eSimListRoute,
+      $topUpRoute,
       $deleteAccountRoute,
     ];
 
@@ -461,6 +462,28 @@ extension $ESimListRouteExtension on ESimListRoute {
 
   String get location => GoRouteData.$location(
         '/esims',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $topUpRoute => GoRouteData.$route(
+      path: '/top-up',
+      factory: $TopUpRouteExtension._fromState,
+    );
+
+extension $TopUpRouteExtension on TopUpRoute {
+  static TopUpRoute _fromState(GoRouterState state) => const TopUpRoute();
+
+  String get location => GoRouteData.$location(
+        '/top-up',
       );
 
   void go(BuildContext context) => context.go(location);

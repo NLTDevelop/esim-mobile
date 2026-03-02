@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 
 class ESimInstallationHandler{
@@ -6,6 +8,12 @@ class ESimInstallationHandler{
   static const MethodChannel _channel = MethodChannel('samples.flutter.dev/esim');
 
   static void installESim(String eSimPackageName) {
-    _channel.invokeMethod('launchESimSetup', eSimPackageName);
+    if(Platform.isIOS){
+      _channel.invokeMethod('launchESimSetup', eSimPackageName);
+    } else {
+      _channel.invokeMethod('openEsimSettings', {
+        'activationCode': eSimPackageName,
+      });
+    }
   }
 }

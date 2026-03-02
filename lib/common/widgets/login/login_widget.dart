@@ -22,10 +22,10 @@ class LoginWidget extends StatelessWidget {
         listener: (context, state){
           state.mapOrNull(
             authenticated: (state) {
-              context.go(Routes.home);
+              context.go(Routes.home,);
             },
             success: (state){
-              context.go(Routes.home);
+              context.go(Routes.home,);
             },
             failure: (_) {
               DefaultSnackBar.show(

@@ -1,6 +1,7 @@
 
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/auto_top_up/presentation/bloc/auto_top_up_bloc.dart';
 import 'package:esim_mob_app/features/auto_top_up/presentation/widgets/auto_top_up_confirm_dialog.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/widgets/preview_tariff_card.dart';
@@ -22,7 +23,9 @@ class AutoTopUpData extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
+          child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
+  builder: (context, state) {
+    return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -36,12 +39,14 @@ class AutoTopUpData extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12,),
-              ...tariffs.asMap().entries.map((e) => Padding(padding: const EdgeInsets.only(bottom: 10), child: PreviewTariffCard(price: e.value.price, dataInGb: e.value.dataInMB / 1024, days: e.value.validDays ?? 0, isActive: e.key == selectedIndex, onTap: () {
+              ...tariffs.asMap().entries.map((e) => Padding(padding: const EdgeInsets.only(bottom: 10), child: PreviewTariffCard( currencyCode: state.user.currencyCode,price: e.value.price, dataInGb: e.value.dataInMB / 1024, days: e.value.validDays ?? 0, isActive: e.key == selectedIndex, onTap: () {
                 onTap(e.key);
               }))),
               const SizedBox(height: 22,),
             ],
-          ),
+          );
+  },
+),
         ),
         Align(
           alignment: Alignment.bottomCenter,

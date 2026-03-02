@@ -8,7 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class PaymentFailedState extends StatelessWidget {
-  const PaymentFailedState({super.key});
+  const PaymentFailedState({super.key, required this.message});
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class PaymentFailedState extends StatelessWidget {
           children: [
             Icon(Icons.close, color: Theme.of(context).extension<ColorExtension>()!.error, size: 80,),
             const SizedBox(height: 12,),
-            DefaultText.bodySmall('Оплата не пройшла', color: Theme.of(context).extension<ColorExtension>()!.error,),
+            DefaultText.bodySmall(message != null && message == 'Insufficient funds' ? 'Not enough funds on the balance sheet' : 'Payment failed', color: Theme.of(context).extension<ColorExtension>()!.error, textAlign: TextAlign.center,),
             const SizedBox(
               height: 60,
             ),
@@ -31,7 +32,7 @@ class PaymentFailedState extends StatelessWidget {
                   Expanded(
                     child: PrimaryButton(onTap: (){
                       context.read<PaymentBloc>().onPay();
-                    }, text: 'Повторити ще раз',),
+                    }, text: 'Try again',),
                   ),
                   const SizedBox(
                     width: 14,
@@ -39,7 +40,7 @@ class PaymentFailedState extends StatelessWidget {
                   Expanded(
                     child: PrimaryButton(onTap: (){
                       context.pop();
-                    }, text: 'Повернутися назад'),
+                    }, text: 'Get back'),
                   ),
                 ],
               ),

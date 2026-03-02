@@ -28,6 +28,13 @@ class ErrorMapper {
     if(error.response?.data is String && error.response?.statusCode == 400){
       return 'Invalid or expired code';
     }
+    if(error.response?.statusCode == 422){
+      print(error.response);
+      if (error.response?.data['error'] != null) {
+        return error.response?.data['error'];
+      }
+      return error.response?.data['message'];
+    }
     if (error.response?.data['message'] != null) {
       return error.response?.data['message'];
     }

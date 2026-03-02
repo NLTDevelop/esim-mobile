@@ -27,7 +27,7 @@ class PaymentPage extends StatelessWidget {
                 loading: (_) => const LoadingState(textWidget: PaymentLoadingText(),),
                 success: (_) =>
                     PaymentSuccessfulState(tariffModel: tariffModel),
-                failure: (_) => const PaymentFailedState());
+                failure: (s) => const PaymentFailedState(message: null,));
           },
         ),
       ),

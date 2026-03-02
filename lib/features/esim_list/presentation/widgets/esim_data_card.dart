@@ -1,8 +1,11 @@
 
+import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ESimDataCard extends StatelessWidget {
@@ -16,6 +19,8 @@ class ESimDataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String? currencyCode = context.read<AuthentificationBloc>().state.user.currencyCode;
+
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -38,17 +43,22 @@ class ESimDataCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              eSim.image.endsWith('svg')
+              eSim.image != null ? eSim.image!.endsWith('svg')
                   ? Padding(
                 padding: const EdgeInsets.only(right: 10.0),
                 child: SvgPicture.network(
-                  eSim.image,
+                  eSim.image!,
                   height: 24,
                 ) ,
               )
                   : Padding(
                 padding: const EdgeInsets.only(right: 10.0),
-                child: Image.network(eSim.image, height: 24,),
+                child: Image.network(eSim.image!, height: 24,),
+              ) : Container(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                margin: const EdgeInsets.only(right: 10),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Theme.of(context).extension<ColorExtension>()!.splashBackground,),
+                child: SvgPicture.asset(AppIcons.world, width: 20, height: 20, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),)
               ),
               Expanded(
                 child: Column(
@@ -66,7 +76,7 @@ class ESimDataCard extends StatelessWidget {
                     const SizedBox(
                       height: 3,
                     ),
-                    DefaultText.labelSmall('Price: from ${eSim.packages.map<double>((e) => e.price).toList().first} \$',
+                    DefaultText.labelSmall('Price: from ${eSim.packages.map<double>((e) => e.price).toList().first} ${currencyCode != null ? currencyCode =='EUR' ? '€' : '\$' : '\$'}',
                         overflow: TextOverflow.visible,
                         maxLines: 1,
                         fontWeight: FontWeight.w500,

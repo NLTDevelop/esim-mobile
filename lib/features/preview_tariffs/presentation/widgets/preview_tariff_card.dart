@@ -4,13 +4,14 @@ import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:flutter/material.dart';
 
 class PreviewTariffCard extends StatelessWidget {
-  const PreviewTariffCard({super.key, required this.price, required this.dataInGb, required this.days, required this.isActive, required this.onTap});
+  const PreviewTariffCard({super.key, required this.price, required this.dataInGb, required this.days, required this.isActive, required this.onTap,required this.currencyCode});
 
   final double price;
   final double dataInGb;
   final int days;
   final bool isActive;
   final void Function() onTap;
+  final String? currencyCode;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ class PreviewTariffCard extends StatelessWidget {
                     children: [
                       DefaultText.labelMedium('${dataInGb.toStringAsFixed(2)} GB'),
                       const Spacer(),
-                      DefaultText.labelMedium('US\$$price'),
+                      DefaultText.labelMedium('${currencyCode != null ? currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'}$price'),
                     ],
                   ),
                   DefaultText.displaySmall(days <= 0 ? 'No limits' : '$days days'),

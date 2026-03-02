@@ -10,7 +10,10 @@ import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
 import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/fetch_user_use_case.dart';
+import 'package:esim_mob_app/features/user/domain/use_cases/update_user_use_case.dart';
 import 'package:esim_mob_app/injector.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -24,12 +27,12 @@ class AuthentificationBloc
     extends Bloc<AuthentificationEvent, AuthentificationState> {
   AuthentificationBloc(
       {required LoginGoogleUseCase loginGoogleUseCase,
-      required LoginIOSUseCase loginAppleUseCase, required DeleteAccountUseCase deleteAccountUseCase, required TokenLogoutUseCase tokenLogoutUseCase, required SessionStorage sessionStorage})
+      required LoginIOSUseCase loginAppleUseCase, required TokenLogoutUseCase tokenLogoutUseCase, required SessionStorage sessionStorage, required UpdateUserUseCase updateUserUseCase})
       : _loginAppleUseCase = loginAppleUseCase,
         _loginGoogleUseCase = loginGoogleUseCase,
-        _deleteAccountUseCase = deleteAccountUseCase,
         _tokenLogoutUseCase = tokenLogoutUseCase,
         _sessionStorage = sessionStorage,
+        _updateUserUseCase = updateUserUseCase,
         super(const AuthentificationState.loading()) {
     on<AuthentificationEvent>((event, emit) async{
       await event.map(
@@ -38,16 +41,18 @@ class AuthentificationBloc
         logout: (event) async => _onLogOut(event, emit),
         getSignedInUser: (event) async => _onGetSignedInCustomer(event, emit),
         loginApple: (event) async => _onLoginApple(event, emit),
-        setUser: (event) async => _onSetUser(event, emit), deleteUser: (event) async => _onDeleteUser(event, emit), tryAgain: (_AuthentificationEventTryAgain value) {  },
+        setUser: (event) async => _onSetUser(event, emit), deleteUser: (event) async => _onDeleteUser(event, emit), tryAgain: (_AuthentificationEventTryAgain value) {  }, changeCurrencyCode: (e) async => _onUpdateCurrencyCode(e, emit),
       );
     });
   }
 
   final LoginGoogleUseCase _loginGoogleUseCase;
   final LoginIOSUseCase _loginAppleUseCase;
-  final DeleteAccountUseCase _deleteAccountUseCase;
   final TokenLogoutUseCase _tokenLogoutUseCase;
+  final UpdateUserUseCase _updateUserUseCase;
+  
   final SessionStorage _sessionStorage;
+  
 
 
   Future<void> _onLoginGoogle(_AuthentificationEventLoginGoogle event, Emitter<AuthentificationState> emit) async{
@@ -55,7 +60,15 @@ class AuthentificationBloc
       emit(
           const AuthentificationState.loading(user: NotAuthenticatedUser())
       );
-      final token = await _loginGoogleUseCase.call(NoParams());
+      late String fcmToken;
+      try{
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      } catch (e){
+        debugPrint(e.toString());
+        fcmToken = '';
+      }
+
+      final token = await _loginGoogleUseCase.call(LoginGoogleParams(fcmToken: fcmToken));
 
 
       await _sessionStorage.saveAccessToken(token.accessToken);
@@ -88,7 +101,15 @@ class AuthentificationBloc
       emit(
           const AuthentificationState.loading(user: NotAuthenticatedUser())
       );
-      final token = await _loginAppleUseCase.call(NoParams());
+      late String fcmToken;
+      try{
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      } catch (e){
+        debugPrint(e.toString());
+        fcmToken = '';
+      }
+
+      final token = await _loginAppleUseCase.call(LoginIOSParams(fcmToken: fcmToken));
       await _sessionStorage.saveAccessToken(token.accessToken);
       await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
       final user = await injector<FetchCurrentUserUseCase>().call(NoParams());
@@ -167,6 +188,10 @@ class AuthentificationBloc
       ) async {
     emit(_Loading(user: state.user));
     ///await injector<TokenInitialUseCase>().call(NoParams());
+    FirebaseMessaging.instance.onTokenRefresh.listen((String fcmToken) {
+      // TODO implement refresh token logic
+    });
+
     emit(
       event.user.when<AuthentificationState>(
         authenticated: (customer) => _Authenticated(user: customer),
@@ -206,6 +231,22 @@ class AuthentificationBloc
   //   emit(_Failure(message: ErrorMapper.mapError(error)));
   //   }
   // }
+
+  _onUpdateCurrencyCode(_AuthentificationChangeCurrencyCode event, Emitter<AuthentificationState> emit) async{
+    try {
+      emit(_Loading(user: state.user));
+      final user = await _updateUserUseCase.call(event.currencyCode);
+      
+      emit(
+        user.when<AuthentificationState>(
+          authenticated: (customer) => _Authenticated(user: customer),
+          notAuthenticated: () => const _NotAuthenticated(),
+        ),
+      );
+    } on Object catch (error) {
+      emit(_Failure(message: ErrorMapper.mapError(error)));
+    }
+  }
 
   void onLoginGoogleTap(){
     add(const _AuthentificationEventLoginGoogle());

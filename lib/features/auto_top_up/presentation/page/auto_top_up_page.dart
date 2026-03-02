@@ -1,5 +1,6 @@
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
+import 'package:esim_mob_app/common/widgets/snackbar/default_snackbar.dart';
 import 'package:esim_mob_app/common/widgets/state/auto_top_up_successfull_state.dart';
 import 'package:esim_mob_app/common/widgets/state/failure_state.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
@@ -41,16 +42,20 @@ class AutoTopUpPage extends StatelessWidget {
           ),
           title: const DefaultText.bodySmall('Auto Top-Up'),
         ),
-        body: BlocBuilder<AutoTopUpBloc, AutoTopUpState>(
+        body: BlocConsumer<AutoTopUpBloc, AutoTopUpState>(
           builder: (context, state) {
             return state.map(
                 success: (_) => const AutoTopUpBody(),
                 loading: (_) => const LoadingState(),
-                failure: (_) => FailureState(onTap: () {}),
+                failure: (_) => const AutoTopUpBody(),
                 initial: (_) => const LoadingState(),
                 successAutoTopUp: (_) => const AutoTopUpSuccessfulState(),
                 failedAutoTop: (_) => FailureState(onTap: () {}),);
-          },
+          }, listener: (BuildContext context, AutoTopUpState state) {
+            state.mapOrNull(failure: (s) =>
+                DefaultSnackBar.show(context: context, message: s.message)
+            );
+        },
         ),
       ),
     );

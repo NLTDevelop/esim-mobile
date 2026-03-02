@@ -1,18 +1,20 @@
 import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/core/constants/launch_links.dart';
 import 'package:esim_mob_app/features/help/presentation/widgets/help_button_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HelpBody extends StatelessWidget {
   const HelpBody({super.key});
 
-  // void _requestRefund() async {
-  //   ///launchUrl(kRefundUrl);
-  // }
+  void _requestRefund() async {
+    launchUrl(Uri.parse(LaunchLinks.requestRefund));
+  }
 
   void _askQuestion(BuildContext context) async {
     context.push(Routes.faq);
@@ -62,6 +64,7 @@ class HelpBody extends StatelessWidget {
               isWebSite: true,
               onTap: () {
                 HapticFeedback.lightImpact();
+                _requestRefund();
               },
             ),
             const SizedBox(

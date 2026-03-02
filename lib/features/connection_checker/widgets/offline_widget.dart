@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class OfflineWidget extends StatelessWidget {
-  const OfflineWidget({super.key});
+  const OfflineWidget({super.key, required this.textColor});
+
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +35,11 @@ class OfflineWidget extends StatelessWidget {
                 children: [
                   DefaultText.bodySmall('No internet', color: Theme.of(context).extension<ColorExtension>()!.text,),
                   const SizedBox(height: 16,),
-                  DefaultText.titleLarge('You need to be online to access the app. But you can still check the instructions on how to use your eSim.', textAlign: TextAlign.center, color: Theme.of(context).extension<ColorExtension>()!.text,
+                  DefaultText.titleLarge('You need to be online to access the app.', textAlign: TextAlign.center, color: Theme.of(context).extension<ColorExtension>()!.text,
                   )
                 ],
               ),
-              PrimaryButton(onTap: (){}, text: 'View instructions'),
+              //PrimaryButton(onTap: (){}, text: 'View instructions'),
               const SizedBox(
                 height: 20,
               ),

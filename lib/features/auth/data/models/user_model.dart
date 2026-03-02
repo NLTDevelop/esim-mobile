@@ -10,8 +10,8 @@ abstract class UserModel {
   factory UserModel.authenticated({
     required final int id,
     required final String email,
-    required final double balance,
-    required final String currency,
+    required final double? balance,
+    required final String? currency,
     required final List<PackageModel> eSims,
   }) =>
       AuthenticatedUserModel(
@@ -29,6 +29,8 @@ abstract class UserModel {
   List<PackageModel> get userTariffs;
 
   String get userEmail;
+
+  String? get currencyCode;
 
   T when<T extends Object?>({
     required final T Function(AuthenticatedUserModel user) authenticated,
@@ -50,9 +52,9 @@ class AuthenticatedUserModel implements UserModel {
   final String email;
   @JsonKey(name: 'e_sims')
   final List<PackageModel>? eSims;
-  final double balance;
+  final double? balance;
   @JsonKey(name: 'currency_code')
-  final String currency;
+  final String? currency;
 
   @override
   bool get isAuthenticated => !isNotAuthenticated;
@@ -96,6 +98,9 @@ class AuthenticatedUserModel implements UserModel {
 
   @override
   List<PackageModel> get userTariffs => eSims ?? [];
+
+  @override
+  String? get currencyCode => currency;
 }
 
 @immutable
@@ -111,6 +116,9 @@ class NotAuthenticatedUser implements UserModel {
 
   @override
   String get userEmail => '';
+
+  @override
+  String? get currencyCode => '';
 
   @override
   List<PackageModel> get userTariffs => [];

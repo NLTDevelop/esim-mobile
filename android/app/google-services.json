@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "199597509310",
+    "project_id": "awinstconnect-1cefb",
+    "storage_bucket": "awinstconnect-1cefb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199597509310:android:7e890988d70a8db5852cef",
+        "android_client_info": {
+          "package_name": "com.esimapp.appname"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw0PrbxNvrsLlAT0g8x_x6unLOo2mMUEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199597509310:android:d3fb9ccb11715a4a852cef",
+        "android_client_info": {
+          "package_name": "com.esimapp.nlt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw0PrbxNvrsLlAT0g8x_x6unLOo2mMUEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

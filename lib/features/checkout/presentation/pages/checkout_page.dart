@@ -18,7 +18,7 @@ class CheckoutPage extends StatelessWidget {
   const CheckoutPage({super.key, required this.tariff, required this.image, required this.country, required this.type, required this.countryCode});
 
   final PackageModel tariff;
-  final String image;
+  final String? image;
   final String country;
   final String type;
   final String countryCode;
@@ -46,7 +46,7 @@ class CheckoutPage extends StatelessWidget {
         ),
         body: BlocBuilder<CheckoutBloc, CheckoutState>(
   builder: (context, state) {
-    return state.map(initial: (_) => CheckoutBody(country: country, image: image,), success: (_) => PaymentSuccessfulState(tariffModel: tariff), loading: (_) => const LoadingState(), failure: (_) => const PaymentFailedState());
+    return state.map(initial: (_) => CheckoutBody(country: country, image: image,), success: (_) => PaymentSuccessfulState(tariffModel: tariff), loading: (_) => const LoadingState(), failure: (s) => PaymentFailedState(message: s.message,));
   },
 ),
       ),

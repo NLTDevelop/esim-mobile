@@ -141,7 +141,7 @@ class HomeESimWidget extends StatelessWidget {
                           const SizedBox(
                             height: 24,
                           ),
-                          DefaultText.bodyMedium('${(state.tariffs.last.dataInMb / 1024).toStringAsFixed(2)} GB',
+                          DefaultText.bodyMedium('${(state.tariffs.last.dataInMb / 1024.00).toStringAsFixed(2)} GB',
                               fontWeight: FontWeight.w600,
                               color: Theme.of(context)
                                   .extension<ColorExtension>()!
@@ -151,7 +151,8 @@ class HomeESimWidget extends StatelessWidget {
                           ),
                           if(state.tariffs.last.validDays != null)
                             DefaultText.labelMedium(
-                            'Due to ${DateFormat('d MMM').format(DateTime.now().add(Duration(days: state.tariffs.last.validDays!)))}',
+                      state.tariffs.last.validDays != null ? state.tariffs.last.validDays != 0 ?
+                      'Due to ${DateFormat('d MMM').format(DateTime.now().add(Duration(days: state.tariffs.last.validDays!)))}' : 'eSIM expired' : '',
                             color: Theme.of(context)
                                 .extension<ColorExtension>()!
                                 .cardBorder,
@@ -227,7 +228,7 @@ class HomeESimWidget extends StatelessWidget {
         useSafeArea: true,
         isScrollControlled: true,
         builder: (ctx) =>  HomeMyESimsBottomSheet(
-          esim: context.read<HomeBloc>().userESims.first
+          esims: context.read<HomeBloc>().userESims
         ));
   }
 

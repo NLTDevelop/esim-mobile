@@ -1,5 +1,6 @@
 
 
+import 'package:esim_mob_app/core/constants/variables.dart';
 import 'package:esim_mob_app/core/utils/esim/esim_installation_handler.dart';
 import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +21,8 @@ class InstallESimCubit extends Cubit<InstallESimState> {
 
   installESim(){
     debugPrint('install esim');
-    ESimInstallationHandler.installESim(userESims.first.id.toString());
+
+    ESimInstallationHandler.installESim(kTest3ESimPackage);
   }
 
   shareESim(){

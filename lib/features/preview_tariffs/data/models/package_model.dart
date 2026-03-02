@@ -7,10 +7,10 @@ part 'package_model.g.dart';
 class PackageModel extends Equatable {
   const PackageModel(
       {required this.price,
-      required this.currency,
-      required this.packageId,
-      required this.dataInMb,
-      required this.validDays});
+        required this.currency,
+        required this.packageId,
+        required this.dataInMb,
+        required this.validDays});
 
   @JsonKey(name: 'package_id')
   final String packageId;
@@ -20,6 +20,7 @@ class PackageModel extends Equatable {
   final int? validDays;
   @JsonKey(name: 'data_mb')
   final int dataInMb;
+
 
   @override
   List<Object?> get props =>

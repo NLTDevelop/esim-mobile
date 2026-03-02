@@ -28,6 +28,10 @@ class PreviewTariffsBloc
   List<PackageModel> get tariffs => _plan.packages;
   PlanModel get plan => _plan;
 
+
+  String? get countryCodeFromPrivacyIPLocation => _plan.privacyIPLocation;
+  String? get countryCodeFromCountryModel => (_countryEntity as CountryModel).code;
+
   bool get isLocal => _countryEntity is CountryModel;
 
   final bool isFromWelcome;

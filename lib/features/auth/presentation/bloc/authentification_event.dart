@@ -16,6 +16,8 @@ class AuthentificationEvent with _$AuthentificationEvent {
     required final UserModel user,
   }) = _AuthentificationSetUser;
 
+  const factory AuthentificationEvent.changeCurrencyCode({required final String currencyCode}) = _AuthentificationChangeCurrencyCode;
+
   const factory AuthentificationEvent.deleteUser() = _AuthentificationEventDeleteUser;
   const factory AuthentificationEvent.tryAgain() = _AuthentificationEventTryAgain;
 }

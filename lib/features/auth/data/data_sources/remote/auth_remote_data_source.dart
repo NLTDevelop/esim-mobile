@@ -12,11 +12,13 @@ abstract class AuthRemoteDataSource {
   @POST('v1/auth/google/access-token')
   Future<TokenModel> signInGoogle({
     @Body() required Map<String, dynamic> data,
+    @Header('Device-Id') required String fcmToken
   });
 
   @POST('v1/auth/apple/access-token')
   Future<TokenModel> signInIOS({
     @Body() required Map<String, dynamic> data,
+    @Header('Device-Id') required String fcmToken
   });
 
   // @GET('refresh')

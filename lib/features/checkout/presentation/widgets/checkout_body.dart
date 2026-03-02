@@ -1,9 +1,11 @@
 import 'package:country_codes/country_codes.dart';
 import 'package:esim_mob_app/common/routes/routes.dart';
+import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/snackbar/default_snackbar.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/checkout/presentation/bloc/checkout_bloc.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/order_coupon_textfield.dart';
@@ -17,11 +19,13 @@ import 'package:go_router/go_router.dart';
 class CheckoutBody extends StatelessWidget {
   const CheckoutBody({super.key, required this.country, required this.image});
   final String country;
-  final String image;
+  final String? image;
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<CheckoutBloc>();
+    final authentificationBloc = context.read<AuthentificationBloc>();
+
     return SafeArea(
       bottom: false,
       child: Padding(
@@ -63,11 +67,11 @@ class CheckoutBody extends StatelessWidget {
                                   clipBehavior: Clip.hardEdge,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8)),
-                                  child: image.endsWith('svg') ? SvgPicture.network(
-                                    image,
+                                  child: image != null ? image!.endsWith('svg') ? SvgPicture.network(
+                                    image!,
                                     width: 30,
                                     height: 24,
-                                  ) : Image.network(image, width: 30, height: 24,)),
+                                  ) : Image.network(image!, width: 30, height: 24,) : SvgPicture.asset(AppIcons.world,width: 30, height: 24 )),
                               const SizedBox(
                                 width: 10,
                               ),
@@ -104,7 +108,7 @@ class CheckoutBody extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           OrderSummaryDataRow(
-                              data: 'US\$${blocInternal.tariff.price}', typeName: 'Subtotal'),
+                              data: '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'}${blocInternal.tariff.price}', typeName: 'Subtotal'),
                           // AnimatedCrossFade(firstChild: Container(), secondChild: OrderSummaryDataRow(data: '-US\$${blocInternal.discount}', typeName: 'Coupon', couponWidget: Container(
                           //   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                           //   margin: const EdgeInsets.only(left: 8),
@@ -130,7 +134,7 @@ class CheckoutBody extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                                 DefaultText.bodySmall(
-                                 'US\$${bloc.tariff.price}',
+                                 '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'} ${bloc.tariff.price}',
                                   fontWeight: FontWeight.w600,
                                 ),
                               ],

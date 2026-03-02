@@ -49,7 +49,7 @@ class InstallESimChoseESim extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                       color: Theme.of(context).extension<ColorExtension>()!.cardBorder
                   ),
-                  child: const DefaultText.labelSmall('not Installed'),
+                  child: DefaultText.labelSmall(e.status == 'PENDING' ? 'not installed' : e.status == 'ACTIVE' ? 'installed' : 'used'),
                 ),
                 const Spacer(),
                 Container(

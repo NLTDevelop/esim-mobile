@@ -99,6 +99,15 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
   }
 
   Future<void> _onChangeCurrencyType(_StoreEventChangeCurrencyType event, Emitter<StoreState> emit) async {
+    emit(
+      StoreState.loading(
+        countryModels: state.countryModels,
+        regionModels: state.regionModels,
+        isLocal: state.isLocal,
+        text: state.text,
+      ),
+    );
+
 
     emit(StoreState.success(
       isLocal: state.isLocal,

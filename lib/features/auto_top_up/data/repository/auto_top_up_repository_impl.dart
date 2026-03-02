@@ -1,6 +1,7 @@
 import 'package:esim_mob_app/features/auto_top_up/data/data_sources/remote/auto_top_up_remote_data_source.dart';
 import 'package:esim_mob_app/features/auto_top_up/data/models/dto/activation_top_up_dto.dart';
 import 'package:esim_mob_app/features/auto_top_up/data/models/responses/activation_top_up_response.dart';
+import 'package:esim_mob_app/features/auto_top_up/domain/data/models/top_up_by_card_response.dart';
 import 'package:esim_mob_app/features/auto_top_up/domain/repositories/auto_top_up_repository.dart';
 import 'package:esim_mob_app/features/user/data/models/user_package_model.dart';
 
@@ -16,4 +17,7 @@ class AutoTopUpRepositoryImpl implements AutoTopUpRepository{
 
   @override
   Future<ActivationTopUpResponse> updateActivationTopUp({required ActivationTopUpDto activationTopUpDto, required int id}) async => await  _autoTopUpRemoteDataSource.updateActivationTopUp(id: id, data: activationTopUpDto.toJson());
+
+  @override
+  Future<TopUpByCardResponse> topUpByCard({required String package, required int activationId, String? promoCode}) async => await _autoTopUpRemoteDataSource.topUpByCard(data: {'activation_id': activationId, 'package': package, 'promo_code': promoCode});
 }

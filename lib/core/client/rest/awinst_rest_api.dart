@@ -56,7 +56,7 @@ class AwinstApi {
 
   final dioLogger = TalkerDioLogger(
     talker: Logger.instance,
-    settings: const TalkerDioLoggerSettings(),
+    settings: const TalkerDioLoggerSettings(printRequestHeaders: true),
   );
 
   BaseOptions _options() => BaseOptions(

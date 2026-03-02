@@ -27,6 +27,7 @@ class LoggerScaffold extends StatefulWidget {
   State<LoggerScaffold> createState() => _LoggerScaffoldState();
 }
 
+
 class _LoggerScaffoldState extends State<LoggerScaffold> {
   Offset _loggerPosition = const Offset(20, 20);
   final bool isShowLogger = false;

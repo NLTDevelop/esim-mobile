@@ -4,10 +4,13 @@ import 'package:esim_mob_app/features/auth/data/data_sources/local/session_stora
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_apple_use_case.dart';
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_case.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
+import 'package:esim_mob_app/features/esim_compatability_checker/presentation/cubit/esim_installation_checker_cubit.dart';
 import 'package:esim_mob_app/features/localization/data/repository/localization_repository_impl.dart';
 import 'package:esim_mob_app/features/localization/presentation/cubit/localization_cubit.dart';
 import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout_use_case.dart';
-import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
+import 'package:esim_mob_app/features/user/domain/use_cases/update_user_use_case.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:esim_mob_app/common/routes/router.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +23,42 @@ import 'common/theme/colored_palette/light_colored_palette.dart';
 import 'core/utils/logger/logger.dart';
 import 'features/connection_checker/bloc/connection_checker_cubit.dart';
 import 'injector.dart';
+import 'firebase_options.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseClosedHandler(RemoteMessage message) async {
+  // await di.baseInit();
+  // await Firebase.initializeApp(
+  //   name: "design-sie",
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  // injector<BackgroundNotificationParser>().parseMessage(message);
+}
+
+initNotification() async {
+  await FirebaseMessaging.instance.requestPermission();
+
+  FirebaseMessaging.onMessageOpenedApp.listen((remoteMessage) {
+    Logger.log('A new onMessageOpenedApp event was published!');
+    Logger.log(remoteMessage);
+    print(remoteMessage);
+
+    // final payloadData = _notificationService.getPayload(remoteMessage);
+    // _notificationService.onTapNotification(payloadData);
+  });
+
+  // FirebaseMessaging.onBackgroundMessage((handle) {
+  //   // return _notificationService.backGroundHandler(handle);
+  //
+  // });
+
+  FirebaseMessaging.onMessage.listen(
+      (remoteMessage){
+        print('On message callback');
+        print(remoteMessage);
+      }
+  );
+}
 
 void main() async =>
     runZonedGuarded(
@@ -32,6 +71,14 @@ void main() async =>
               (details) => Logger.handle(details.exception, details.stack);
           WidgetsBinding.instance.platformDispatcher.onError =
               Logger.logPlatformDispatcherError;
+
+          await Firebase.initializeApp(
+            options: DefaultFirebaseOptions.currentPlatform,
+          );
+
+          await initNotification();
+          FirebaseMessaging.onBackgroundMessage(_firebaseClosedHandler);
+
 
           Bloc.observer = TalkerBlocObserver(
             talker: Logger.instance,
@@ -73,14 +120,15 @@ class MyApp extends StatelessWidget {
               loginGoogleUseCase: injector<LoginGoogleUseCase>(),
               loginAppleUseCase: injector<LoginIOSUseCase>(),
               sessionStorage: injector<SessionStorage>(),
-              deleteAccountUseCase: injector<DeleteAccountUseCase>(),
             tokenLogoutUseCase: injector<TokenLogoutUseCase>(),
+            updateUserUseCase: injector<UpdateUserUseCase>(),
           ),
         ),
         BlocProvider(create: (context) =>
         ConnectionCheckerCubit()
           ..recheckConnection()),
         BlocProvider(create: (context) => LocalizationCubit(injector<LocalizationRepositoryImpl>())),
+        BlocProvider(create: (context) => EsimInstallationCheckerCubit()..checkSupportingESim()),
       ],
       child: BlocBuilder<LocalizationCubit, String>(
         builder: (context, state) {

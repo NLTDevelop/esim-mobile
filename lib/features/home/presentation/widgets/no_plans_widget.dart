@@ -3,6 +3,8 @@ import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/core/constants/variables.dart';
+import 'package:esim_mob_app/core/utils/esim/esim_installation_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,6 +28,12 @@ class NoPlansWidget extends StatelessWidget {
             PrimaryButton(onTap: (){
               context.go(Routes.store);
             }, text: 'Explore store'),
+            const SizedBox(
+              height: 20,
+            ),
+            // PrimaryButton(onTap: (){
+            //   ESimInstallationHandler.installESim(kTest2ESimPackage);
+            // }, text: 'Test install eSIM'),
           ],
         ),
       ),

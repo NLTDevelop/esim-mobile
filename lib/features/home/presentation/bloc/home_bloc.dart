@@ -33,6 +33,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   late TutorialCoachMark tutorialCoachMark;
 
   final FetchUserESimUseCase _fetchUserESimUseCase;
+
   List<UserESimModel> userESims = [];
 
   Future<void> _onFetchESims(
@@ -40,7 +41,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeState.loading(
         tariffs: state.tariffs, isFirstESim: state.isFirstESim));
     userESims = (await _fetchUserESimUseCase.call(NoParams()));
-    emit(HomeState.success(tariffs: userESims.map((e) => PackageModel(price: e.price, currency: e.currencyCode ?? 'USD', packageId: e.id.toString(), dataInMb: e.mb, validDays: e.days ?? 1)).toList(), isFirstESim: state.isFirstESim));
+    emit(HomeState.success(tariffs: userESims.map((e) =>
+        PackageModel(
+            price: e.price,
+            currency: e.currencyCode ?? 'USD',
+            packageId: e.id.toString(),
+            dataInMb: e.mb, validDays: e.balanceDays,
+            // status: e.status,
+            // usedMb: e.usedMb,
+            // balanceMb: e.balanceMb,
+            // balanceDays: e.balanceDays ?? 0,
+            // createdAt: e.createdAt
+        )
+    ).toList(),
+        isFirstESim: state.isFirstESim
+    ));
   }
 
   _onInstallFirstESim(

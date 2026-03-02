@@ -13,13 +13,16 @@ class PlanModel extends Equatable{
     required this.packages,
     required this.coverages,
     required this.image,
+    required this.privacyIPLocation,
     this.iconPath,
   });
 
   final String slug;
   final String title;
   final String? iconPath;
-  final String image;
+  final String? image;
+  @JsonKey(name: 'privacy_ip_location')
+  final String? privacyIPLocation;
   final List<PackageModel> packages;
   final List<CoverageModel> coverages;
 
@@ -27,6 +30,6 @@ class PlanModel extends Equatable{
       _$PlanModelFromJson(json);
 
   @override
-  List<Object?> get props => [slug, title, iconPath, packages, image, coverages];
+  List<Object?> get props => [slug, title, iconPath, packages, image, coverages, privacyIPLocation];
 
 }

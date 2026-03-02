@@ -5,6 +5,7 @@ import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/bloc/preview_tariffs_bloc.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/widgets/activation_info_card.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/widgets/preview_tariff_card.dart';
@@ -78,6 +79,7 @@ class PreviewTariffsContent extends StatelessWidget {
                             dataInGb: (state.tariffs[index].dataInMb / 1024),
                             days: state.tariffs[index].validDays ?? 0,
                             isActive: index == state.selectedIndex,
+                            currencyCode: context.read<AuthentificationBloc>().state.user.currencyCode,
                             onTap: () {
                               HapticFeedback.lightImpact();
                               bloc.add(PreviewTariffsEvent.selectIndex(index));
@@ -115,7 +117,7 @@ class PreviewTariffsContent extends StatelessWidget {
                       'image': bloc.plan.image,
                       'country': bloc.countryEntity.name,
                       'type': bloc.countryEntity is CountryModel ? 'local' : 'regional',
-                      'country_code': PlatformDispatcher.instance.locale.countryCode ?? ''
+                      'country_code': bloc.isLocal ? bloc.countryCodeFromCountryModel ?? 'US' : bloc.countryCodeFromPrivacyIPLocation ?? 'US'
                     });
                   }
                 },

@@ -66,7 +66,7 @@ class PaymentSuccessfulState extends StatelessWidget {
                 await injector<UserLocalDataSource>().saveUser(AuthenticatedUserModel(id: 1, email: authBloc.state.user.userEmail, eSims: [...authBloc.state.user.userTariffs, tariffModel], currency: 'USD', balance: 0));
                 context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
                 ///context.read<HomeBloc>().add(HomeEvent.addESim(tariff: tariffModel));
-                context.go(Routes.home, extra: {'user_tariffs': [...userTariffs, tariffModel]} );
+                context.go(Routes.home, extra: {'user_tariffs': <PackageModel>[...userTariffs, tariffModel]} );
               }, text: 'Go to plans'),
             ],
           ),

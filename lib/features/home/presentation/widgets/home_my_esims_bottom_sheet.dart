@@ -13,9 +13,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeMyESimsBottomSheet extends StatelessWidget {
-  const HomeMyESimsBottomSheet({super.key, required this.esim});
+  const HomeMyESimsBottomSheet({super.key, required this.esims});
 
-  final UserESimModel esim;
+  final List<UserESimModel> esims;
 
   @override
   Widget build(BuildContext context) {
@@ -55,35 +55,45 @@ class HomeMyESimsBottomSheet extends StatelessWidget {
                 ),
               ],
             ),
-            const HomeAddBalanceWidget(),
-            const SizedBox(height: 14,),
-            const AddBalanceFirstContainer(),
-            // SizedBox(
-            //   height: MediaQuery.of(context).size.height * 0.04,
-            // ),
-            // Flexible(
-            //   child: ListView.separated(
-            //
-            //       itemBuilder: (context, index) {
-            //         return ESimPlanContainer(eSim: tariffs[index]);
-            //       },
-            //       separatorBuilder: (context, index) =>
-            //           const SizedBox(height: 20),
-            //       itemCount: tariffs.length),
-            // ),
-            const SizedBox(height: 20,),
-            LatestActivationList(eSim: esim,),
-            Padding(
-              padding: EdgeInsets.only(top: 10.0, bottom: MediaQuery.of(context).padding.bottom + 10,),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SquareButton(onTap: (){ context.pop(); context.push(Routes.store);}, title: 'Add data', icon: Icon(Icons.add, color: Theme.of(context).extension<ColorExtension>()!.primary),),
-                  SquareButton(onTap: (){
-                    context.push(Routes.history, extra: { 'transactions': <TransactionModel>[]});
-                  }, title: 'Payment history', icon: SvgPicture.asset(AppIcons.history, colorFilter: ColorFilter.mode(Theme.of(context).extension<ColorExtension>()!.primary, BlendMode.srcIn),)),
-                ],
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 60),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const HomeAddBalanceWidget(),
+                    const SizedBox(height: 14,),
+                    const AddBalanceFirstContainer(),
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.height * 0.04,
+                    // ),
+                    // Flexible(
+                    //   child: ListView.separated(
+                    //
+                    //       itemBuilder: (context, index) {
+                    //         return ESimPlanContainer(eSim: tariffs[index]);
+                    //       },
+                    //       separatorBuilder: (context, index) =>
+                    //           const SizedBox(height: 20),
+                    //       itemCount: tariffs.length),
+                    // ),
+                    const SizedBox(height: 20,),
+                    LatestActivationList(eSims: esims,),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.0, bottom: MediaQuery.of(context).padding.bottom + 10,),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SquareButton(onTap: (){ context.pop(); context.push(Routes.store);}, title: 'Add data', icon: Icon(Icons.add, color: Theme.of(context).extension<ColorExtension>()!.primary),),
+                          SquareButton(onTap: (){
+                            context.push(Routes.history, extra: { 'transactions': <TransactionModel>[]});
+                          }, title: 'Payment history', icon: SvgPicture.asset(AppIcons.history, colorFilter: ColorFilter.mode(Theme.of(context).extension<ColorExtension>()!.primary, BlendMode.srcIn),)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             )
           ],

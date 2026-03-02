@@ -37,7 +37,7 @@ class HomeAddBalanceWidget extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(left: 14),
                     child: DefaultText.bodyMedium(
-                      '${state.user.when(authenticated: (s) => s.balance, notAuthenticated: () => 0).toStringAsFixed(2)} ${state.user.when(authenticated: (s) => s.currency == 'USD' ? '\$' : '€', notAuthenticated: () => '')}', fontWeight: FontWeight.w600,),
+                      '${state.user.when(authenticated: (s) => s.balance ?? 0.00, notAuthenticated: () => 0).toStringAsFixed(2)} ${state.user.when(authenticated: (s) => s.currency == 'USD' ? '\$' : '€', notAuthenticated: () => '')}', fontWeight: FontWeight.w600,),
                   );
                 },
               ),

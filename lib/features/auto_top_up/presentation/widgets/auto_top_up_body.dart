@@ -42,7 +42,7 @@ class AutoTopUpBody extends StatelessWidget {
               BlocBuilder<AuthentificationBloc, AuthentificationState>(
                 builder: (context, state) {
                   return  DefaultText.headlineLarge(
-                    '${state.user.when(authenticated: (s) => s.balance, notAuthenticated: () => 0.00).toStringAsFixed(2)} \$', fontWeight: FontWeight.w600,);
+                    '${state.user.when(authenticated: (s) => s.balance ?? 0.00, notAuthenticated: () => 0.00).toStringAsFixed(2)} \$', fontWeight: FontWeight.w600,);
                 }
               ),
               const SizedBox(

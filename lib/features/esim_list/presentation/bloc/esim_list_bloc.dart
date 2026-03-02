@@ -29,13 +29,13 @@ class ESimListBloc extends Bloc<ESimListEvent, ESimListState> {
 
   _onFetchListESims(_FetchListESims e, Emitter<ESimListState> emit) async{
     emit(const ESimListState.loading());
-    PlansResponseModel response;
+    List<PlanModel> eSims = [];
     if(baseCountryEntity is CountryModel){
-      response = await _fetchLocalESimsUseCase.call(FetchLocalESimsParams(countryCode: (baseCountryEntity as CountryModel).code, currencyCode: currencyCode));
+      eSims = await _fetchLocalESimsUseCase.call(FetchLocalESimsParams(countryCode: (baseCountryEntity as CountryModel).code, currencyCode: currencyCode));
     } else {
-      response = await _fetchRegionalESimsUseCase.call(FetchRegionalESimsParams(regionalId: (baseCountryEntity as RegionModel).id.toString(), currencyCode: currencyCode));
+      eSims = await _fetchRegionalESimsUseCase.call(FetchRegionalESimsParams(regionalId: (baseCountryEntity as RegionModel).id.toString(), currencyCode: currencyCode));
     }
 
-    emit(ESimListState.success(eSims: response.data));
+    emit(ESimListState.success(eSims: eSims));
   }
 }

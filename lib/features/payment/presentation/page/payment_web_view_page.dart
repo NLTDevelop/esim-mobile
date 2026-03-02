@@ -34,8 +34,18 @@ class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
           if (url.url == null) return;
 
           if(url.url != null && url.url!.contains(widget.trx)){
-            showAdaptiveDialog(context: context, builder: (_) {
-              return PaymentDialog(isSuccess: url.url!.contains(widget.trx));
+            FocusManager.instance.primaryFocus?.unfocus();
+            Future.delayed(const Duration(milliseconds: 100), () {
+              if (!mounted) return;
+
+              showAdaptiveDialog(
+                context: context,
+                builder: (_) {
+                  return PaymentDialog(
+                    isSuccess: url.url!.contains(widget.trx),
+                  );
+                },
+              );
             });
           }
         }

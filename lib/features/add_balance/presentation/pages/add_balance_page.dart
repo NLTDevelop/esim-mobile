@@ -18,10 +18,9 @@ class AddBalancePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Current currency');
     print(context.read<AuthentificationBloc>().state.user.when(authenticated: (s) => s.currency, notAuthenticated: () => ''));
     return BlocProvider(
-      create: (context) => AddBalanceCubit(addBalanceUseCase: injector<AddBalanceUseCase>(), currency: context.read<AuthentificationBloc>().state.user.when(authenticated: (s) => s.currency, notAuthenticated: () => '')),
+      create: (context) => AddBalanceCubit(addBalanceUseCase: injector<AddBalanceUseCase>(), currency: context.read<AuthentificationBloc>().state.user.when(authenticated: (s) => s.currency ?? 'USD', notAuthenticated: () => '')),
       child: DefaultScaffold(
         appBar: AppBar(
           leading: GestureDetector(onTap: () {

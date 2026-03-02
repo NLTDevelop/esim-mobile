@@ -49,7 +49,7 @@ class AutoTopUpSuccessfulState extends StatelessWidget {
                 List<PackageModel> userTariffs = authBloc.state.user.userTariffs;
                 context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
                 ///context.read<HomeBloc>().add(HomeEvent.addESim(tariff: tariffModel));
-                context.go(Routes.home, extra: {'user_tariffs': [...userTariffs]} );
+                context.go(Routes.home, extra: {'user_tariffs': <PackageModel>[...userTariffs]} );
               }, text: 'Go to plans'),
             ],
           ),
