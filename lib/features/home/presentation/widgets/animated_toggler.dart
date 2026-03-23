@@ -20,24 +20,28 @@ class AnimatedToggler extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           color: Theme.of(context).extension<ColorExtension>()!.addBalance.withAlpha(150)
         ),
-        child: Stack(
-          children: [
-            Align(alignment: Alignment.center, child: DefaultText.displaySmall('Off',color: Theme.of(context).extension<ColorExtension>()!.secondaryText),),
-            AnimatedPositioned(
-              top: 0,
-              right: 0,
-              duration: const Duration(milliseconds: 700),
-              child: Container(
-                width: 70,
-                height: 34,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                      color: Theme.of(context).extension<ColorExtension>()!.addBalance
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Stack(
+            clipBehavior: Clip.hardEdge,
+            children: [
+              Align(alignment: Alignment.center, child: DefaultText.displaySmall('Off',color: Theme.of(context).extension<ColorExtension>()!.secondaryText),),
+              AnimatedPositioned(
+                top: 0,
+                right: enabled ? 0 : 50,
+                duration: const Duration(milliseconds: 700),
+                child: Container(
+                  width: 70,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                        color: Theme.of(context).extension<ColorExtension>()!.addBalance
+                  ),
+                  child: Center(child: DefaultText.displaySmall('On', color: Theme.of(context).extension<ColorExtension>()!.secondaryText),),
                 ),
-                child: Center(child: DefaultText.displaySmall('On', color: Theme.of(context).extension<ColorExtension>()!.secondaryText),),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

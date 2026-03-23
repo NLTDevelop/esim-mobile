@@ -1,4 +1,5 @@
 import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_model.g.dart';
 
@@ -12,7 +13,7 @@ abstract class UserModel {
     required final String email,
     required final double? balance,
     required final String? currency,
-    required final List<PackageModel> eSims,
+    required final List<UserESimModel> eSims,
   }) =>
       AuthenticatedUserModel(
         id: id,
@@ -26,7 +27,7 @@ abstract class UserModel {
 
   bool get isNotAuthenticated;
 
-  List<PackageModel> get userTariffs;
+  List<UserESimModel> get userESims;
 
   String get userEmail;
 
@@ -51,7 +52,7 @@ class AuthenticatedUserModel implements UserModel {
   final int id;
   final String email;
   @JsonKey(name: 'e_sims')
-  final List<PackageModel>? eSims;
+  final List<UserESimModel>? eSims;
   final double? balance;
   @JsonKey(name: 'currency_code')
   final String? currency;
@@ -97,7 +98,7 @@ class AuthenticatedUserModel implements UserModel {
       );
 
   @override
-  List<PackageModel> get userTariffs => eSims ?? [];
+  List<UserESimModel> get userESims => eSims ?? [];
 
   @override
   String? get currencyCode => currency;
@@ -121,7 +122,7 @@ class NotAuthenticatedUser implements UserModel {
   String? get currencyCode => '';
 
   @override
-  List<PackageModel> get userTariffs => [];
+  List<UserESimModel> get userESims => [];
 
 
   @override

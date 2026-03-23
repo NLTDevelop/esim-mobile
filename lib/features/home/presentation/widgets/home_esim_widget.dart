@@ -30,9 +30,9 @@ class HomeESimWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
+                InkWell(
                   onTap: () {
-                    _showInstallESimBottomSheet(context);
+                    _showInstallESimBottomSheet(context, context.read<AuthentificationBloc>().state.eSimActivations.length - 1);
                   },
                   child: Container(
                     width: 64,
@@ -52,7 +52,7 @@ class HomeESimWidget extends StatelessWidget {
                       color: Theme.of(context).extension<ColorExtension>()!.background),
                   child: Row(
                     children: [
-                      DefaultText.displaySmall('eSIM #1 not installed',
+                      DefaultText.displaySmall('eSIM #${context.read<AuthentificationBloc>().state.eSimActivations.last.id} not installed',
                           color: Theme.of(context)
                               .extension<ColorExtension>()!
                               .text),
@@ -101,7 +101,7 @@ class HomeESimWidget extends StatelessWidget {
                     color:
                         Theme.of(context).extension<ColorExtension>()!.toggleCircle,
                   ),
-                  child: BlocBuilder<HomeBloc, HomeState>(
+                  child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
                     builder: (context, state) {
                       // final activeESims = state.user.userTariffs
                       //     .where((e) => true)
@@ -141,7 +141,7 @@ class HomeESimWidget extends StatelessWidget {
                           const SizedBox(
                             height: 24,
                           ),
-                          DefaultText.bodyMedium('${(state.tariffs.last.dataInMb / 1024.00).toStringAsFixed(2)} GB',
+                          DefaultText.bodyMedium(state.eSimActivations.last.balanceMb != null ? '${(state.eSimActivations.last.balanceMb! / 1024.00).toStringAsFixed(2)} GB' : '',
                               fontWeight: FontWeight.w600,
                               color: Theme.of(context)
                                   .extension<ColorExtension>()!
@@ -149,10 +149,10 @@ class HomeESimWidget extends StatelessWidget {
                           const SizedBox(
                             height: 28,
                           ),
-                          if(state.tariffs.last.validDays != null)
+                          if(state.eSimActivations.last.days != null)
                             DefaultText.labelMedium(
-                      state.tariffs.last.validDays != null ? state.tariffs.last.validDays != 0 ?
-                      'Due to ${DateFormat('d MMM').format(DateTime.now().add(Duration(days: state.tariffs.last.validDays!)))}' : 'eSIM expired' : '',
+                      state.eSimActivations.last.balanceDays != null ? state.eSimActivations.last.balanceDays != 0 ?
+                      'Due to ${DateFormat('d MMM').format(DateTime.now().add(Duration(days: state.eSimActivations.last.balanceDays!)))}' : 'eSIM expired' : '',
                             color: Theme.of(context)
                                 .extension<ColorExtension>()!
                                 .cardBorder,
@@ -178,7 +178,7 @@ class HomeESimWidget extends StatelessWidget {
                                 text: 'Install eSIM',
                                 iconPath: AppIcons.install,
                                 onPressed: () {
-                                  _showInstallESimBottomSheet(context);
+                                  _showInstallESimBottomSheet(context, state.eSimActivations.length - 1);
                                 },
                               )),
                               Expanded(
@@ -228,19 +228,19 @@ class HomeESimWidget extends StatelessWidget {
         useSafeArea: true,
         isScrollControlled: true,
         builder: (ctx) =>  HomeMyESimsBottomSheet(
-          esims: context.read<HomeBloc>().userESims
+          esims: context.read<AuthentificationBloc>().state.eSimActivations
         ));
   }
 
-  void _showInstallESimBottomSheet(BuildContext context) {
+  void _showInstallESimBottomSheet(BuildContext context, int index) {
     showModalBottomSheet(
         context: context,
         useRootNavigator: true,
         useSafeArea: true,
         isScrollControlled: true,
         builder: (ctx) => BlocProvider(
-              create: (ctx) => InstallESimCubit(title: 'eSIM #1', userESims: context.read<HomeBloc>().userESims),
-              child: const InstallESimBottomSheet(title: 'eSIM #1'),
+              create: (ctx) => InstallESimCubit( userESims: context.read<AuthentificationBloc>().state.eSimActivations),
+              child: InstallESimBottomSheet(),
             ));
   }
 }

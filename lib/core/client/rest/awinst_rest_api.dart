@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:esim_mob_app/core/managers/auth_event_bus.dart';
 import 'package:esim_mob_app/core/utils/logger/logger.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 class AwinstApi {
-  //Host for API requests to dev server
 
-  //Host for API requests to production server
+  //Host for API requests to development server
   // dev
   static const baseUrl = 'https://awinstconnect.108labs.co.ua/api/';
 
@@ -16,7 +16,15 @@ class AwinstApi {
 
   AwinstApi() {
     _dio = Dio(_options())
-      ..interceptors.addAll([dioLogger, wrapper()]);
+      ..interceptors.addAll([dioLogger,  InterceptorsWrapper(
+        onError: (error, handler) async {
+          if (error.response?.statusCode == 401) {
+            await _handleUnauthorized();
+          }
+
+          handler.next(error);
+        },
+      ) ,wrapper()]);
   }
 
   late final Dio _dio;
@@ -53,6 +61,12 @@ class AwinstApi {
   //     },
   //   );
   // }
+
+  Future<void> _handleUnauthorized() async {
+    // await injector<SessionStorage>().cleanSession();
+
+    AuthEventBus.instance.logout();
+  }
 
   final dioLogger = TalkerDioLogger(
     talker: Logger.instance,

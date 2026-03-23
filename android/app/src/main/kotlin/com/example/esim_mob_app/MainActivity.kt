@@ -1,7 +1,10 @@
 package com.esimapp.appname
 
+import android.util.Log
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.net.Uri
 import android.provider.Settings
 import android.telephony.euicc.EuiccManager
 import io.flutter.embedding.android.FlutterFragmentActivity
@@ -14,6 +17,8 @@ class MainActivity : FlutterFragmentActivity() {
     private val CHANNEL = "samples.flutter.dev/esim"
 
     private var pendingResult: MethodChannel.Result? = null
+
+    private val ACTIVATE_ACTIVITY_CODE = 1001
 
     private val esimInstallerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -28,21 +33,43 @@ class MainActivity : FlutterFragmentActivity() {
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             when (call.method) {
+                "installEsimViaUniversalLink" -> {
+
+                    val cardData: String? = call.argument<String>("activationCode")
+
+                    if (cardData == null) {
+                        result.error("invalid_args", "Missing parameters", null)
+                        return@setMethodCallHandler
+                    }
+
+                    val link = buildUniversalLink(
+                        cardData
+                    )
+
+                    openUniversalLink(link)
+
+                    result.success(link)
+                }
+
                 "canInstallEsim" -> {
                     result.success(getCapabilityInfo())
                 }
 
-                "openEsimInstaller" -> {
+                "installEsim" -> {
                     val activationCode = call.argument<String>("activationCode")
-                    if (activationCode.isNullOrBlank()) {
-                        result.error("invalid_args", "activationCode is required", null)
-                        return@setMethodCallHandler
-                    }
-                    openSystemInstaller(activationCode.trim(), result)
+//                    if (activationCode.isNullOrBlank()) {
+//                        result.error("invalid_args", "activationCode is required", null)
+//                        return@setMethodCallHandler
+//                    }
+//                    openSystemInstaller(activationCode.trim(), result)
+                    pendingResult = result
+//                    var link = buildUniversalLink(activationCode)
+//                    openUniversalLink(link)
+                    result.success(true)
                 }
 
                 "openEsimSettings" -> {
-                    openEsimSettings(result)
+                    openEsimSettings()
                 }
 
                 else -> result.notImplemented()
@@ -50,46 +77,59 @@ class MainActivity : FlutterFragmentActivity() {
         }
     }
 
-    private fun openSystemInstaller(activationCode: String, result: MethodChannel.Result) {
-        val capability = getCapabilityInfo()
-        val supported = capability["supported"] as? Boolean ?: false
-        if (!supported) {
-            result.error("not_supported", "Device does not support eSIM or eUICC is not enabled", capability)
-            return
-        }
-
-        val intent = Intent("android.telephony.euicc.action.PROVISION_EMBEDDED_SUBSCRIPTION").apply {
-            putExtra("android.telephony.euicc.extra.ACTIVATION_CODE", activationCode)
-        }
-
-        if (intent.resolveActivity(packageManager) == null) {
-            result.error("no_handler", "No system activity found to handle eSIM provisioning intent", capability)
-            return
-        }
-
-        if (pendingResult != null) {
-            result.error("busy", "Another eSIM request is in progress", null)
-            return
-        }
-
-        pendingResult = result
+    private fun startEsimInstallation() {
         try {
-            esimInstallerLauncher.launch(intent)
-        } catch (t: Throwable) {
+
+            val intent = Intent().apply {
+                action = EuiccManager.ACTION_START_EUICC_ACTIVATION
+                putExtra(EuiccManager.EXTRA_USE_QR_SCANNER, true)
+            }
+
+            startActivityForResult(intent, ACTIVATE_ACTIVITY_CODE)
+
+        } catch (e: Exception) {
+
+            // fallback якщо installer не підтримується
+            openEsimSettings()
+
+            pendingResult?.success("fallback_settings")
             pendingResult = null
-            result.error("launch_failed", "Failed to launch eSIM installer: ${t.message}", null)
         }
     }
 
-    private fun openEsimSettings(result: MethodChannel.Result) {
-        val intent = Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS)
-        try {
-            startActivity(intent)
-            result.success(true)
-        } catch (t: Throwable) {
-            result.error("settings_failed", "Failed to open settings: ${t.message}", null)
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ACTIVATE_ACTIVITY_CODE) {
+
+            when (resultCode) {
+
+                Activity.RESULT_OK -> {
+                    pendingResult?.success("installed")
+                }
+
+                Activity.RESULT_CANCELED -> {
+                    pendingResult?.success("cancelled")
+                }
+
+                else -> {
+                    pendingResult?.success("unknown")
+                }
+            }
+
+            pendingResult = null
         }
     }
+
+    private fun openEsimSettings() {
+        val intent = Intent(Settings.ACTION_NETWORK_OPERATOR_SETTINGS)
+        startActivity(intent)
+    }
+
 
     private fun getCapabilityInfo(): Map<String, Any?> {
         val isApiOk = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
@@ -111,5 +151,31 @@ class MainActivity : FlutterFragmentActivity() {
             "hasEuiccFeature" to hasFeature,
             "euiccEnabled" to euiccEnabled
         )
+    }
+
+    private fun buildUniversalLink(
+        cardData: String,
+    ): String {
+        var link: String = "https://esimsetup.android.com/esim_qrcode_provisioning?carddata=$cardData";
+        Log.d("ESIM link", link);
+        return link
+    }
+
+    private fun openUniversalLink(link: String) {
+
+        try {
+
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse(link)
+                addCategory(Intent.CATEGORY_BROWSABLE)
+            }
+
+            startActivity(intent)
+
+        } catch (e: Exception) {
+
+            // fallback
+            openEsimSettings()
+        }
     }
 }

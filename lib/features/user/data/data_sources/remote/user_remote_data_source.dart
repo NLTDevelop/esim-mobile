@@ -16,7 +16,7 @@ abstract class UserRemoteDataSource {
    factory UserRemoteDataSource(Dio dio, {String? baseUrl}) = _UserRemoteDataSource;
 
   @GET('v1/profile')
-  Future<AuthenticatedUserModel> getUser();
+  Future<AuthenticatedUserModel> getUser({@Header('Device-Id') String? fcmToken});
 
   @POST('v1/profile')
   Future<AuthenticatedUserModel> updateUser({@Body() required Map<String, dynamic> data});

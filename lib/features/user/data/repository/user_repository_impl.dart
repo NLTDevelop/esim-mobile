@@ -14,7 +14,7 @@ final class UserRepositoryImpl implements UserRepository {
   }) : _userRemoteDataSource = userRemoteDataSource;
 
   @override
-  Future<UserModel> getCurrentUser() async => await _userRemoteDataSource.getUser();
+  Future<UserModel> getCurrentUser({ String? fcmToken}) async => await _userRemoteDataSource.getUser();
 
   @override
   Future<UserModel> updateUser({required String currencyCode}) async => await _userRemoteDataSource.updateUser(data: {

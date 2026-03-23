@@ -1,5 +1,6 @@
 import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
+import 'package:esim_mob_app/core/managers/auth_event_bus.dart';
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/connection_checker/bloc/connection_checker_cubit.dart';
@@ -8,6 +9,7 @@ import 'package:esim_mob_app/features/localization/presentation/cubit/localizati
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
 import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
 import 'package:esim_mob_app/features/splash/presentation/widgets/splash_widget.dart';
+import 'package:esim_mob_app/features/status_transaction/presentation/bloc/status_transaction_bloc.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,9 +72,11 @@ class _SplashBodyState extends State<SplashBody> {
     await context.read<LocalizationCubit>().changeLanguage('en');
     _isUserSet = true;
     context.read<AuthentificationBloc>().add(AuthentificationEvent.setUser(user: user));
+    await Future.delayed(const Duration(milliseconds: 500));
 
     user.when(authenticated: (_) {
-      context.go(Routes.home, extra: {'user_tariffs': user.userTariffs});
+      context.read<StatusTransactionBloc>().add(const StatusTransactionEvent.fetchLastTransactionStatus());
+      context.go(Routes.home, extra: {'user_tariffs': user.userESims});
     }, notAuthenticated: () {
       bool isFirstStart = injector<OnBoardingRepositoryImpl>().isFirstRun();
       context.go(isFirstStart ? Routes.welcome : Routes.auth);

@@ -18,6 +18,8 @@ class UserESimModel extends Equatable{
     required this.price,
     required this.currencyCode,
     required this.canAutoTopUp,
+    required this.autoTopUpEnabled,
+    required this.autoTopUpPackage,
     required this.canTopUp,
     required this.createdAt,
     required this.topUpHistory,
@@ -30,11 +32,11 @@ class UserESimModel extends Equatable{
   final int? days;
   final double price;
   @JsonKey(name: 'balance_mb')
-  final int balanceMb;
+  final int? balanceMb;
   @JsonKey(name: 'balance_days')
   final int? balanceDays;
   @JsonKey(name: 'used_mb')
-  final int usedMb;
+  final int? usedMb;
   final String status;
 
   @JsonKey(name: 'currency_code')
@@ -43,6 +45,10 @@ class UserESimModel extends Equatable{
   final bool canTopUp;
   @JsonKey(name: 'can_auto_topup')
   final bool canAutoTopUp;
+  @JsonKey(name: 'auto_topup_enabled')
+  final bool autoTopUpEnabled;
+  @JsonKey(name: 'auto_topup_package')
+  final String? autoTopUpPackage;
   @JsonKey(name: 'created_at')
   final DateTime createdAt;
   @JsonKey(name: 'promo_code')
@@ -68,6 +74,8 @@ class UserESimModel extends Equatable{
     promoCode,
     appliedDiscountPercent,
     topUpHistory,
+    autoTopUpPackage,
+    autoTopUpEnabled,
   ];
 
   factory UserESimModel.fromJson(Map<String, dynamic> json) => _$UserESimModelFromJson(json);

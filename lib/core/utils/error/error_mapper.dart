@@ -12,15 +12,6 @@ class ErrorMapper {
     return 'An unexpected error occurred';
   }
 
-  // static String _mapErrorByException(AuthException error) {
-  //   switch (error.runtimeType) {
-  //     case const (PasswordNotMatchException):
-  //       return 'Passwords do not match. Please try again!';
-  //     default:
-  //       return 'An unexpected error occurred';
-  //   }
-  // }
-
   static String _mapErrorByDioException(DioException error) {
     if(error.response?.statusCode == 500){
       return 'Server error';
@@ -34,6 +25,9 @@ class ErrorMapper {
         return error.response?.data['error'];
       }
       return error.response?.data['message'];
+    }
+    if(error.response?.statusCode == 401){
+      return 'Unauthorized';
     }
     if (error.response?.data['message'] != null) {
       return error.response?.data['message'];

@@ -28,6 +28,7 @@ List<RouteBase> get $appRoutes => [
       $eSimListRoute,
       $topUpRoute,
       $deleteAccountRoute,
+      $installationInstruction,
     ];
 
 RouteBase get $bottomNavigationShellRoute => StatefulShellRouteData.$route(
@@ -507,6 +508,29 @@ extension $DeleteAccountRouteExtension on DeleteAccountRoute {
 
   String get location => GoRouteData.$location(
         '/delete-account',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $installationInstruction => GoRouteData.$route(
+      path: '/installation-instruction',
+      factory: $InstallationInstructionExtension._fromState,
+    );
+
+extension $InstallationInstructionExtension on InstallationInstruction {
+  static InstallationInstruction _fromState(GoRouterState state) =>
+      const InstallationInstruction();
+
+  String get location => GoRouteData.$location(
+        '/installation-instruction',
       );
 
   void go(BuildContext context) => context.go(location);

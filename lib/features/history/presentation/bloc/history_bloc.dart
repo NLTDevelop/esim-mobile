@@ -24,6 +24,9 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   _onFetchHistory(_HistoryEventFetchPlans event, Emitter<HistoryState> emit) async{
 
     try{
+      if(event.page != null){
+        _currentPage = event.page!;
+      }
       emit(const HistoryState.loading(transactions: [], isFirstFetch: true));
       final history = await _fetchHistoryUseCase.call(FetchHistoryParams(page: _currentPage));
       _lastPage = history.meta.lastPage;
@@ -91,12 +94,12 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     try{
 
       emit(HistoryState.loading(transactions: state.transactions, isFirstFetch: false));
-      if(_currentPage == _lastPage){
+      if(_currentPage > _lastPage){
         emit(HistoryState.success(transactions: state.transactions));
         return;
       }
-      _currentPage++;
       final newHistory = await _fetchHistoryUseCase.call(FetchHistoryParams(page: _currentPage));
+      _currentPage++;
       emit(HistoryState.success(transactions: [...state.transactions, ...newHistory.transactions]));
     } on Object catch (error) {
 

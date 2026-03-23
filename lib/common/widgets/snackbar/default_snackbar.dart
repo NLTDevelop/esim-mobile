@@ -17,6 +17,7 @@ class DefaultSnackBar {
     final String? message,
     required final SnackAlignment alignment,
     required final BuildContext context,
+    final String type = 'error'
   }) =>
       OverlayEntry(
         builder: (context) => AnimatedBuilder(
@@ -33,7 +34,7 @@ class DefaultSnackBar {
                     color: Colors.transparent,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.redAccent,
+                        color: type == 'error' ? Colors.redAccent : Theme.of(context).extension<ColorExtension>()!.primary,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: ClipRRect(
@@ -91,6 +92,7 @@ class DefaultSnackBar {
     final SnackAlignment alignment = SnackAlignment.top,
     final Duration animationDuration = const Duration(milliseconds: 500),
     final Duration displayDuration = const Duration(seconds: 2),
+    final String type = 'error'
   }) {
     if (_overlayEntry != null) {
       _overlayEntry?.remove();
@@ -98,7 +100,7 @@ class DefaultSnackBar {
     }
 
     _animationController = AnimationController(
-      vsync: Scaffold.of(context),
+      vsync: ScaffoldMessenger.of(context),
       duration: animationDuration,
     );
 
@@ -110,7 +112,7 @@ class DefaultSnackBar {
       curve: Curves.easeInOut,
     ));
 
-    _overlayEntry = _createOverlayEntry(title: title, message: message, alignment: alignment, context: context);
+    _overlayEntry = _createOverlayEntry(title: title, message: message, alignment: alignment, context: context, type: type);
     _insertOverlay(context);
 
     _animationController.forward();

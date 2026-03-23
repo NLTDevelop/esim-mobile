@@ -6,9 +6,11 @@ import 'package:esim_mob_app/features/auth/data/data_sources/local/session_stora
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_apple_use_case.dart';
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_case.dart';
+import 'package:esim_mob_app/features/home/domain/use_cases/fetch_user_esim_use_case.dart';
 import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout_use_case.dart';
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
 import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
+import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/fetch_user_use_case.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/update_user_use_case.dart';
 import 'package:esim_mob_app/injector.dart';
@@ -33,7 +35,7 @@ class AuthentificationBloc
         _tokenLogoutUseCase = tokenLogoutUseCase,
         _sessionStorage = sessionStorage,
         _updateUserUseCase = updateUserUseCase,
-        super(const AuthentificationState.loading()) {
+        super(const AuthentificationState.loading(eSimActivations: [])) {
     on<AuthentificationEvent>((event, emit) async{
       await event.map(
         loginGoogle: (event) async =>
@@ -58,7 +60,7 @@ class AuthentificationBloc
   Future<void> _onLoginGoogle(_AuthentificationEventLoginGoogle event, Emitter<AuthentificationState> emit) async{
     try{
       emit(
-          const AuthentificationState.loading(user: NotAuthenticatedUser())
+          const AuthentificationState.loading(user: NotAuthenticatedUser(), eSimActivations: [])
       );
       late String fcmToken;
       try{
@@ -74,11 +76,12 @@ class AuthentificationBloc
       await _sessionStorage.saveAccessToken(token.accessToken);
       injector<AwinstApi>().token = token.accessToken;
       await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
-      final user = await injector<FetchCurrentUserUseCase>().call(NoParams());
+      final user = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: null));
+      final eSimActivations = await injector<FetchUserESimUseCase>().call(NoParams());
 
       emit(
         user.when<AuthentificationState>(
-          authenticated: (customer) => _Authenticated(user: customer),
+          authenticated: (customer) => _Authenticated(user: customer, eSimActivations: eSimActivations),
           notAuthenticated: () => const _NotAuthenticated(),
         ),
       );
@@ -99,7 +102,7 @@ class AuthentificationBloc
     String? message;
     try{
       emit(
-          const AuthentificationState.loading(user: NotAuthenticatedUser())
+          const AuthentificationState.loading(user: NotAuthenticatedUser(), eSimActivations: [])
       );
       late String fcmToken;
       try{
@@ -112,10 +115,12 @@ class AuthentificationBloc
       final token = await _loginAppleUseCase.call(LoginIOSParams(fcmToken: fcmToken));
       await _sessionStorage.saveAccessToken(token.accessToken);
       await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
-      final user = await injector<FetchCurrentUserUseCase>().call(NoParams());
+      final user = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: null));
+      final eSimActivations = await injector<FetchUserESimUseCase>().call(NoParams());
+
       emit(
         user.when<AuthentificationState>(
-          authenticated: (customer) => _Authenticated(user: customer),
+          authenticated: (customer) => _Authenticated(user: customer, eSimActivations: eSimActivations),
           notAuthenticated: () => const _NotAuthenticated(),
         ),
       );
@@ -130,7 +135,7 @@ class AuthentificationBloc
 
   Future<void> _onLogOut(_AuthentificationEventLogout event, Emitter<AuthentificationState> emit) async{
     try {
-      emit(const _Loading());
+      emit(_Loading(eSimActivations: state.eSimActivations));
       await injector<SessionStorage>().cleanSession();
       // injector<SlonovaApi>().token = null;
       emit(const _Success(user: NotAuthenticatedUser()));
@@ -141,7 +146,7 @@ class AuthentificationBloc
     } finally {
       emit(
         state.user.when<AuthentificationState>(
-          authenticated: (customer) => _Authenticated(user: customer),
+          authenticated: (customer) => _Authenticated(user: customer, eSimActivations: state.eSimActivations),
           notAuthenticated: () => const _NotAuthenticated(),
         ),
       );
@@ -154,18 +159,19 @@ class AuthentificationBloc
       ) async {
     try {
 
-      emit(_Loading(user: state.user));
+      emit(_Loading(user: state.user, eSimActivations: state.eSimActivations));
       final token = await injector<SessionStorage>().getAccessToken();
       if (token != null) {
         // injector<SlonovaApi>().token = token;
-        final customer = await injector<FetchCurrentUserUseCase>().call(NoParams());
+        final customer = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: null));
 
         print(customer);
-        print(customer.userTariffs);
+        print(customer.userESims);
+        final eSimsActivations = await injector<FetchUserESimUseCase>().call(NoParams());
 
         emit(
           customer.when<AuthentificationState>(
-            authenticated: (customer) => _Authenticated(user: customer),
+            authenticated: (customer) => _Authenticated(user: customer, eSimActivations: eSimsActivations),
             notAuthenticated: () => const _NotAuthenticated(),
           ),
         );
@@ -175,7 +181,7 @@ class AuthentificationBloc
     } finally {
       emit(
         state.user.when<AuthentificationState>(
-          authenticated: (customer) => _Authenticated(user: customer),
+          authenticated: (customer) => _Authenticated(user: customer, eSimActivations: state.eSimActivations),
           notAuthenticated: () => const _NotAuthenticated(),
         ),
       );
@@ -186,18 +192,26 @@ class AuthentificationBloc
       _AuthentificationSetUser event,
       Emitter<AuthentificationState> emit,
       ) async {
-    emit(_Loading(user: state.user));
-    ///await injector<TokenInitialUseCase>().call(NoParams());
-    FirebaseMessaging.instance.onTokenRefresh.listen((String fcmToken) {
-      // TODO implement refresh token logic
-    });
+    List<UserESimModel> eSimsActivations = [];
+    try{
+      emit(_Loading(user: event.user, eSimActivations: state.eSimActivations));
+      // await injector<TokenInitialUseCase>().call(NoParams());
+      eSimsActivations = await injector<FetchUserESimUseCase>().call(NoParams());
 
-    emit(
-      event.user.when<AuthentificationState>(
-        authenticated: (customer) => _Authenticated(user: customer),
-        notAuthenticated: () => const _NotAuthenticated(),
-      ),
-    );
+      FirebaseMessaging.instance.onTokenRefresh.listen((String fcmToken) {
+        injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: fcmToken));
+      });
+
+    } on Object catch (error) {
+      emit(_Failure(message: ErrorMapper.mapError(error)));
+    } finally {
+      emit(
+        state.user.when<AuthentificationState>(
+          authenticated: (customer) => _Authenticated(user: customer, eSimActivations: eSimsActivations),
+          notAuthenticated: () => const _NotAuthenticated(),
+        ),
+      );
+    }
   }
 
   Future<void> _onDeleteUser(
@@ -205,7 +219,7 @@ class AuthentificationBloc
       Emitter<AuthentificationState> emit,
       ) async {
     try {
-      emit(_Loading(user: state.user));
+      emit(_Loading(user: state.user, eSimActivations: state.eSimActivations));
       // await _deleteAccountUseCase.call(NoParams());
       await _sessionStorage.cleanSession();
       ///injector<SlonovaApi>().token = null;
@@ -217,7 +231,7 @@ class AuthentificationBloc
     } finally {
       emit(
         state.user.when<AuthentificationState>(
-          authenticated: (customer) => _Authenticated(user: customer),
+          authenticated: (customer) => _Authenticated(user: customer, eSimActivations: state.eSimActivations),
           notAuthenticated: () => const _NotAuthenticated(),
         ),
       );
@@ -234,12 +248,12 @@ class AuthentificationBloc
 
   _onUpdateCurrencyCode(_AuthentificationChangeCurrencyCode event, Emitter<AuthentificationState> emit) async{
     try {
-      emit(_Loading(user: state.user));
+      emit(_Loading(user: state.user, eSimActivations: state.eSimActivations));
       final user = await _updateUserUseCase.call(event.currencyCode);
       
       emit(
         user.when<AuthentificationState>(
-          authenticated: (customer) => _Authenticated(user: customer),
+          authenticated: (customer) => _Authenticated(user: customer, eSimActivations: state.eSimActivations),
           notAuthenticated: () => const _NotAuthenticated(),
         ),
       );

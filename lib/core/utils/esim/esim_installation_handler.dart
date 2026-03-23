@@ -11,7 +11,7 @@ class ESimInstallationHandler{
     if(Platform.isIOS){
       _channel.invokeMethod('launchESimSetup', eSimPackageName);
     } else {
-      _channel.invokeMethod('openEsimSettings', {
+      _channel.invokeMethod('installEsimViaUniversalLink', {
         'activationCode': eSimPackageName,
       });
     }

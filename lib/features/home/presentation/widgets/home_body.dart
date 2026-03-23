@@ -1,10 +1,13 @@
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/common/widgets/targets/get_target.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
+import 'package:esim_mob_app/features/history/presentation/bloc/history_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_esim_widget.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/no_plans_widget.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/row_dot_text.dart';
+import 'package:esim_mob_app/features/status_transaction/presentation/bloc/status_transaction_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -14,25 +17,40 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<HomeBloc, HomeState>(listener: (context, state) {
+    context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory());
+    return BlocListener<StatusTransactionBloc, StatusTransactionState>(
+  listener: (context, state) {
+    context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
+  },
+      listenWhen: (prev, current){
+        bool isPreviousPending = prev.maybeWhen(pending: (s) => true ,orElse: () => false);
+        bool isCurrentNotPending = current.maybeMap(orElse: () => false, success: (s) => true, failure: (s) => true,failedPayment: (s) => true);
+        return isPreviousPending && isCurrentNotPending;
+      },
+  child: BlocListener<HomeBloc, HomeState>(listener: (context, state) {
       if (!state.isFirstESim) {
         _showTutorialTargets(context);
       }
     }, listenWhen: (previous, next) {
       return previous.isFirstESim != next.isFirstESim && !next.isFirstESim;
-    }, child: BlocBuilder<HomeBloc, HomeState>(
+    }, child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
         builder: (context, state) {
           // print(state.user);
       return state.mapOrNull(
               loading: (_) => const LoadingState(),
-              failure: (s) => s.tariffs.isNotEmpty
-                  ? const NoPlansWidget()
-                  : const HomeESimWidget(),
-              success: (s) => s.tariffs.isNotEmpty
+              failure: (s) => s.eSimActivations.isNotEmpty
                   ? const HomeESimWidget()
-                  : const NoPlansWidget()) ??
+                  : const NoPlansWidget(),
+              success: (s) => s.eSimActivations.isNotEmpty
+                  ? const HomeESimWidget()
+                  : const NoPlansWidget(),
+          authenticated: (s) => s.eSimActivations.isNotEmpty
+              ? const HomeESimWidget()
+              : const NoPlansWidget(),
+      ) ??
           const NoPlansWidget();
-    }));
+    })),
+);
   }
 
   void _showTutorialTargets(BuildContext context) {

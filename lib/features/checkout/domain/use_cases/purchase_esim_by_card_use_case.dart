@@ -29,5 +29,5 @@ class PurchaseESimParams{
   final String type;
   final String location;
   final String package;
-  final String promoCode;
+  final String? promoCode;
 }

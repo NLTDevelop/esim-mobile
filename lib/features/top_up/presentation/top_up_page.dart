@@ -1,4 +1,5 @@
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
+import 'package:esim_mob_app/common/widgets/state/failure_state.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/common/widgets/state/payment_failed_state.dart';
 import 'package:esim_mob_app/common/widgets/state/payment_succesfult_state.dart';
@@ -37,7 +38,7 @@ class TopUpPage extends StatelessWidget {
         initial: (_) => const LoadingState(),
         loading: (_) => const LoadingState(),
         loaded: (s) => const TopUpBody(),
-        failure: (s) => const TopUpBody(),
+        failure: (s) => FailureState(onTap: (){}, message: 'Error: ${s.message}',),
         paymentFailure: (s) => PaymentFailedState(message: s.message),
         paymentSuccess: (s) {
           final tariffModel = s.packages[s.selectedIndex];

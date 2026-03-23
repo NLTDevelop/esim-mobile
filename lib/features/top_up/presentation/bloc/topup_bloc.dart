@@ -43,7 +43,8 @@ class TopupBloc extends Bloc<TopupEvent, TopupState> {
       final packages = await _fetchTopUpListUseCase.call(_activationId);
       emit(TopupState.loading(packages: packages, selectedIndex: 0));
     } catch(err){
-      emit(TopupState.failure('Something goes wrong', packages: state.packages, selectedIndex: 0));
+      String message = ErrorMapper.mapError(err);
+      emit(TopupState.failure(message, packages: state.packages, selectedIndex: 0));
     }
   }
 

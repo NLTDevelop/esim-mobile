@@ -16,7 +16,7 @@ part 'home_state.dart';
 part 'home_bloc.freezed.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc({ required List<PackageModel> userTariffs, required FetchUserESimUseCase fetchUserESimUseCase }) : _fetchUserESimUseCase = fetchUserESimUseCase, super(HomeState.initial(tariffs: userTariffs)) {
+  HomeBloc({ required List<UserESimModel> userTariffs, required FetchUserESimUseCase fetchUserESimUseCase }) : _fetchUserESimUseCase = fetchUserESimUseCase, super(HomeState.initial()) {
     on<HomeEvent>((event, emit) async {
       await event.map(
           fetchESims: (e) => _onFetchESims(e, emit),
@@ -38,33 +38,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _onFetchESims(
       _HomeEventFetchESims event, Emitter<HomeState> emit) async {
-    emit(HomeState.loading(
-        tariffs: state.tariffs, isFirstESim: state.isFirstESim));
-    userESims = (await _fetchUserESimUseCase.call(NoParams()));
-    emit(HomeState.success(tariffs: userESims.map((e) =>
-        PackageModel(
-            price: e.price,
-            currency: e.currencyCode ?? 'USD',
-            packageId: e.id.toString(),
-            dataInMb: e.mb, validDays: e.balanceDays,
-            // status: e.status,
-            // usedMb: e.usedMb,
-            // balanceMb: e.balanceMb,
-            // balanceDays: e.balanceDays ?? 0,
-            // createdAt: e.createdAt
-        )
-    ).toList(),
-        isFirstESim: state.isFirstESim
-    ));
+    emit(HomeState.loading(isFirstESim: state.isFirstESim));
+    //userESims = (await _fetchUserESimUseCase.call(NoParams()));
+    emit(HomeState.success());
   }
 
   _onInstallFirstESim(
       _HomeEventInstallFirstESim event, Emitter<HomeState> emit) {
-    emit(HomeState.success(tariffs: state.tariffs, isFirstESim: false));
+    emit(HomeState.success(isFirstESim: false));
   }
 
   _onAddESim(_HomeEventAddESim event, Emitter<HomeState> emit){
-    emit(HomeState.success(tariffs: [...state.tariffs, event.tariff]));
+    emit(HomeState.success());
   }
 
   installFirstESim() {

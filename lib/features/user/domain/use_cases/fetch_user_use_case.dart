@@ -3,7 +3,7 @@ import 'package:esim_mob_app/core/use_case/use_case.dart';
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/user/domain/repository/user_repository.dart';
 
-class FetchCurrentUserUseCase extends UseCase<UserModel, NoParams> {
+class FetchCurrentUserUseCase extends UseCase<UserModel, GetUserParams> {
   final UserRepository _userRepository;
 
   const FetchCurrentUserUseCase({
@@ -11,5 +11,12 @@ class FetchCurrentUserUseCase extends UseCase<UserModel, NoParams> {
   }) : _userRepository = userRepository;
 
   @override
-  Future<UserModel> call(params) async => await _userRepository.getCurrentUser();
+  Future<UserModel> call(params) async => await _userRepository.getCurrentUser(fcmToken: params.fcmToken);
+}
+
+class GetUserParams{
+  GetUserParams({
+    this.fcmToken
+});
+  final String? fcmToken;
 }

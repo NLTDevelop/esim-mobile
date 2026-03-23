@@ -9,7 +9,7 @@ class CheckoutRepositoryImpl implements CheckoutRepository{
   const CheckoutRepositoryImpl({required CheckoutRemoteDataSource checkoutRemoteDataSource}) : _checkoutRemoteDataSource = checkoutRemoteDataSource, super();
   final CheckoutRemoteDataSource _checkoutRemoteDataSource;
   @override
-  Future<PurchasedESimByBalanceResponse> purchaseESimByBalance({required String type, required String location, required String package, required String promoCode}) async{
+  Future<PurchasedESimByBalanceResponse> purchaseESimByBalance({required String type, required String location, required String package, required String? promoCode}) async{
     return await _checkoutRemoteDataSource.purchaseESimUsingBalance(data: {
       'type': type,
       'location': location,
@@ -19,7 +19,7 @@ class CheckoutRepositoryImpl implements CheckoutRepository{
   }
 
   @override
-  Future<PurchasedESimByCardResponse> purchaseESimByCard({required String type, required String location, required String package, required String promoCode}) async{
+  Future<PurchasedESimByCardResponse> purchaseESimByCard({required String type, required String location, required String package, required String? promoCode}) async{
     return await _checkoutRemoteDataSource.purchaseESimUsingCard(data: {
       'type': type,
       'location': location,

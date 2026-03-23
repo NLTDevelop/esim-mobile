@@ -102,7 +102,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   _onPurchaseByBalance(_PurchaseByBalance event, Emitter<CheckoutState> emit) async{
     try{
       emit(const CheckoutState.loading());
-      final purchaseResult = await _purchaseESimByBalanceUseCase.call(PurchaseESimParams(type: _type, location: location, package: _tariff.packageId.toString(), promoCode: promoCode));
+      final purchaseResult = await _purchaseESimByBalanceUseCase.call(PurchaseESimParams(type: _type, location: location, package: _tariff.packageId.toString(), promoCode: promoCode.isEmpty ? null : promoCode));
       emit(const CheckoutState.success(isOpenPromoCode: false));
     } on Object catch(e){
       String message = ErrorMapper.mapError(e);

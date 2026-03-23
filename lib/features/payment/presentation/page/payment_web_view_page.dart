@@ -5,7 +5,10 @@ import 'package:esim_mob_app/common/widgets/dialog/alert_adaptive_dialog.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
-import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+import 'package:esim_mob_app/features/history/presentation/bloc/history_bloc.dart';
+import 'package:esim_mob_app/features/status_transaction/domain/use_cases/save_last_transaction_id_use_case.dart';
+import 'package:esim_mob_app/features/status_transaction/presentation/bloc/status_transaction_bloc.dart';
+import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -29,23 +32,32 @@ class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
   void initState() {
     super.initState();
     final NavigationDelegate navigationDelegate = NavigationDelegate(
-        onUrlChange: (url) {
+        onUrlChange: (url)  {
           if (!mounted) return;
           if (url.url == null) return;
 
           if(url.url != null && url.url!.contains(widget.trx)){
             FocusManager.instance.primaryFocus?.unfocus();
-            Future.delayed(const Duration(milliseconds: 100), () {
+            Future.delayed(const Duration(milliseconds: 100), () async{
               if (!mounted) return;
 
-              showAdaptiveDialog(
-                context: context,
-                builder: (_) {
-                  return PaymentDialog(
-                    isSuccess: url.url!.contains(widget.trx),
-                  );
-                },
-              );
+              // showAdaptiveDialog(
+              //   context: context,
+              //   builder: (_) {
+              //     return PaymentDialog(
+              //       isSuccess: url.url!.contains(widget.trx),
+              //     );
+              //   },
+              // );
+
+              context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
+              await injector<SaveLastTransactionIdUseCase>().call(widget.trx);
+              context.read<StatusTransactionBloc>().add(const StatusTransactionEvent.fetchLastTransactionStatus());
+              // List<UserESimModel> userTariffs = context.read<AuthentificationBloc>().state.user.userESims;
+              context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory(page: 1));
+              context.pop();
+
+              context.go(Routes.home);
             });
           }
         }
@@ -78,9 +90,11 @@ class PaymentDialog extends StatelessWidget {
   const PaymentDialog({
     super.key,
     required this.isSuccess,
+    required this.trx,
   });
 
   final bool isSuccess;
+  final String trx;
 
   String get _title => isSuccess ? 'Success' : 'Error';
 
@@ -101,10 +115,10 @@ class PaymentDialog extends StatelessWidget {
                 if (isSuccess) {
                   context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
                 }
-                List<PackageModel> userTariffs = context.read<AuthentificationBloc>().state.user.userTariffs;
+                injector<SaveLastTransactionIdUseCase>().call(trx);
                 context.pop();
 
-                context.go(Routes.home, extra: {'user_tariffs': userTariffs});
+                context.go(Routes.home, extra: {'user_tariffs': []});
               },
             );
           },

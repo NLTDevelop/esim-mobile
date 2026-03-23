@@ -24,6 +24,7 @@ import 'package:esim_mob_app/features/deposit/data/data_sources/remote/deposit_r
 import 'package:esim_mob_app/features/deposit/data/repository/deposit_repository_impl.dart';
 import 'package:esim_mob_app/features/deposit/domain/repositories/deposit_repository.dart';
 import 'package:esim_mob_app/features/deposit/domain/use_cases/add_balance_use_case.dart';
+import 'package:esim_mob_app/features/deposit/domain/use_cases/fetch_last_transaction_status_use_case.dart';
 import 'package:esim_mob_app/features/history/data/data_sources/remote/history_remote_data_source.dart';
 import 'package:esim_mob_app/features/history/data/repository/history_repository_impl.dart';
 import 'package:esim_mob_app/features/history/domain/repositories/history_repository.dart';
@@ -40,6 +41,12 @@ import 'package:esim_mob_app/features/onboarding/data/data_sources/local/first_s
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
 import 'package:esim_mob_app/features/profile/domain/use_cases/confirm_deletion_account_use_case.dart';
 import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
+import 'package:esim_mob_app/features/status_transaction/data/data_source/local/status_transaction_storage.dart';
+import 'package:esim_mob_app/features/status_transaction/data/data_source/local/status_transaction_storage_impl.dart';
+import 'package:esim_mob_app/features/status_transaction/data/repository/status_transaction_repository.dart';
+import 'package:esim_mob_app/features/status_transaction/domain/repositories/status_transaction_repository.dart';
+import 'package:esim_mob_app/features/status_transaction/domain/use_cases/fetch_last_transaction_id_use_case.dart';
+import 'package:esim_mob_app/features/status_transaction/domain/use_cases/save_last_transaction_id_use_case.dart';
 import 'package:esim_mob_app/features/store/data/data_sources/remote/countries_remote_data_source.dart';
 import 'package:esim_mob_app/features/store/data/data_sources/remote/plans_remote_data_source.dart';
 import 'package:esim_mob_app/features/store/data/repositoty/countries_repository_impl.dart';
@@ -53,6 +60,7 @@ import 'package:esim_mob_app/features/store/domain/use_cases/fetch_regions_use_c
 import 'package:esim_mob_app/features/top_up/data/data_sources/remote/top_up_remote_data_source.dart';
 import 'package:esim_mob_app/features/top_up/data/repository/top_up_repository_impl.dart';
 import 'package:esim_mob_app/features/top_up/domain/respository/top_up_repository.dart';
+import 'package:esim_mob_app/features/top_up/domain/use_cases/fetch_top_up_list_use_case.dart';
 import 'package:esim_mob_app/features/top_up/domain/use_cases/top_up_by_balance_use_case.dart';
 import 'package:esim_mob_app/features/top_up/domain/use_cases/top_up_by_card_use_case.dart';
 import 'package:esim_mob_app/features/user/data/data_sources/local/user_local_data_source.dart';
@@ -98,6 +106,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton<HistoryRemoteDataSource>(() => HistoryRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<ContactUsRemoteDataSource>(() => ContactUsRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<TopUpRemoteDataSource>(() => TopUpRemoteDataSource(injector<AwinstApi>().dio));
+
   },
   'Repository': (){
     injector.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(authRemoteDataSource: injector<AuthRemoteDataSource>()));
@@ -109,6 +118,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton<HistoryRepository>(() => HistoryRepositoryImpl(historyRemoteDataSource: injector<HistoryRemoteDataSource>()));
     injector.registerLazySingleton<ContactRepository>(() => ContactRepositoryImpl(contactUsRemoteDataSource: injector<ContactUsRemoteDataSource>()));
     injector.registerLazySingleton<TopUpRepository>(() => TopUpRepositoryImpl(topUpRemoteDataSource: injector<TopUpRemoteDataSource>()));
+    injector.registerLazySingleton<StatusTransactionRepository>(() => StatusTransactionRepositoryImpl(statusTransactionStorage: injector<StatusTransactionStorage>()));
 
     },
   'UseCases': (){
@@ -135,8 +145,12 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton(() => SendMessageToContactUseCase(contactRepository: injector<ContactRepository>()));
     injector.registerLazySingleton(() => UpdateUserUseCase(userRepository: injector<UserRepository>()));
 
+    injector.registerLazySingleton(() => FetchTopUpListUseCase(topUpRepository: injector<TopUpRepository>()));
     injector.registerLazySingleton(() => TopUpByCardUseCase(autoTopUpRepository: injector<AutoTopUpRepository>()));
     injector.registerLazySingleton(() => TopUpByBalanceUseCase(topUpRepository: injector<TopUpRepository>()));
+    injector.registerLazySingleton(() => SaveLastTransactionIdUseCase(statusTransactionRepository: injector<StatusTransactionRepository>()));
+    injector.registerLazySingleton(() => FetchLastTransactionIdUseCase(statusTransactionRepository: injector<StatusTransactionRepository>()));
+    injector.registerLazySingleton(() => FetchLastTransactionStatusUseCase(depositRepository: injector<DepositRepository>()));
     },
   'Token': () async {
     injector
@@ -181,7 +195,7 @@ FutureOr<UserModel> fetchCurrentUser() async {
   injector<AwinstApi>().token = token;
   try {
     if (token != null) {
-      final customer = await injector<FetchCurrentUserUseCase>().call(NoParams());
+      final customer = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: null));
       return customer;
     }
     return UserModel.notAuthenticated();
@@ -208,6 +222,7 @@ Future<void> baseSteps() async{
   injector.registerLazySingleton<AwinstApi>(() => AwinstApi());
   injector.registerLazySingleton(() => LocalizationRepositoryImpl());
   injector.registerLazySingleton<SessionStorage>(() => SessionStorageImpl(secureStorageDao: storageDao));
+  injector.registerLazySingleton<StatusTransactionStorage>(() => StatusTransactionStorageImpl(secureStorageDao: storageDao));
   injector.registerLazySingleton<FcmTokenStorage>(() => FcmTokenStorageImpl(secureStorageDao: storageDao));
   injector.registerLazySingleton(() => FirstStartAppStorageImpl(secureStorageDao: storageDao));
   injector.registerLazySingleton(() => OnBoardingRepositoryImpl(firstStartAppStorage: injector<FirstStartAppStorageImpl>()));

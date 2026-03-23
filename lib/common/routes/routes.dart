@@ -5,6 +5,7 @@ import 'package:esim_mob_app/features/auto_top_up/presentation/page/auto_top_up_
 import 'package:esim_mob_app/features/checkout/presentation/pages/checkout_page.dart';
 import 'package:esim_mob_app/features/contact_us/presentation/pages/contact_us_page.dart';
 import 'package:esim_mob_app/features/deletion_account/presentation/pages/delete_account_page.dart';
+import 'package:esim_mob_app/features/esim_installation_instruction/presentation/esim_installation_instruction_page.dart';
 import 'package:esim_mob_app/features/esim_list/presentation/pages/esim_list_page.dart';
 import 'package:esim_mob_app/features/faq/presentation/pages/faq_page.dart';
 import 'package:esim_mob_app/features/help/presentation/page/help_page.dart';
@@ -20,6 +21,7 @@ import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
 import 'package:esim_mob_app/features/store/data/models/region_model.dart';
 import 'package:esim_mob_app/features/store/presentation/page/store_page.dart';
 import 'package:esim_mob_app/features/top_up/presentation/top_up_page.dart';
+import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:esim_mob_app/features/welcome/presentation/page/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -54,6 +56,7 @@ class Routes {
   static const eSimList = '/esims';
   static const deleteAccount = '/delete-account';
   static const topUp = '/top-up';
+  static const installationInstruction = '/installation-instruction';
 }
 
 class BranchHomeData extends StatefulShellBranchData {
@@ -117,13 +120,13 @@ class HomeRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>?;
-    List<PackageModel>? tariffs;
+    List<UserESimModel>? eSimActivations;
     if(extra?['user_tariffs'] != null){
-      tariffs = extra?['user_tariffs'].map<PackageModel>((e) => PackageModel.fromJson(e)).toList() as List<PackageModel>;
+      eSimActivations = extra?['user_tariffs'].map<UserESimModel>((e) => UserESimModel.fromJson(e)).toList() as List<UserESimModel>;
     }
 
     return HomePage(
-      userTariffs: tariffs ?? [],
+      userTariffs: eSimActivations ?? [],
     );
   }
 }
@@ -391,4 +394,16 @@ class DeleteAccountRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => const DeleteAccountPage();
+}
+
+@TypedGoRoute<InstallationInstruction>(path: Routes.installationInstruction)
+class InstallationInstruction extends GoRouteData {
+  const InstallationInstruction();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    final extra = state.extra as Map<String, dynamic>;
+    final String activationCode = extra['activation_code'];
+    return InstallationInstructionPage(activationCode: activationCode,);
+  }
 }

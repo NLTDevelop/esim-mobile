@@ -1,11 +1,11 @@
 
-import 'package:esim_mob_app/common/theme/app_assets.dart';
+import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/activation_container.dart';
 import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class LatestActivationList extends StatelessWidget {
@@ -35,11 +35,19 @@ class LatestActivationList extends StatelessWidget {
          ),
           ...eSims.map((e) =>
               ActivationContainer(
+                activationId: e.id,
                 dataInMb: '${e.balanceMb} MB',
                 description: DateFormat('MMM d yyyy').format(e.createdAt),
                 title: 'Georgia ${e.mb}/MB',
-                balanceInPercent: 1 - (e.usedMb / e.mb),
-                isEnabled: false, onTopUp: () {  },
+                balanceInPercent: e.usedMb != null ? 1 - (e.usedMb! / e.mb) : 1,
+                isEnabled: e.autoTopUpEnabled ?? false,
+                onTopUp: () {
+                  context.push(Routes.topUp, extra: {
+                    'activation_id': e.id
+                  });
+                },
+                canAutoTopUp: true,
+                canTopUp: true,
               )
           )
           // ...eSims.topUpHistory.map((e) =>  Container(

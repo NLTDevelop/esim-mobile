@@ -3,7 +3,7 @@ import 'package:esim_mob_app/features/user/data/models/delete_request_response.d
 import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 
 abstract class UserRepository {
-  Future<UserModel> getCurrentUser();
+  Future<UserModel> getCurrentUser({String? fcmToken});
 
   Future<UserModel> updateUser({required String currencyCode});
 

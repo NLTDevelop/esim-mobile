@@ -18,7 +18,7 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-  create: (context) => HistoryBloc(fetchHistoryUseCase: injector<FetchHistoryUseCase>())..add(HistoryEvent.fetchHistory()),
+  create: (context) => HistoryBloc(fetchHistoryUseCase: injector<FetchHistoryUseCase>())..add(const HistoryEvent.fetchHistory()),
   child: Scaffold(
       backgroundColor: Theme.of(context).extension<ColorExtension>()!.background,
       appBar: AppBar(

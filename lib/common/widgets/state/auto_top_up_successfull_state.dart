@@ -5,6 +5,7 @@ import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -46,10 +47,10 @@ class AutoTopUpSuccessfulState extends StatelessWidget {
               ),
               PrimaryButton(onTap: () async{
                 final authBloc = context.read<AuthentificationBloc>();
-                List<PackageModel> userTariffs = authBloc.state.user.userTariffs;
+                List<UserESimModel> userTariffs = authBloc.state.user.userESims;
                 context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
                 ///context.read<HomeBloc>().add(HomeEvent.addESim(tariff: tariffModel));
-                context.go(Routes.home, extra: {'user_tariffs': <PackageModel>[...userTariffs]} );
+                context.go(Routes.home, extra: {'user_tariffs': <UserESimModel>[...userTariffs]} );
               }, text: 'Go to plans'),
             ],
           ),

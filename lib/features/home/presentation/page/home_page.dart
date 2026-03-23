@@ -5,6 +5,7 @@ import 'package:esim_mob_app/features/home/domain/use_cases/fetch_user_esim_use_
 import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_body.dart';
 import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.userTariffs});
 
-  final List<PackageModel> userTariffs;
+  final List<UserESimModel> userTariffs;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +26,6 @@ class HomePage extends StatelessWidget {
               bloc.add(HomeEvent.fetchESims(tariffs: userTariffs));
               return bloc;
             },
-          ),
-          BlocProvider(
-            create: (context) => HistoryBloc(fetchHistoryUseCase: injector<FetchHistoryUseCase>())..add(const HistoryEvent.fetchHistory()),
           ),
         ],
         child: const HomeBody(),
