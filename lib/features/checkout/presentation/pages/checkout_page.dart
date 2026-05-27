@@ -4,6 +4,7 @@ import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/common/widgets/state/payment_failed_state.dart';
 import 'package:esim_mob_app/common/widgets/state/payment_succesfult_state.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_balance.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/checkout/presentation/bloc/checkout_bloc.dart';
@@ -44,11 +45,20 @@ class CheckoutPage extends StatelessWidget {
               color: Theme.of(context).extension<ColorExtension>()!.text,),
           ),
         ),
-        body: BlocBuilder<CheckoutBloc, CheckoutState>(
-  builder: (context, state) {
-    return state.map(initial: (_) => CheckoutBody(country: country, image: image,), success: (_) => PaymentSuccessfulState(tariffModel: tariff), loading: (_) => const LoadingState(), failure: (s) => PaymentFailedState(message: s.message,));
-  },
-),
+        body: Stack(
+          children: [
+            BlocBuilder<CheckoutBloc, CheckoutState>(
+              builder: (context, state) {
+                return state.map(initial: (_) => CheckoutBody(country: country, image: image,), success: (_) => PaymentSuccessfulState(tariffModel: tariff), loading: (_) => const LoadingState(), failure: (s) => PaymentFailedState(message: s.message,));
+              },
+            ),
+            Positioned.fill(
+              child: BlocBuilder<AuthentificationBloc, AuthentificationState>(builder: (context, state) {
+                return state.maybeMap(orElse: () => Container(), loading: (s) => const LoadingState());
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

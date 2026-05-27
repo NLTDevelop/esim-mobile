@@ -33,10 +33,12 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
 
   final bool isFromWelcome;
   final List<CountryModel> allCountries = [];
+  final List<RegionModel> allRegions = [];
   
   Future<void> _onFetchPlans(_StoreEventFetchPlans event,
       Emitter<StoreState> emit) async{
     allCountries.clear();
+    allRegions.clear();
     emit(
       StoreState.loading(
         countryModels: state.countryModels,
@@ -54,6 +56,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
 
       ///await Future.delayed(const Duration(milliseconds: 2000));
       allCountries.addAll(countries);
+      allRegions.addAll(regions);
 
       emit(
           StoreState.success(
@@ -76,15 +79,22 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
   void _onSetSearchText(_StoreEventSetText event,Emitter<StoreState> emit){
     emit(
       StoreState.loading(
-        countryModels: allCountries,
+        countryModels: state.isLocal ? allCountries : state.countryModels,
+        regionModels: state.isLocal ?  state.regionModels : allRegions,
         isLocal: state.isLocal,
         text: state.text,
       ),
     );
 
     final searchedCountries = allCountries.where((e) => e.name.toLowerCase().contains(event.text.toLowerCase())).toList();
+    final searchedRegions = allRegions.where((e) => e.name.toLowerCase().contains(event.text.toLowerCase())).toList();
 
-    emit(StoreState.success(countryModels: searchedCountries, isLocal: state.isLocal, text: event.text));
+    emit(StoreState.success(
+        countryModels:  searchedCountries,
+        regionModels: searchedRegions,
+        isLocal: state.isLocal,
+        text: event.text
+    ));
   }
 
   void _onChangePlansType(_StoreEventChangePlansType event,Emitter<StoreState> emit){

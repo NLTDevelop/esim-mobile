@@ -37,17 +37,18 @@ class LatestActivationList extends StatelessWidget {
               ActivationContainer(
                 activationId: e.id,
                 dataInMb: '${e.balanceMb} MB',
-                description: DateFormat('MMM d yyyy').format(e.createdAt),
-                title: 'Georgia ${e.mb}/MB',
+                country: e.country,
+                description: DateFormat('MMM d yyyy hh:mm aaa').format(e.createdAt),
+                title: '${e.mb}/MB',
                 balanceInPercent: e.usedMb != null ? 1 - (e.usedMb! / e.mb) : 1,
-                isEnabled: e.autoTopUpEnabled ?? false,
+                isEnabled: e.autoTopUpEnabled,
                 onTopUp: () {
                   context.push(Routes.topUp, extra: {
                     'activation_id': e.id
                   });
                 },
-                canAutoTopUp: true,
-                canTopUp: true,
+                canAutoTopUp: e.canAutoTopUp,
+                canTopUp: e.canTopUp,
               )
           )
           // ...eSims.topUpHistory.map((e) =>  Container(

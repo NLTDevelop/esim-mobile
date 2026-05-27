@@ -10,13 +10,14 @@ class TransactionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String prettifyAmount;
-    if(transactionModel.amount.contains('.') == true){
-      final indexOfDot = transactionModel.amount.indexOf('.');
-      prettifyAmount = transactionModel.amount.substring(0, indexOfDot + 3 < transactionModel.amount.length ? indexOfDot + 3 : transactionModel.amount.length - 1);
-     } else {
-      prettifyAmount = transactionModel.amount;
-    }
+    // String prettifyAmount;
+    // if(transactionModel.amount.contains('.') == true){
+    //   final indexOfDot = transactionModel.amount.indexOf('.');
+    //   prettifyAmount = transactionModel.amount.substring(0, indexOfDot + 3 < transactionModel.amount.length ? indexOfDot + 3 : transactionModel.amount.length - 1);
+    //  } else {
+    //   prettifyAmount = transactionModel.amount;
+    // }
+    String prettifyAmount = transactionModel.amount;
 
     return Row(
       children: [

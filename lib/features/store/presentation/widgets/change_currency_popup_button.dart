@@ -1,35 +1,37 @@
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
-import 'package:esim_mob_app/features/store/data/models/currency_type.dart';
 import 'package:flutter/material.dart';
 
 class ChangeCurrencyPopupButton extends StatelessWidget {
   const ChangeCurrencyPopupButton(
       {super.key, required this.onTap, required this.selectedType});
 
-  final void Function(CurrencyType) onTap;
-  final CurrencyType selectedType;
+  final void Function(String) onTap;
+  final String? selectedType;
 
   String _currencyText() {
     switch (selectedType) {
-      case CurrencyType.usd:
+      case 'USD':
         return 'USD | \$';
-      default:
+      case 'EUR':
         return 'EUR | €';
+      default:
+        return 'Choose currency';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<CurrencyType>(
+
+    return PopupMenuButton<String>(
       initialValue: selectedType,
       onSelected: onTap,
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<CurrencyType>>[
-        const PopupMenuItem<CurrencyType>(
-            value: CurrencyType.usd,
-            child: DefaultText.displaySmall('USD | \$')),
-        const PopupMenuItem<CurrencyType>(
-            value: CurrencyType.eur,
-            child: DefaultText.displaySmall('EUR | €')),
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+            value: 'USD',
+            child:  DefaultText.displaySmall('USD | \$')),
+        const PopupMenuItem<String>(
+            value: 'EUR',
+            child:  DefaultText.displaySmall('EUR | €')),
       ],
       child: Container(
           padding: const EdgeInsets.all(8),

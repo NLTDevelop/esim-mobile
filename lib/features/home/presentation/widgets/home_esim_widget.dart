@@ -4,11 +4,15 @@ import 'package:esim_mob_app/common/widgets/bottom_sheets/auto_top_up_info_botto
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/history/presentation/widgets/history_transaction_container.dart';
+import 'package:esim_mob_app/features/home/domain/use_cases/fetch_user_esim_by_id_use_case.dart';
 import 'package:esim_mob_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_my_esims_bottom_sheet.dart';
 import 'package:esim_mob_app/features/home/presentation/widgets/home_text_button.dart';
+import 'package:esim_mob_app/features/home/presentation/widgets/pending_transaction_container.dart';
 import 'package:esim_mob_app/features/install_esim/presentation/cubit/install_esim_cubit.dart';
 import 'package:esim_mob_app/features/install_esim/presentation/widgets/bottom_sheets/install_esim_bottom_sheet.dart';
+import 'package:esim_mob_app/features/status_transaction/presentation/bloc/status_transaction_bloc.dart';
+import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -52,7 +56,7 @@ class HomeESimWidget extends StatelessWidget {
                       color: Theme.of(context).extension<ColorExtension>()!.background),
                   child: Row(
                     children: [
-                      DefaultText.displaySmall('eSIM #${context.read<AuthentificationBloc>().state.eSimActivations.last.id} not installed',
+                      DefaultText.displaySmall('eSIM #${context.read<AuthentificationBloc>().state.eSimActivations.first.id} not installed',
                           color: Theme.of(context)
                               .extension<ColorExtension>()!
                               .text),
@@ -117,6 +121,11 @@ class HomeESimWidget extends StatelessWidget {
                           const SizedBox(
                             height: 20,
                           ),
+                          BlocBuilder<StatusTransactionBloc, StatusTransactionState>(
+                              builder: (context, state){
+                                return state.maybeMap(orElse: () => Container(), pending: (s) => Padding(padding: const EdgeInsets.only(bottom: 12), child: PendingStatusWidget()));
+                              }
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -125,14 +134,14 @@ class HomeESimWidget extends StatelessWidget {
                                   height: 30,
                                   decoration:
                                       const BoxDecoration(shape: BoxShape.circle),
-                                  child: SvgPicture.asset(
-                                    AppIcons.japan,
+                                  child: SvgPicture.network(
+                                    'https://myaccount.keepgo.com/img/flags/3x2/${state.eSimActivations.first.country.toLowerCase()}.svg',
                                     colorFilter:  AppIcons.japan == AppIcons.world ? ColorFilter.mode(Theme.of(context).extension<ColorExtension>()!.background, BlendMode.srcIn) : null,
                                   )),
                               const SizedBox(
                                 width: 8,
                               ),
-                              DefaultText.bodySmall('Test',
+                              DefaultText.bodySmall(state.eSimActivations.first.country,
                                   color: Theme.of(context)
                                       .extension<ColorExtension>()!
                                       .secondaryText),
@@ -141,7 +150,7 @@ class HomeESimWidget extends StatelessWidget {
                           const SizedBox(
                             height: 24,
                           ),
-                          DefaultText.bodyMedium(state.eSimActivations.last.balanceMb != null ? '${(state.eSimActivations.last.balanceMb! / 1024.00).toStringAsFixed(2)} GB' : '',
+                          DefaultText.bodyMedium(state.eSimActivations.first.balanceMb != null ? '${(state.eSimActivations.first.balanceMb! / 1024.00).toStringAsFixed(2)} GB' : '',
                               fontWeight: FontWeight.w600,
                               color: Theme.of(context)
                                   .extension<ColorExtension>()!
@@ -149,10 +158,10 @@ class HomeESimWidget extends StatelessWidget {
                           const SizedBox(
                             height: 28,
                           ),
-                          if(state.eSimActivations.last.days != null)
+                          if(state.eSimActivations.first.days != null)
                             DefaultText.labelMedium(
-                      state.eSimActivations.last.balanceDays != null ? state.eSimActivations.last.balanceDays != 0 ?
-                      'Due to ${DateFormat('d MMM').format(DateTime.now().add(Duration(days: state.eSimActivations.last.balanceDays!)))}' : 'eSIM expired' : '',
+                      state.eSimActivations.first.balanceDays != null ? state.eSimActivations.first.balanceDays != 0 ?
+                      'Due to ${DateFormat('d MMM').format(DateTime.now().add(Duration(days: state.eSimActivations.first.balanceDays!)))}' : 'eSIM expired' : '',
                             color: Theme.of(context)
                                 .extension<ColorExtension>()!
                                 .cardBorder,
@@ -218,7 +227,7 @@ class HomeESimWidget extends StatelessWidget {
         useRootNavigator: true,
         useSafeArea: true,
         isScrollControlled: true,
-        builder: (ctx) => AutoTopUpInfoBottomSheet(eSimId: context.read<HomeBloc>().userESims.first.id, currencyCode: context.read<AuthentificationBloc>().state.user.when(authenticated: (s) => s.currency, notAuthenticated: () => null),));
+        builder: (ctx) => AutoTopUpInfoBottomSheet(eSimId: context.read<AuthentificationBloc>().state.eSimActivations.first.id, currencyCode: context.read<AuthentificationBloc>().state.user.when(authenticated: (s) => s.currency, notAuthenticated: () => null),));
   }
 
   void _showMyESimsBottomSheet(BuildContext context) {
@@ -239,7 +248,7 @@ class HomeESimWidget extends StatelessWidget {
         useSafeArea: true,
         isScrollControlled: true,
         builder: (ctx) => BlocProvider(
-              create: (ctx) => InstallESimCubit( userESims: context.read<AuthentificationBloc>().state.eSimActivations),
+              create: (ctx) => InstallESimCubit( userESims: context.read<AuthentificationBloc>().state.eSimActivations, fetchUserESimByIdUseCase: injector<FetchUserESimByIdUseCase>()),
               child: InstallESimBottomSheet(),
             ));
   }

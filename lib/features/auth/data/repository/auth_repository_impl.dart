@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:esim_mob_app/core/constants/variables.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:esim_mob_app/features/auth/data/data_sources/remote/auth_remote_data_source.dart';
 import 'package:esim_mob_app/features/auth/data/models/token_model.dart';
@@ -21,30 +20,46 @@ final class AuthRepositoryImpl  implements AuthRepository {
   }) : _authRemoteDataSource = authRemoteDataSource;
 
   @override
-  Future<TokenModel> loginWithGoogle({required String fcmToken}) async{
+  Future<TokenModel> loginWithGoogle({
+    required String fcmToken,
+  }) async {
     try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
 
-      await GoogleSignIn.instance.initialize(serverClientId: Platform.isAndroid ? dotenv.env['GOOGLE_SIGN_IN_CLIENT_ID'] : null, );
+        serverClientId: Platform.isAndroid
+            ? '111365015516-06fg2qqere9ogs7pjfab0682fk7ih9k6.apps.googleusercontent.com'
+            : null,
+        scopes: [
+          'email',
+          'profile',
+          'openid',
+        ],
+      );
 
-      final GoogleSignInAccount googleUser = await GoogleSignIn.instance.authenticate(scopeHint: ['email']);
+      await googleSignIn.signOut();
 
-      final GoogleSignInClientAuthorization? clientAuthorization = await googleUser.authorizationClient.authorizationForScopes(['email']);
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-
-      if (clientAuthorization == null) {
-        throw Exception('Google authorization cancelled or failed.');
+      if (googleUser == null) {
+        throw Exception('Google sign-in cancelled by user');
       }
 
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
+
+      if (googleAuth.accessToken == null) {
+        throw Exception('Failed to get Google access token');
+      }
 
       return await _authRemoteDataSource.signInGoogle(
         data: {
-          'access_token': clientAuthorization.accessToken,
+          'access_token': googleAuth.accessToken,
+          'id_token': googleAuth.idToken,
         },
-        fcmToken: fcmToken
+        fcmToken: fcmToken,
       );
-
     } catch (e, st) {
-      debugPrint('❌ Google Sign-In Error: $e');
+      debugPrint('❌ Google Sign-In Error (v6): $e');
       debugPrintStack(stackTrace: st);
       rethrow;
     }
@@ -58,7 +73,8 @@ final class AuthRepositoryImpl  implements AuthRepository {
     final credential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
-      ], webAuthenticationOptions: WebAuthenticationOptions(clientId: kClientID, redirectUri: Uri.parse(kAppleSignInReturnUrl)),
+        AppleIDAuthorizationScopes.fullName
+      ], webAuthenticationOptions: WebAuthenticationOptions(clientId: kClientID, redirectUri: Uri.parse(kAppleSignInProdReturnUrl)),
     );
 
     if (credential.userIdentifier != null && credential.identityToken != null) {

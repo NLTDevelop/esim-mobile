@@ -8,6 +8,7 @@ import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/checkout/presentation/bloc/checkout_bloc.dart';
+import 'package:esim_mob_app/features/checkout/presentation/widgets/choose_currency_dialog.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/order_coupon_textfield.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/order_summary_data_row.dart';
 import 'package:esim_mob_app/injector.dart';
@@ -201,8 +202,15 @@ class CheckoutBody extends StatelessWidget {
                     flex: 10,
                       child: PrimaryButton(
                           onTap: () async {
-                            final purchaseResult = await injector<PurchaseESimByCardUseCase>().call(PurchaseESimParams(type: context.read<CheckoutBloc>().type, location: context.read<CheckoutBloc>().location, package: context.read<CheckoutBloc>().tariff.packageId, promoCode: ''));
-                            context.push(Routes.payment, extra: {'url': purchaseResult.redirectUrl, 'trx': purchaseResult.trx});
+                            final bool isCurrencyNotNull = context.read<AuthentificationBloc>().state.user.currencyCode != null;
+                            if(isCurrencyNotNull){
+                              final purchaseResult = await injector<PurchaseESimByCardUseCase>().call(PurchaseESimParams(type: context.read<CheckoutBloc>().type, location: context.read<CheckoutBloc>().location, package: context.read<CheckoutBloc>().tariff.packageId, promoCode: ''));
+                              context.push(Routes.payment, extra: {'url': purchaseResult.redirectUrl, 'trx': purchaseResult.trx});
+                            } else {
+                              ChooseCurrencyDialog.show(context, onConfirm: (value){
+                                context.read<AuthentificationBloc>().add(AuthentificationEvent.changeCurrencyCode(currencyCode: value));
+                              });
+                            }
                           },
                           text: 'Quick Pay by Card',
                           icon: Icon(

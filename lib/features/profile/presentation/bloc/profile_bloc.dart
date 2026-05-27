@@ -14,14 +14,18 @@ part 'profile_bloc.g.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc() : super(const ProfileState()) {
     on<ProfileEvent>((event, emit) {
-      event.map(changeNotificationStatus: (event) => _onChangeNotificationStatus(event, emit));
+      event.map(changeNotificationStatus: (e) => _onChangeNotificationStatus(e, emit), changeMarketingNotificationStatus: (e) => _onChangeMarketingNotificationStatus(e, emit));
     });
   }
 
- void _onChangeNotificationStatus(_ProfileEventChangeNotificationStatus event, Emitter<ProfileState> emit){
+ void _onChangeNotificationStatus(_ProfileEventChangeNotificationStatus event, Emitter<ProfileState> emit) async{
     emit(
       state.copyWith(isNotify: event.isNotify)
     );
+  }
+
+  void _onChangeMarketingNotificationStatus(_ProfileEventChangeMarketingNotificationStatus event, Emitter<ProfileState> emit){
+    emit(state.copyWith(isMarketingNotify: event.isMarketingNotify));
   }
 
   Future<void> openLink(

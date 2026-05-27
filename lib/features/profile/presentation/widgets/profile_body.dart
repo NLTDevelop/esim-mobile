@@ -9,9 +9,7 @@ import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bl
 import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:esim_mob_app/features/profile/presentation/widgets/profile_button.dart';
-import 'package:esim_mob_app/features/store/data/models/currency_type.dart';
 import 'package:esim_mob_app/features/store/presentation/widgets/change_currency_popup_button.dart';
-import 'package:esim_mob_app/features/user/domain/use_cases/update_user_use_case.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +17,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ProfileBody extends StatelessWidget {
   const ProfileBody({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Permission.notification.status.then((value){
+      if(!context.mounted){
+        context.read<ProfileBloc>().add(ProfileEvent.changeNotificationStatus(isNotify: value.isGranted));
+      }
+    });
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -37,222 +41,264 @@ class ProfileBody extends StatelessWidget {
                   'Profile',
                   color: Theme.of(context).extension<ColorExtension>()!.text,
                 )),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  border: Border.all(
-                      color: Theme.of(context)
-                          .extension<ColorExtension>()!
-                          .cardBorder,
-                      width: 1),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Color.fromRGBO(0, 32, 70, .15),
-                        offset: Offset(0, 3),
-                        blurRadius: 5)
-                  ]),
-              child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
-                builder: (context, state) {
-                  return Row(mainAxisSize: MainAxisSize.max, children: [
-                    state.map(
-                      authenticated: (s) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const DefaultText.displaySmall('Your email address'),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          DefaultText.displaySmall(
-                            s.user.userEmail,
-                            color: Theme.of(context)
-                                .extension<ColorExtension>()!
-                                .descriptionText,
-                            fontSize: 15,
-                          ),
-                        ],
-                      ),
-                      loading: (s) => LoadingState(),
-                      failure: (s) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const DefaultText.displaySmall('Your email address'),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          DefaultText.displaySmall(
-                            s.user.userEmail,
-                            color: Theme.of(context)
-                                .extension<ColorExtension>()!
-                                .descriptionText,
-                            fontSize: 15,
-                          ),
-                        ],
-                      ),
-                      success: (s) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const DefaultText.displaySmall('Your email address'),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          DefaultText.displaySmall(
-                            s.user.userEmail,
-                            color: Theme.of(context)
-                                .extension<ColorExtension>()!
-                                .descriptionText,
-                            fontSize: 15,
-                          ),
-                        ],
-                      ),
-                      notAuthenticated: (s) => const SizedBox.shrink(),
-                    ),
-                    const Spacer(),
-                    ChangeCurrencyPopupButton(
-                      onTap: (CurrencyType value) async {
-                        context
-                            .read<AuthentificationBloc>()
-                            .add(AuthentificationEvent.changeCurrencyCode(currencyCode: value.name.toUpperCase()));
-                      },
-                      selectedType: state.user.currencyCode != null
-                          ? state.user.currencyCode == 'USD'
-                              ? CurrencyType.usd
-                              : CurrencyType.eur
-                          : CurrencyType.usd,
-                    ),
-                  ]);
-                },
-              ),
-            ),
-            const SizedBox(
-              height: 14,
-            ),
-            BlocBuilder<ProfileBloc, ProfileState>(
-              builder: (context, state) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Column(
                   children: [
-                    ProfileButton(
-                      text: 'Marketing communication',
-                      description:
-                          'Enable this option to receive exclusive Awinst Connect offers and promotions.',
-                      iconPath: AppIcons.notification,
-                      leadingIcon: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          border: Border.all(
                               color: Theme.of(context)
                                   .extension<ColorExtension>()!
-                                  .searchCursor,
-                              // border color
-                              width: 2,
-                            )),
-                        child: FlutterSwitch(
-                          width: 66.0,
-                          height: 40.0,
-                          toggleSize: 35.0,
-                          value: state.isNotify,
-                          activeColor: Theme.of(context).primaryColor,
-                          inactiveColor: Theme.of(context)
-                              .extension<ColorExtension>()!
-                              .background,
-                          toggleColor: Theme.of(context)
-                              .extension<ColorExtension>()!
-                              .searchCursor,
-                          borderRadius: 30.0,
-                          onToggle: (value) {
-                            context.read<ProfileBloc>().add(
-                                ProfileEvent.changeNotificationStatus(
-                                    isNotify: value));
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 14,
-                    ),
-                    ProfileButton(
-                      text: 'Terms of condition',
-                      iconPath: AppIcons.termsOfCondition,
-                      onTap: () {
-                        HapticFeedback.lightImpact();
-                        context
-                            .read<ProfileBloc>()
-                            .openLink(Uri.parse(LaunchLinks.termsOfConditions));
-                      },
-                      leadingIcon: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 22,
-                        color: Theme.of(context)
-                            .extension<ColorExtension>()!
-                            .descriptionText,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 14,
-                    ),
-                    ProfileButton(
-                        text: 'Privacy policy',
-                        iconPath: AppIcons.privacyPolicy,
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          context
-                              .read<ProfileBloc>()
-                              .openLink(Uri.parse(LaunchLinks.privacyPolicy));
+                                  .cardBorder,
+                              width: 1),
+                          boxShadow: const [
+                            BoxShadow(
+                                color: Color.fromRGBO(0, 32, 70, .15),
+                                offset: Offset(0, 3),
+                                blurRadius: 5)
+                          ]),
+                      child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
+                        builder: (context, state) {
+                          return Row(mainAxisSize: MainAxisSize.max, children: [
+                            state.map(
+                              authenticated: (s) => Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const DefaultText.displaySmall('Your email address'),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
+                                  DefaultText.displaySmall(
+                                    s.user.userEmail,
+                                    color: Theme.of(context)
+                                        .extension<ColorExtension>()!
+                                        .descriptionText,
+                                    fontSize: 15,
+                                  ),
+                                ],
+                              ),
+                              loading: (s) => LoadingState(),
+                              failure: (s) => Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const DefaultText.displaySmall('Your email address'),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
+                                  DefaultText.displaySmall(
+                                    s.user.userEmail,
+                                    color: Theme.of(context)
+                                        .extension<ColorExtension>()!
+                                        .descriptionText,
+                                    fontSize: 15,
+                                  ),
+                                ],
+                              ),
+                              success: (s) => Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const DefaultText.displaySmall('Your email address'),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
+                                  DefaultText.displaySmall(
+                                    s.user.userEmail,
+                                    color: Theme.of(context)
+                                        .extension<ColorExtension>()!
+                                        .descriptionText,
+                                    fontSize: 15,
+                                  ),
+                                ],
+                              ),
+                              notAuthenticated: (s) => const SizedBox.shrink(),
+                            ),
+                            const Spacer(),
+                            ChangeCurrencyPopupButton(
+                              onTap: (String value) async {
+                                context
+                                    .read<AuthentificationBloc>()
+                                    .add(AuthentificationEvent.changeCurrencyCode(currencyCode: value.toUpperCase()));
+                              },
+                              selectedType: state.user.currencyCode,
+                            ),
+                          ]);
                         },
-                        leadingIcon: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 22,
-                          color: Theme.of(context)
-                              .extension<ColorExtension>()!
-                              .descriptionText,
-                        )),
-                    const SizedBox(
-                      height: 14,
-                    ),
-                    BlocListener<AuthentificationBloc, AuthentificationState>(
-                      listener: (context, state) {
-                        if (state.user.isNotAuthenticated) {
-                          context.go(Routes.auth);
-                        }
-                      },
-                      child: ProfileButton(
-                          text: 'Logout',
-                          iconPath: AppIcons.logout,
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            context
-                                .read<AuthentificationBloc>()
-                                .add(const AuthentificationEvent.logout());
-                          }),
+                      ),
                     ),
                     const SizedBox(
                       height: 14,
                     ),
-                    ProfileButton(
-                      text: 'Delete account',
-                      iconPath: AppIcons.delete,
-                      onTap: () async {
-                        HapticFeedback.lightImpact();
-                        await injector<DeleteAccountUseCase>().call(NoParams());
-                        bool? isDeleted =
-                            await context.push(Routes.deleteAccount);
-                        if (isDeleted != null && isDeleted) {
-                          context
-                              .read<AuthentificationBloc>()
-                              .add(const AuthentificationEvent.deleteUser());
-                        }
+                    BlocBuilder<ProfileBloc, ProfileState>(
+                      builder: (context, state) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ProfileButton(
+                              text: 'Marketing communication',
+                              description:
+                                  'Enable this option to receive exclusive Awinst Connect offers and promotions.',
+                              iconPath: AppIcons.notification,
+                              leadingIcon: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(
+                                      color: Theme.of(context)
+                                          .extension<ColorExtension>()!
+                                          .searchCursor,
+                                      // border color
+                                      width: 2,
+                                    )),
+                                child: FlutterSwitch(
+                                  width: 66.0,
+                                  height: 40.0,
+                                  toggleSize: 35.0,
+                                  value: state.isMarketingNotify,
+                                  activeColor: Theme.of(context).primaryColor,
+                                  inactiveColor: Theme.of(context)
+                                      .extension<ColorExtension>()!
+                                      .background,
+                                  toggleColor: Theme.of(context)
+                                      .extension<ColorExtension>()!
+                                      .searchCursor,
+                                  borderRadius: 30.0,
+                                  onToggle: (value) {
+                                    context.read<ProfileBloc>().add(
+                                        ProfileEvent.changeMarketingNotificationStatus(
+                                            isMarketingNotify: value));
+                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 14,
+                            ),
+                            ProfileButton(
+                                text: 'Notifications',
+                                iconPath: AppIcons.notification,
+                              leadingIcon: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(
+                                      color: Theme.of(context)
+                                          .extension<ColorExtension>()!
+                                          .searchCursor,
+                                      // border color
+                                      width: 2,
+                                    )),
+                                child: FlutterSwitch(
+                                  width: 66.0,
+                                  height: 40.0,
+                                  toggleSize: 35.0,
+                                  value: state.isNotify,
+                                  activeColor: Theme.of(context).primaryColor,
+                                  inactiveColor: Theme.of(context)
+                                      .extension<ColorExtension>()!
+                                      .background,
+                                  toggleColor: Theme.of(context)
+                                      .extension<ColorExtension>()!
+                                      .searchCursor,
+                                  borderRadius: 30.0,
+                                  onToggle: (value) {
+                                    context.read<ProfileBloc>().add(
+                                        ProfileEvent.changeNotificationStatus(
+                                            isNotify: value));
+                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 14,
+                            ),
+                            ProfileButton(
+                              text: 'Terms of condition',
+                              iconPath: AppIcons.termsOfCondition,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                context
+                                    .read<ProfileBloc>()
+                                    .openLink(Uri.parse(LaunchLinks.termsOfConditions));
+                              },
+                              leadingIcon: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 22,
+                                color: Theme.of(context)
+                                    .extension<ColorExtension>()!
+                                    .descriptionText,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 14,
+                            ),
+                            ProfileButton(
+                                text: 'Privacy policy',
+                                iconPath: AppIcons.privacyPolicy,
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  context
+                                      .read<ProfileBloc>()
+                                      .openLink(Uri.parse(LaunchLinks.privacyPolicy));
+                                },
+                                leadingIcon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 22,
+                                  color: Theme.of(context)
+                                      .extension<ColorExtension>()!
+                                      .descriptionText,
+                                )),
+                            const SizedBox(
+                              height: 14,
+                            ),
+                            BlocListener<AuthentificationBloc, AuthentificationState>(
+                              listener: (context, state) {
+                                if (state.user.isNotAuthenticated) {
+                                  context.go(Routes.auth);
+                                }
+                              },
+                              child: ProfileButton(
+                                  text: 'Logout',
+                                  iconPath: AppIcons.logout,
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    context
+                                        .read<AuthentificationBloc>()
+                                        .add(const AuthentificationEvent.logout());
+                                  }),
+                            ),
+                            const SizedBox(
+                              height: 14,
+                            ),
+                            ProfileButton(
+                              text: 'Delete account',
+                              iconPath: AppIcons.delete,
+                              onTap: () async {
+                                HapticFeedback.lightImpact();
+                                await injector<DeleteAccountUseCase>().call(NoParams());
+                                bool? isDeleted =
+                                    await context.push(Routes.deleteAccount);
+                                if (isDeleted != null && isDeleted) {
+                                  context
+                                      .read<AuthentificationBloc>()
+                                      .add(const AuthentificationEvent.deleteUser());
+                                }
+                              },
+                              textColor:
+                                  Theme.of(context).extension<ColorExtension>()!.error,
+                            ),
+                          ],
+                        );
                       },
-                      textColor:
-                          Theme.of(context).extension<ColorExtension>()!.error,
                     ),
                   ],
-                );
-              },
+                ),
+              ),
             ),
           ],
         ),

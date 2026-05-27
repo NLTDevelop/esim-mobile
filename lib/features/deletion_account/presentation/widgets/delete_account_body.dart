@@ -1,6 +1,7 @@
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
+import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/deletion_account/presentation/bloc/delete_account_bloc.dart';
 import 'package:esim_mob_app/features/deletion_account/presentation/widgets/delete_account_countdown.dart';
 
@@ -37,7 +38,11 @@ class DeleteAccountBody extends StatelessWidget {
       ),
     );
 
-    return Padding(
+    return BlocListener<DeleteAccountBloc, DeleteAccountState>(
+  listener: (context, state) {
+    state.maybeMap(orElse: (){}, success: (s) => context.read<AuthentificationBloc>().add(const AuthentificationEvent.logout()));
+  },
+  child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -82,6 +87,7 @@ class DeleteAccountBody extends StatelessWidget {
 
         ],
       ),
-    );
+    ),
+);
   }
 }

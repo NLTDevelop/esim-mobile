@@ -36,9 +36,9 @@ class InstallESimAddView extends StatelessWidget {
         const SizedBox(
           height: 14,
         ),
-        PrimaryButton(onTap: (){
-          context.read<InstallESimCubit>().shareESim();
-        }, text: 'Send eSIM to another device', isActive: false, isExpanded: true,)
+        // PrimaryButton(onTap: (){
+        //   context.read<InstallESimCubit>().shareESim();
+        // }, text: 'Send eSIM to another device', isActive: false, isExpanded: true,)
       ],
     );
   }

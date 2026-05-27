@@ -2,7 +2,6 @@
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
-import 'package:esim_mob_app/features/store/data/models/currency_type.dart';
 import 'package:esim_mob_app/features/store/domain/use_cases/fetch_countries_use_case.dart';
 import 'package:esim_mob_app/features/store/domain/use_cases/fetch_regions_use_case.dart';
 import 'package:esim_mob_app/features/store/presentation/bloc/store_bloc.dart';
@@ -37,14 +36,10 @@ class StorePage extends StatelessWidget {
             BlocBuilder<AuthentificationBloc, AuthentificationState>(
               builder: (context, state) {
                 return ChangeCurrencyPopupButton(
-                    onTap: (CurrencyType type){
-                      context.read<AuthentificationBloc>().add(AuthentificationEvent.changeCurrencyCode(currencyCode: type.name.toUpperCase()));
+                    onTap: (String type){
+                      context.read<AuthentificationBloc>().add(AuthentificationEvent.changeCurrencyCode(currencyCode: type.toUpperCase()));
                       // context.read<StoreBloc>().add(StoreEvent.changeCurrencyType(type));
-                    }, selectedType: state.user.currencyCode != null
-                    ? state.user.currencyCode == 'USD'
-                    ? CurrencyType.usd
-                    : CurrencyType.eur
-                    : CurrencyType.usd,);
+                    }, selectedType: state.user.currencyCode,);
               },
             )
           ],

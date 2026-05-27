@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:esim_mob_app/core/client/rest/awinst_rest_api.dart';
 import 'package:esim_mob_app/core/use_case/use_case.dart';
 import 'package:esim_mob_app/core/utils/error/error_mapper.dart';
+import 'package:esim_mob_app/core/utils/logger/logger.dart';
 import 'package:esim_mob_app/features/auth/data/data_sources/local/session_storage.dart';
 import 'package:esim_mob_app/features/auth/data/models/user_model.dart';
 import 'package:esim_mob_app/features/auth/domain/use_cases/login_apple_use_case.dart';
@@ -9,7 +10,6 @@ import 'package:esim_mob_app/features/auth/domain/use_cases/login_google_use_cas
 import 'package:esim_mob_app/features/home/domain/use_cases/fetch_user_esim_use_case.dart';
 import 'package:esim_mob_app/features/notifcations/domain/use_cases/token_logout_use_case.dart';
 import 'package:esim_mob_app/features/onboarding/data/repository/onboarding_repository_impl.dart';
-import 'package:esim_mob_app/features/profile/domain/use_cases/delete_account_use_case.dart';
 import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/fetch_user_use_case.dart';
 import 'package:esim_mob_app/features/user/domain/use_cases/update_user_use_case.dart';
@@ -76,7 +76,7 @@ class AuthentificationBloc
       await _sessionStorage.saveAccessToken(token.accessToken);
       injector<AwinstApi>().token = token.accessToken;
       await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
-      final user = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: null));
+      final user = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: fcmToken));
       final eSimActivations = await injector<FetchUserESimUseCase>().call(NoParams());
 
       emit(
@@ -89,6 +89,7 @@ class AuthentificationBloc
     } on Exception catch (error) {
       // print(error);
       // print(stack);
+      Logger.error(error);
       var errorMessage = 'Unexpected error';
       if(error is DioException){
         errorMessage = error.message!;
@@ -112,10 +113,12 @@ class AuthentificationBloc
         fcmToken = '';
       }
 
+
       final token = await _loginAppleUseCase.call(LoginIOSParams(fcmToken: fcmToken));
       await _sessionStorage.saveAccessToken(token.accessToken);
+      injector<AwinstApi>().token = token.accessToken;
       await injector<OnBoardingRepositoryImpl>().setFirstRun(false);
-      final user = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: null));
+      final user = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: fcmToken));
       final eSimActivations = await injector<FetchUserESimUseCase>().call(NoParams());
 
       emit(
@@ -162,11 +165,11 @@ class AuthentificationBloc
       emit(_Loading(user: state.user, eSimActivations: state.eSimActivations));
       final token = await injector<SessionStorage>().getAccessToken();
       if (token != null) {
-        // injector<SlonovaApi>().token = token;
+        injector<AwinstApi>().token = token;
         final customer = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: null));
 
-        print(customer);
-        print(customer.userESims);
+        //print(customer);
+        //print(customer.userESims);
         final eSimsActivations = await injector<FetchUserESimUseCase>().call(NoParams());
 
         emit(
@@ -196,7 +199,10 @@ class AuthentificationBloc
     try{
       emit(_Loading(user: event.user, eSimActivations: state.eSimActivations));
       // await injector<TokenInitialUseCase>().call(NoParams());
-      eSimsActivations = await injector<FetchUserESimUseCase>().call(NoParams());
+      final token = await injector<SessionStorage>().getAccessToken();
+      if(token != null){
+        eSimsActivations = await injector<FetchUserESimUseCase>().call(NoParams());
+      }
 
       FirebaseMessaging.instance.onTokenRefresh.listen((String fcmToken) {
         injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: fcmToken));
@@ -222,7 +228,7 @@ class AuthentificationBloc
       emit(_Loading(user: state.user, eSimActivations: state.eSimActivations));
       // await _deleteAccountUseCase.call(NoParams());
       await _sessionStorage.cleanSession();
-      ///injector<SlonovaApi>().token = null;
+      injector<AwinstApi>().token = null;
       _tokenLogoutUseCase.call(NoParams());
       ///injector<NotificationBloc>().add(const NotificationEvent.fetchNotification());
       emit(const _NotAuthenticated());

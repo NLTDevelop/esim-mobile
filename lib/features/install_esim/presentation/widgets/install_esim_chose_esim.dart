@@ -70,6 +70,9 @@ class InstallESimChoseESim extends StatelessWidget {
                           width: 12,
                         ),
                         DefaultText.displaySmall('eSIM # ${e.value.id}'),
+                    const SizedBox(width: 6,),
+                    SvgPicture.network(
+                      'https://myaccount.keepgo.com/img/flags/3x2/${e.value.country.toLowerCase()}.svg', width: 22, height: 16,),
                         const SizedBox(width: 12,),
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
@@ -83,10 +86,15 @@ class InstallESimChoseESim extends StatelessWidget {
                         Container(
                           width: 20,
                           height: 20,
+                          padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: Theme.of(context).extension<ColorExtension>()!.primary, width: 4),
+                            border: Border.all(color: e.value.status != 'PENDING' && e.value.status != 'ACTIVE' ? Theme.of(context).extension<ColorExtension>()!.cardBorder : Theme.of(context).extension<ColorExtension>()!.primary, width: 3,),
                           ),
+                          child: e.value.status == 'ACTIVE' ? Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Theme.of(context).extension<ColorExtension>()!.toggleActive,
+                            ),) : null,
                         )
                       ],
                     ),

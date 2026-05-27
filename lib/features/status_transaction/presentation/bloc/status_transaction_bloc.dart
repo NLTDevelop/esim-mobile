@@ -35,39 +35,48 @@ class StatusTransactionBloc extends Bloc<StatusTransactionEvent, StatusTransacti
     try{
       final String lastTransactionId = await _fetchLastTransactionIdUseCase.call(NoParams()) ?? '';
       final DepositStatusModel transactionModel = await _fetchLastTransactionStatusUseCase.call(lastTransactionId);
-      switch(TransactionStatus.values[transactionModel.status - 1]){
-        case TransactionStatus.success:
-          emit(StatusTransactionState.success(transactionId: lastTransactionId));
-          _cancelPeriodicRequest();
-          break;
-        case TransactionStatus.failed:
-        case TransactionStatus.rejected:
-          emit(StatusTransactionState.failedPayment(transactionId: lastTransactionId));
-          _cancelPeriodicRequest();
-          break;
-        case TransactionStatus.pending:
-          emit(StatusTransactionState.pending(transactionId: lastTransactionId));
-          _startPeriodicRequest();
-          break;
+      if(transactionModel.status == 0){
+        emit(StatusTransactionState.pending(transactionId: lastTransactionId, status: transactionModel.status));
+        _startPeriodicRequest();
+      } else {
+        switch(TransactionStatus.values[transactionModel.status - 1]){
+          case TransactionStatus.success:
+            emit(StatusTransactionState.success(transactionId: lastTransactionId, status: transactionModel.status));
+            _cancelPeriodicRequest();
+            break;
+          case TransactionStatus.failed:
+          case TransactionStatus.rejected:
+            emit(StatusTransactionState.failedPayment(transactionId: lastTransactionId, status: transactionModel.status));
+            _cancelPeriodicRequest();
+            break;
+          case TransactionStatus.pending:
+            emit(StatusTransactionState.pending(transactionId: lastTransactionId, status: transactionModel.status));
+            _startPeriodicRequest();
+            break;
+        }
       }
 
     } catch(e){
-      emit(StatusTransactionState.failure('Something goes wrong', transactionId: ''));
+      emit(StatusTransactionState.failure('Something goes wrong', transactionId: '', status: state.status));
     }
 
   }
 
   void _startPeriodicRequest(){
-    _timer = Timer.periodic(const Duration(seconds: 60), (t){
-      if(_isPending){
-        add(const StatusTransactionEvent.fetchLastTransactionStatus());
-      } else {
-        _timer?.cancel();
-      }
-    });
+    _isPending = true;
+    if(_timer == null || _timer?.isActive == false){
+      _timer = Timer.periodic(const Duration(seconds: 60), (t){
+        if(_isPending){
+          add(const StatusTransactionEvent.fetchLastTransactionStatus());
+        } else {
+          _timer?.cancel();
+        }
+      });
+    }
   }
 
   void _cancelPeriodicRequest(){
+    _isPending = false;
     _timer?.cancel();
   }
 

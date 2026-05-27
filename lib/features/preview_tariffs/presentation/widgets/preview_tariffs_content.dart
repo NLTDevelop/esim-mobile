@@ -114,7 +114,7 @@ class PreviewTariffsContent extends StatelessWidget {
                   } else {
                     context.push(Routes.checkout, extra: {
                       'tariff': bloc.tariffs[bloc.state.selectedIndex],
-                      'image': bloc.plan.image,
+                      'image': bloc.countryEntity is CountryModel ? bloc.plan.image ?? 'https://myaccount.keepgo.com/img/flags/3x2/${(bloc.countryEntity as CountryModel).code.toLowerCase()}.svg' : null,
                       'country': bloc.countryEntity.name,
                       'type': bloc.countryEntity is CountryModel ? 'local' : 'regional',
                       'country_code': bloc.isLocal ? bloc.countryCodeFromCountryModel ?? 'US' : bloc.countryCodeFromPrivacyIPLocation ?? 'US'

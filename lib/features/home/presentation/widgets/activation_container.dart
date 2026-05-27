@@ -2,7 +2,6 @@
 import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
-import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/home/presentation/custom_painters/curve_painter.dart';
@@ -24,7 +23,8 @@ class ActivationContainer extends StatelessWidget {
     required this.balanceInPercent,
     required this.onTopUp,
     required this.canTopUp,
-    required this.canAutoTopUp
+    required this.canAutoTopUp,
+    required this.country
   });
 
   final int activationId;
@@ -32,6 +32,7 @@ class ActivationContainer extends StatelessWidget {
   final String title;
   final String description;
   final bool isEnabled;
+  final String country;
   final double balanceInPercent;
   final Function() onTopUp;
   final bool canTopUp;
@@ -62,16 +63,22 @@ class ActivationContainer extends StatelessWidget {
                   ],
                 ),
               ),
-              DefaultText.displaySmall(dataInMb),
+              DefaultText.displaySmall(dataInMb, fontSize: 14,),
             ],
           ),
           const SizedBox(width: 20,),
-          Flexible(
+          Expanded(
             child: Column(
               children: [
-                DefaultText.displayMedium(title, textAlign: TextAlign.center,),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                    children: [
+                  //SvgPicture.network('https://myaccount.keepgo.com/img/flags/3x2/${country.toLowerCase()}.svg', width: 30, height: 20,),
+                      DefaultText.displayMedium(country, textAlign: TextAlign.center, fontWeight: FontWeight.w600, fontSize: 14,),
+                      const SizedBox(width: 6,),
+                  DefaultText.displayMedium(title, textAlign: TextAlign.center, fontSize: 14,)]),
                 const SizedBox(height: 10,),
-                DefaultText.displaySmall(description, color: Theme.of(context).extension<ColorExtension>()!.hintText, fontWeight: FontWeight.w400,),
+                DefaultText.displaySmall(description, color: Theme.of(context).extension<ColorExtension>()!.hintText, fontWeight: FontWeight.w500, fontSize: 12,),
               ],
             ),
           ),

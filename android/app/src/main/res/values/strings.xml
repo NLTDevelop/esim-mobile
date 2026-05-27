@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">eSim mobile app</string>
+    <string name="app_name">Awinst Connect</string>
     <string name="facebook_app_id">1146524837194979</string>
     <string name="fb_login_protocol_scheme">5c55c3de12ce79617018c5fac1d46481</string>
     <string name="facebook_client_token">ce51a0bbd4d608214b8cc343f76fe66e</string>
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
 </resources>

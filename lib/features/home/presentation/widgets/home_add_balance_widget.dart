@@ -51,6 +51,7 @@ class HomeAddBalanceWidget extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 14),
                 child: AddBalanceButton(onTap: () {
+                  context.pop();
                   context.push(Routes.addBalance);
                 }),
               ),

@@ -41,23 +41,23 @@ class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
             Future.delayed(const Duration(milliseconds: 100), () async{
               if (!mounted) return;
 
-              // showAdaptiveDialog(
-              //   context: context,
-              //   builder: (_) {
-              //     return PaymentDialog(
-              //       isSuccess: url.url!.contains(widget.trx),
-              //     );
-              //   },
-              // );
+              showAdaptiveDialog(
+                context: context,
+                builder: (_) {
+                  return PaymentDialog(
+                    isSuccess: url.url!.contains(widget.trx), trx: widget.trx,
+                  );
+                },
+              );
 
-              context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
-              await injector<SaveLastTransactionIdUseCase>().call(widget.trx);
-              context.read<StatusTransactionBloc>().add(const StatusTransactionEvent.fetchLastTransactionStatus());
-              // List<UserESimModel> userTariffs = context.read<AuthentificationBloc>().state.user.userESims;
-              context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory(page: 1));
-              context.pop();
-
-              context.go(Routes.home);
+              // context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
+              // await injector<SaveLastTransactionIdUseCase>().call(widget.trx);
+              // context.read<StatusTransactionBloc>().add(const StatusTransactionEvent.fetchLastTransactionStatus());
+              // // List<UserESimModel> userTariffs = context.read<AuthentificationBloc>().state.user.userESims;
+              // context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory(page: 1));
+              // context.pop();
+              //
+              // context.go(Routes.home);
             });
           }
         }
@@ -111,14 +111,15 @@ class PaymentDialog extends StatelessWidget {
             return AdaptiveDialogButton(
               title: 'OK',
               isLoading: state.maybeMap(orElse: () => false, loading: (_) => true),
-              onPressed: () {
-                if (isSuccess) {
-                  context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
-                }
-                injector<SaveLastTransactionIdUseCase>().call(trx);
+              onPressed: () async {
+                context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
+                await injector<SaveLastTransactionIdUseCase>().call(trx);
+                context.read<StatusTransactionBloc>().add(const StatusTransactionEvent.fetchLastTransactionStatus());
+                // List<UserESimModel> userTariffs = context.read<AuthentificationBloc>().state.user.userESims;
+                context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory(page: 1));
                 context.pop();
 
-                context.go(Routes.home, extra: {'user_tariffs': []});
+                context.go(Routes.home);
               },
             );
           },

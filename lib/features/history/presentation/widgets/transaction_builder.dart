@@ -41,7 +41,7 @@ class TransactionBuilder extends StatelessWidget {
                         color: Theme.of(context).extension<ColorExtension>()!.toggleCircle,
                         borderRadius: BorderRadius.circular(6)
                     ),
-                    child: DefaultText.displaySmall('Amount'.toUpperCase(), color: Theme.of(context).extension<ColorExtension>()!.secondaryText, fontWeight: FontWeight.w600,),
+                    child: DefaultText.displaySmall('Amount'.toUpperCase(), color: Theme.of(context).extension<ColorExtension>()!.secondaryText, fontWeight: FontWeight.w600, fontSize: 14,),
                   ),
                   ...transactions.map((e) => Padding(padding:const EdgeInsets.symmetric(vertical: 16, horizontal: 14), child: TransactionRow(transactionModel: e,))),
                 ],
@@ -54,7 +54,7 @@ class TransactionBuilder extends StatelessWidget {
                         color: Theme.of(context).extension<ColorExtension>()!.toggleCircle,
                         borderRadius: BorderRadius.circular(6)
                     ),
-                    child: DefaultText.displaySmall('Status'.toUpperCase(), color: Theme.of(context).extension<ColorExtension>()!.secondaryText, fontWeight: FontWeight.w600,),
+                    child: DefaultText.displaySmall('Status'.toUpperCase(), color: Theme.of(context).extension<ColorExtension>()!.secondaryText, fontWeight: FontWeight.w600, fontSize: 14,),
                   ),
                   ...transactions.map((e) => Padding(padding:const EdgeInsets.symmetric(vertical: 16, horizontal: 14), child: DefaultText.displaySmall(getStatusOfPayment(e.status)))),
                 ],
@@ -67,7 +67,7 @@ class TransactionBuilder extends StatelessWidget {
                         color: Theme.of(context).extension<ColorExtension>()!.toggleCircle,
                         borderRadius: BorderRadius.circular(6)
                     ),
-                    child: DefaultText.displaySmall('Time'.toUpperCase(), color: Theme.of(context).extension<ColorExtension>()!.secondaryText, fontWeight: FontWeight.w600,),
+                    child: DefaultText.displaySmall('Time'.toUpperCase(), color: Theme.of(context).extension<ColorExtension>()!.secondaryText, fontWeight: FontWeight.w600, fontSize: 14,),
                   ),
                   ...transactions.map((e) => Padding(padding:const EdgeInsets.symmetric(vertical: 16, horizontal: 14), child: DefaultText.displaySmall(DateFormat('dd.MM.yyyy HH:mm').format(e.createdAt)))),
                 ],

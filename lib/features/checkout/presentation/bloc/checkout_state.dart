@@ -5,27 +5,14 @@ part of 'checkout_bloc.dart';
 class CheckoutState with _$CheckoutState {
   const CheckoutState._();
 
-  // @override
-  // PackageModel get tariff => when(
-  //   loading: (tariff,__, ___) => tariff,
-  //   success: (tariff, __, ___) => tariff,
-  //   failure: (tariff, __, ___, ____) => tariff,
-  // );
-
   @override
   bool get isOpenPromoCode => when(
     initial: (isOpenPromoCode) => isOpenPromoCode,
     loading: (isOpenPromoCode) => isOpenPromoCode,
     success: (isOpenPromoCode) => isOpenPromoCode,
-    failure: (isOpenPromoCode, __,) => isOpenPromoCode,
+    failure: (isOpenPromoCode, __,) => isOpenPromoCode
   );
 
-  // @override
-  // PromoCode? get promoCode => when(
-  //   loading: (_,__, promoCode) => promoCode,
-  //   success: (_, __, promoCode) => promoCode,
-  //   failure: (__, ___, promoCode, ____) => promoCode,
-  // );
 
   const factory CheckoutState.initial({
     @Default(false) bool isOpenPromoCode

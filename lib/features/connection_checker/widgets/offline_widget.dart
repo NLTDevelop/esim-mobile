@@ -1,7 +1,6 @@
 
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
-import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,9 +32,9 @@ class OfflineWidget extends StatelessWidget {
             ), Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  DefaultText.bodySmall('No internet', color: Theme.of(context).extension<ColorExtension>()!.text,),
+                  DefaultText.bodySmall('No internet', color: Theme.of(context).extension<ColorExtension>()!.secondaryText,),
                   const SizedBox(height: 16,),
-                  DefaultText.titleLarge('You need to be online to access the app.', textAlign: TextAlign.center, color: Theme.of(context).extension<ColorExtension>()!.text,
+                  DefaultText.titleLarge('You need to be online to access the app.', textAlign: TextAlign.center, color: Theme.of(context).extension<ColorExtension>()!.secondaryText,
                   )
                 ],
               ),

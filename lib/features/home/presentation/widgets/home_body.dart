@@ -1,3 +1,4 @@
+import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/common/widgets/targets/get_target.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
@@ -10,6 +11,7 @@ import 'package:esim_mob_app/features/home/presentation/widgets/row_dot_text.dar
 import 'package:esim_mob_app/features/status_transaction/presentation/bloc/status_transaction_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class HomeBody extends StatelessWidget {
@@ -17,13 +19,14 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory());
+    context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory(page: 1));
     return BlocListener<StatusTransactionBloc, StatusTransactionState>(
   listener: (context, state) {
     context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
+    context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory(page: 1));
   },
       listenWhen: (prev, current){
-        bool isPreviousPending = prev.maybeWhen(pending: (s) => true ,orElse: () => false);
+        bool isPreviousPending = prev.maybeWhen(pending: (s, i) => true ,orElse: () => false);
         bool isCurrentNotPending = current.maybeMap(orElse: () => false, success: (s) => true, failure: (s) => true,failedPayment: (s) => true);
         return isPreviousPending && isCurrentNotPending;
       },
@@ -33,7 +36,10 @@ class HomeBody extends StatelessWidget {
       }
     }, listenWhen: (previous, next) {
       return previous.isFirstESim != next.isFirstESim && !next.isFirstESim;
-    }, child: BlocBuilder<AuthentificationBloc, AuthentificationState>(
+    }, child: BlocConsumer<AuthentificationBloc, AuthentificationState>(
+    listener: (context, state){
+      state.maybeMap(notAuthenticated: (s) => context.go(Routes.auth), orElse: (){});
+    },
         builder: (context, state) {
           // print(state.user);
       return state.mapOrNull(

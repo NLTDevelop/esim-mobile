@@ -3,7 +3,7 @@ description: "A new Flutter project."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.3+6
+version: 1.0.15+21
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
@@ -48,8 +48,7 @@ dependencies:
   haptic_feedback: ^0.5.1+1
   permission_handler: ^12.0.1
   flutter_svg_provider: ^1.0.7
-  google_sign_in: ^7.2.0
-  flutter_facebook_auth: ^7.1.2
+  google_sign_in: ^6.2.0
   http: ^1.5.0
   app_tracking_transparency: ^2.0.6+1
   flutter_switch: ^0.3.2
@@ -63,6 +62,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.14.4
   flutter_lints: ^4.0.0
   go_router_builder: ^2.7.0
   build_runner: ^2.4.9
@@ -71,7 +71,13 @@ dev_dependencies:
   json_serializable: ^6.8.0
   json_annotation: ^4.9.0
 
-
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: false
+  image_path: "assets/images/logo_app.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#002847"
+  adaptive_icon_foreground_inset: 16
 
 # The following section is specific to Flutter packages.
 flutter:

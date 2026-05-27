@@ -1,4 +1,4 @@
-package com.esimapp.appname
+package com.esimapp.awinst
 
 import android.util.Log
 import android.app.Activity
@@ -55,45 +55,12 @@ class MainActivity : FlutterFragmentActivity() {
                     result.success(getCapabilityInfo())
                 }
 
-                "installEsim" -> {
-                    val activationCode = call.argument<String>("activationCode")
-//                    if (activationCode.isNullOrBlank()) {
-//                        result.error("invalid_args", "activationCode is required", null)
-//                        return@setMethodCallHandler
-//                    }
-//                    openSystemInstaller(activationCode.trim(), result)
-                    pendingResult = result
-//                    var link = buildUniversalLink(activationCode)
-//                    openUniversalLink(link)
-                    result.success(true)
-                }
-
                 "openEsimSettings" -> {
                     openEsimSettings()
                 }
 
                 else -> result.notImplemented()
             }
-        }
-    }
-
-    private fun startEsimInstallation() {
-        try {
-
-            val intent = Intent().apply {
-                action = EuiccManager.ACTION_START_EUICC_ACTIVATION
-                putExtra(EuiccManager.EXTRA_USE_QR_SCANNER, true)
-            }
-
-            startActivityForResult(intent, ACTIVATE_ACTIVITY_CODE)
-
-        } catch (e: Exception) {
-
-            // fallback якщо installer не підтримується
-            openEsimSettings()
-
-            pendingResult?.success("fallback_settings")
-            pendingResult = null
         }
     }
 

@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
@@ -48,7 +50,8 @@ class LoginBody extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            PrimaryButton(
+            if(Platform.isIOS)
+              PrimaryButton(
                 onTap: bloc.onLoginAppleTap,
                 text: 'Continue with Apple',
                 icon: SvgPicture.asset(

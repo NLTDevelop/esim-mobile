@@ -29,6 +29,7 @@ import 'package:esim_mob_app/features/history/data/data_sources/remote/history_r
 import 'package:esim_mob_app/features/history/data/repository/history_repository_impl.dart';
 import 'package:esim_mob_app/features/history/domain/repositories/history_repository.dart';
 import 'package:esim_mob_app/features/history/domain/use_cases/fetch_history_use_case.dart';
+import 'package:esim_mob_app/features/home/domain/use_cases/fetch_user_esim_by_id_use_case.dart';
 import 'package:esim_mob_app/features/home/domain/use_cases/fetch_user_esim_use_case.dart';
 import 'package:esim_mob_app/features/localization/data/repository/localization_repository_impl.dart';
 import 'package:esim_mob_app/features/notifcations/data/data_sources/local/fcm_token_storage.dart';
@@ -74,7 +75,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'core/use_case/use_case.dart';
 import 'features/auth/data/data_sources/local/session_storage.dart';
 import 'features/auth/data/data_sources/local/session_storage_impl.dart';
 import 'features/auth/data/repository/auth_repository_impl.dart';
@@ -151,6 +151,8 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton(() => SaveLastTransactionIdUseCase(statusTransactionRepository: injector<StatusTransactionRepository>()));
     injector.registerLazySingleton(() => FetchLastTransactionIdUseCase(statusTransactionRepository: injector<StatusTransactionRepository>()));
     injector.registerLazySingleton(() => FetchLastTransactionStatusUseCase(depositRepository: injector<DepositRepository>()));
+
+    injector.registerLazySingleton(() => FetchUserESimByIdUseCase(userRepository: injector<UserRepository>()));
     },
   'Token': () async {
     injector

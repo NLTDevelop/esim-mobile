@@ -152,6 +152,7 @@ class MyApp extends StatelessWidget {
             themeMode: ThemeMode.light,
             theme: createTheme(LightColoredPalette()),
             routerConfig: AppRouter().router,
+            debugShowCheckedModeBanner: false,
             locale: Locale(context.watch<LocalizationCubit>().state),
             localizationsDelegates: const [],
           );

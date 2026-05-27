@@ -9,10 +9,10 @@ class AwinstApi {
 
   //Host for API requests to development server
   // dev
-  static const baseUrl = 'https://awinstconnect.108labs.co.ua/api/';
+  //static const baseUrl = 'https://awinstconnect.108labs.co.ua/api/';
 
   // prod
-  //static const baseUrl = 'https://awinstconnect.com/api/';
+  static const baseUrl = 'https://awinstconnect.com/api/';
 
   AwinstApi() {
     _dio = Dio(_options())

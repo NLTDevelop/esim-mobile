@@ -23,6 +23,7 @@ class UserESimModel extends Equatable{
     required this.canTopUp,
     required this.createdAt,
     required this.topUpHistory,
+    required this.country,
     this.promoCode,
     this.appliedDiscountPercent,
   });
@@ -38,6 +39,7 @@ class UserESimModel extends Equatable{
   @JsonKey(name: 'used_mb')
   final int? usedMb;
   final String status;
+  final String country;
 
   @JsonKey(name: 'currency_code')
   final String? currencyCode;

@@ -47,4 +47,8 @@ class FlutterSecureStorageDao {
   Future<void> delete(String key) async{
     await _sharedPreferences.remove(key);
   }
+
+  Future<void> deleteAllSecureStorage() async{
+    await _secureStorage.deleteAll();
+  }
 }

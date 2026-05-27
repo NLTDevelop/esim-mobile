@@ -68,4 +68,9 @@ class DeleteAccountBloc extends Bloc<DeleteAccountEvent, DeleteAccountState> {
     emit(const DeleteAccountState.initial(isTimerEnded: true, ));
   }
 
+  @override
+  Future<void> close() {
+    _timer?.cancel();
+    return super.close();
+  }
 }

@@ -1,6 +1,7 @@
 
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/snackbar/default_snackbar.dart';
+import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
 import 'package:esim_mob_app/features/install_esim/presentation/cubit/install_esim_cubit.dart';
 import 'package:esim_mob_app/features/install_esim/presentation/widgets/install_esim_add_view.dart';
 import 'package:esim_mob_app/features/install_esim/presentation/widgets/install_esim_chose_esim.dart';
@@ -59,7 +60,11 @@ class InstallESimBottomSheet extends StatelessWidget {
                 },
                 builder: (context, state) {
                   final cubit = context.read<InstallESimCubit>();
-                  return state.map(listESimsView: (_) => const InstallESimChoseESim(), installESimViw: (_) => InstallESimAddView(title: 'eSIM #${cubit.userESims[cubit.chosenIndex].id}'), installationSelectionView: (s) => const InstallEsimInstallationSelectionView());
+                  return state.map(
+                      listESimsView: (_) => _.isLoading ? SizedBox(height: MediaQuery.of(context).size.height / 2, child: const LoadingState()) : const InstallESimChoseESim(),
+                      installESimViw: (s) => InstallESimAddView(title: 'eSIM #${cubit.userESims[cubit.chosenIndex].id}'),
+                      installationSelectionView: (s) => const InstallEsimInstallationSelectionView()
+                  );
                 },
               ),
             ),
