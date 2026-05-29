@@ -15,10 +15,11 @@ import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentWebViewPage extends StatefulWidget {
-  const PaymentWebViewPage({super.key, required this.url, required this.trx});
+  const PaymentWebViewPage({super.key, required this.url, required this.trx, this.isFromBalance});
 
   final String url;
   final String trx;
+  final bool? isFromBalance;
 
   @override
   State<PaymentWebViewPage> createState() => _PaymentWebViewPageState();
@@ -27,29 +28,37 @@ class PaymentWebViewPage extends StatefulWidget {
 class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
 
   late final WebViewController _webViewController;
+  bool _isPaymentHandled = false;
 
   @override
   void initState() {
     super.initState();
     final NavigationDelegate navigationDelegate = NavigationDelegate(
-        onUrlChange: (url)  {
+        onUrlChange: (url)  async {
           if (!mounted) return;
           if (url.url == null) return;
 
-          if(url.url != null && url.url!.contains(widget.trx)){
+          if(!_isPaymentHandled && url.url != null && url.url!.contains(widget.trx)){
+            _isPaymentHandled = true;
             FocusManager.instance.primaryFocus?.unfocus();
-            Future.delayed(const Duration(milliseconds: 100), () async{
+            await Future.delayed(const Duration(milliseconds: 100), () async{
               if (!mounted) return;
 
-              showAdaptiveDialog(
+              await showAdaptiveDialog(
                 context: context,
                 builder: (_) {
                   return PaymentDialog(
-                    isSuccess: url.url!.contains(widget.trx), trx: widget.trx,
+                    isSuccess: url.url!.contains(widget.trx),
+                    trx: widget.trx,
+                    isFromBalance: widget.isFromBalance ?? false,
+                    onSuccess: (){
+                      print('on payment success');
+                      context.pop();
+                    },
                   );
                 },
               );
-
+              context.pop<bool>(true);
               // context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
               // await injector<SaveLastTransactionIdUseCase>().call(widget.trx);
               // context.read<StatusTransactionBloc>().add(const StatusTransactionEvent.fetchLastTransactionStatus());
@@ -91,10 +100,14 @@ class PaymentDialog extends StatelessWidget {
     super.key,
     required this.isSuccess,
     required this.trx,
+    required this.isFromBalance,
+    required this.onSuccess
   });
 
   final bool isSuccess;
   final String trx;
+  final bool isFromBalance;
+  final Function() onSuccess;
 
   String get _title => isSuccess ? 'Success' : 'Error';
 
@@ -107,7 +120,7 @@ class PaymentDialog extends StatelessWidget {
       content: _content,
       actions: [
         BlocBuilder<AuthentificationBloc, AuthentificationState>(
-          builder: (context, state) {
+          builder: (ctx, state) {
             return AdaptiveDialogButton(
               title: 'OK',
               isLoading: state.maybeMap(orElse: () => false, loading: (_) => true),
@@ -115,11 +128,13 @@ class PaymentDialog extends StatelessWidget {
                 context.read<AuthentificationBloc>().add(const AuthentificationEvent.getSignedInUser());
                 await injector<SaveLastTransactionIdUseCase>().call(trx);
                 context.read<StatusTransactionBloc>().add(const StatusTransactionEvent.fetchLastTransactionStatus());
-                // List<UserESimModel> userTariffs = context.read<AuthentificationBloc>().state.user.userESims;
                 context.read<HistoryBloc>().add(const HistoryEvent.fetchHistory(page: 1));
-                context.pop();
-
-                context.go(Routes.home);
+                if(isFromBalance){
+                  onSuccess();
+                } else {
+                  context.pop();
+                  context.go(Routes.home);
+                }
               },
             );
           },

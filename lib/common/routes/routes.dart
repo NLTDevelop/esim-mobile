@@ -258,6 +258,7 @@ class CheckoutRoute extends GoRouteData {
     final country = extra['country'] as String;
     final countryCode = extra['country_code'] as String;
     final type = extra['type'] as String;
+    final regionId = extra['region_id'] as String?;
 
     return CheckoutPage(
       tariff: tariff,
@@ -265,6 +266,7 @@ class CheckoutRoute extends GoRouteData {
       country: country,
       type: type,
       countryCode: countryCode,
+      regionId: regionId,
     );
   }
 }
@@ -279,10 +281,12 @@ class PaymentRoute extends GoRouteData {
     //final tariff = extra['tariff'] as PackageModel;
     final url = extra['url'] as String;
     final trx = extra['trx'] as String;
+    final isFromBalance = extra['is_from_balance'] as bool?;
 
     return PaymentWebViewPage(
       url: url,
       trx: trx,
+      isFromBalance: isFromBalance,
     );
   }
 }

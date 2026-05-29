@@ -2,6 +2,10 @@ import 'package:esim_mob_app/core/utils/error/error_mapper.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_balance.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
+import 'package:esim_mob_app/features/store/domain/use_cases/fetch_local_esims_use_case.dart';
+import 'package:esim_mob_app/features/store/domain/use_cases/fetch_regional_esims_use_case.dart';
+import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -16,29 +20,37 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   CheckoutBloc(
       {required PurchaseESimByCardUseCase purchaseESimByCardUseCase,
       required PurchaseESimByBalanceUseCase purchaseESimByBalanceUseCase,
-      required PackageModel tariff, required String esimLocation, required String type})
-      : _purchaseESimByCardUseCase = purchaseESimByCardUseCase,
+      required PackageModel tariff,
+        required String esimLocation,
+        required String type,
+        required String? regionId
+      }) :
         _purchaseESimByBalanceUseCase = purchaseESimByBalanceUseCase,
         _tariff = tariff,
           location = esimLocation,
-  _type = type,
-        super(CheckoutState.initial( isOpenPromoCode: false)) {
+          _type = type,
+        _regionId = regionId,
+        super(CheckoutState.initial( isOpenPromoCode: false, currency: tariff.currency, price: tariff.price)) {
     on<CheckoutEvent>((event, emit) async {
       await event.map(
           fetchTariff: (e) => _onFetchTariffData(e, emit),
           promoCodeTap: (e) => _onPromoCodeButtonTap(e, emit),
           fetchPromoCode: (e) => _onCheckPromoCode(e, emit),
-          deletePromoCode: (e) => _onDeletePromoCode(e, emit), purchaseByBalance: (e) => _onPurchaseByBalance(e, emit), purchaseByCard: (e) => _onPurchaseByCard(e, emit));
+          deletePromoCode: (e) => _onDeletePromoCode(e, emit),
+          purchaseByBalance: (e) => _onPurchaseByBalance(e, emit),
+          purchaseByCard: (e) => _onPurchaseByCard(e, emit),
+          onChangeCurrency: (e) => _onChangeCurrency(e, emit)
+      );
     });
   }
 
   final TextEditingController promoCodeTextEditingController =
       TextEditingController();
-  final PurchaseESimByCardUseCase _purchaseESimByCardUseCase;
   final PurchaseESimByBalanceUseCase _purchaseESimByBalanceUseCase;
 
   final String location;
 
+  final String? _regionId;
   final PackageModel _tariff;
   PackageModel get tariff => _tariff;
 
@@ -78,14 +90,14 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   _onPromoCodeButtonTap(
       _CheckoutEventPromoCodeTap event, Emitter<CheckoutState> emit) {
-    emit(CheckoutState.success(isOpenPromoCode: !state.isOpenPromoCode));
+    emit(CheckoutState.success(isOpenPromoCode: !state.isOpenPromoCode, currency: state.currency, price: state.price));
     promoCodeTextEditingController.clear();
   }
 
   _onDeletePromoCode(
       _CheckoutDeletePromoCode event, Emitter<CheckoutState> emit) {
     emit(CheckoutState.success(
-        isOpenPromoCode: state.isOpenPromoCode,));
+        isOpenPromoCode: state.isOpenPromoCode, currency: state.currency, price: state.price));
   }
 
   _onFetchTariffData(
@@ -101,20 +113,42 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   _onPurchaseByBalance(_PurchaseByBalance event, Emitter<CheckoutState> emit) async{
     try{
-      emit(const CheckoutState.loading());
-      final purchaseResult = await _purchaseESimByBalanceUseCase.call(PurchaseESimParams(type: _type, location: location, package: _tariff.packageId.toString(), promoCode: promoCode.isEmpty ? null : promoCode));
-      emit(const CheckoutState.success(isOpenPromoCode: false));
+      emit(CheckoutState.loading(currency: state.currency, price: state.price));
+      await _purchaseESimByBalanceUseCase.call(PurchaseESimParams(type: _type, location: location, package: _tariff.packageId.toString(), promoCode: promoCode.isEmpty ? null : promoCode));
+      emit(CheckoutState.success(isOpenPromoCode: false, currency: state.currency, price: state.price));
     } on Object catch(e){
       String message = ErrorMapper.mapError(e);
-      emit(CheckoutState.failure(message: message));
+      emit(CheckoutState.failure(message: message, currency: state.currency, price: state.price));
     }
   }
   
   _onPurchaseByCard(_PurchaseByCard event, Emitter<CheckoutState> emit){
+
+  }
+
+  _onChangeCurrency(_CheckoutEventChangeCurrency event, Emitter<CheckoutState> emit) async{
     try{
-      
+      emit(CheckoutState.loading(currency: state.currency, price: state.price));
+      if(type == 'local'){
+        List<PlanModel> plans = await injector<FetchLocalESimsUseCase>().call(FetchLocalESimsParams(currencyCode: event.currency, countryCode: location));
+        _findCurrentPackage(plans, emit, event.currency);
+      } else if (_regionId != null) {
+        List<PlanModel> plans = await injector<FetchRegionalESimsUseCase>().call(FetchRegionalESimsParams(regionalId: _regionId, currencyCode: event.currency));
+        _findCurrentPackage(plans, emit, event.currency);
+      }
     } on Object catch(e){
-      
+      String message = ErrorMapper.mapError(e);
+      emit(CheckoutState.failure(message: message, currency: state.currency, price: state.price));
+    }
+  }
+
+  _findCurrentPackage(List<PlanModel> plans, Emitter<CheckoutState> emit, String currency){
+    for(int i = 0;i < plans.length; i++){
+      for(int j = 0; j < plans[i].packages.length; j++){
+        if(plans[i].packages[j].packageId == tariff.packageId){
+          emit(CheckoutState.initial(isOpenPromoCode: false, currency: currency, price: plans[i].packages[j].price));
+        }
+      }
     }
   }
 }

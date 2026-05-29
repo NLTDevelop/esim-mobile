@@ -16,18 +16,26 @@ import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, BlocProvider;
 import 'package:go_router/go_router.dart';
 
 class CheckoutPage extends StatelessWidget {
-  const CheckoutPage({super.key, required this.tariff, required this.image, required this.country, required this.type, required this.countryCode});
+  const CheckoutPage({super.key, required this.tariff, required this.image, required this.country, required this.type, required this.countryCode, this.regionId});
 
   final PackageModel tariff;
   final String? image;
   final String country;
   final String type;
   final String countryCode;
+  final String? regionId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CheckoutBloc(purchaseESimByCardUseCase: injector<PurchaseESimByCardUseCase>(), purchaseESimByBalanceUseCase: injector<PurchaseESimByBalanceUseCase>(), tariff: tariff, esimLocation: countryCode, type: type),
+      create: (context) => CheckoutBloc(
+          purchaseESimByCardUseCase: injector<PurchaseESimByCardUseCase>(),
+          purchaseESimByBalanceUseCase: injector<PurchaseESimByBalanceUseCase>(),
+          tariff: tariff,
+          esimLocation: countryCode,
+          type: type,
+        regionId: regionId,
+      ),
       child: DefaultScaffold(
         backgroundColor: Theme.of(context).extension<ColorExtension>()!
             .cardBorder,

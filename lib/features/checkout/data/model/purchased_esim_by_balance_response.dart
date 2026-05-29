@@ -11,7 +11,9 @@ class PurchasedESimByBalanceResponse extends Equatable{
     required this.paymentSuccess,
   });
 
+  @JsonKey(name: 'activation_id')
   final num id;
+  @JsonKey(name: 'payment_success')
   final bool paymentSuccess;
 
   @override

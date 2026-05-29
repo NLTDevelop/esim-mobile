@@ -24,7 +24,7 @@ class CheckoutBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<CheckoutBloc>();
+    final checkoutBloc = context.read<CheckoutBloc>();
     final authentificationBloc = context.read<AuthentificationBloc>();
 
     return SafeArea(
@@ -33,7 +33,14 @@ class CheckoutBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 40),
-          child: Column(
+          child: BlocListener<AuthentificationBloc, AuthentificationState>(
+  listener: (context, state) {
+    checkoutBloc.add(CheckoutEvent.onChangeCurrency(currency: state.user.currencyCode ?? 'USD'));
+  },
+            listenWhen: (prev, current){
+              return prev.user.currencyCode != current.user.currencyCode;
+            },
+  child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -54,8 +61,7 @@ class CheckoutBody extends StatelessWidget {
                     children: [
                       const DefaultText.bodySmall('Payment Details'),
                       Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
                           margin: const EdgeInsets.symmetric(vertical: 16.0),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16),
@@ -82,11 +88,11 @@ class CheckoutBody extends StatelessWidget {
                               )
                             ],
                           )),
-                      OrderSummaryDataRow(data: '${(bloc.tariff.dataInMb / 1024).toStringAsFixed(2)} GB', typeName: 'Plan'),
+                      OrderSummaryDataRow(data: '${(checkoutBloc.tariff.dataInMb / 1024).toStringAsFixed(2)} GB', typeName: 'Plan'),
                       const OrderSummaryDataRow(
                           data: 'Data only', typeName: 'Type'),
                       OrderSummaryDataRow(
-                          data: '${bloc.tariff.validDays} days', typeName: 'Duration'),
+                          data: '${checkoutBloc.tariff.validDays} days', typeName: 'Duration'),
                        OrderSummaryDataRow(
                         data: CountryCodes.detailsForLocale().name ?? 'Unknown',
                         typeName: 'Tax country',
@@ -109,7 +115,7 @@ class CheckoutBody extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           OrderSummaryDataRow(
-                              data: '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'}${blocInternal.tariff.price}', typeName: 'Subtotal'),
+                              data: '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'}${blocInternal.state.price}', typeName: 'Subtotal'),
                           // AnimatedCrossFade(firstChild: Container(), secondChild: OrderSummaryDataRow(data: '-US\$${blocInternal.discount}', typeName: 'Coupon', couponWidget: Container(
                           //   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
                           //   margin: const EdgeInsets.only(left: 8),
@@ -135,7 +141,7 @@ class CheckoutBody extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                                 DefaultText.bodySmall(
-                                 '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'} ${bloc.tariff.price}',
+                                 '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'} ${checkoutBloc.state.price}',
                                   fontWeight: FontWeight.w600,
                                 ),
                               ],
@@ -183,8 +189,12 @@ class CheckoutBody extends StatelessWidget {
                   Expanded(
                     flex: 10,
                       child: PrimaryButton(
-                    onTap: () {
-                      context.read<CheckoutBloc>().add(const CheckoutEvent.purchaseByBalance());
+                    onTap: () async{
+                      //context.read<CheckoutBloc>().add(const CheckoutEvent.purchaseByBalance());
+                      final isPaymentSuccess = await context.push<bool>(Routes.addBalance);
+                      if(isPaymentSuccess == true){
+                        context.read<CheckoutBloc>().add(const CheckoutEvent.purchaseByBalance());
+                      }
                     },
                     text: 'Add balance & Pay',
                     icon: Icon(
@@ -224,6 +234,7 @@ class CheckoutBody extends StatelessWidget {
               )
             ],
           ),
+),
         ),
       ),
     );

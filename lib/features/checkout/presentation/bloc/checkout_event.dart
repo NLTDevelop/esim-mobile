@@ -17,4 +17,6 @@ class CheckoutEvent with _$CheckoutEvent {
   const factory CheckoutEvent.purchaseByBalance() = _PurchaseByBalance;
 
   const factory CheckoutEvent.purchaseByCard() = _PurchaseByCard;
+
+  const factory CheckoutEvent.onChangeCurrency({ required final String currency }) = _CheckoutEventChangeCurrency;
 }

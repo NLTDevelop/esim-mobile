@@ -16,9 +16,9 @@ import 'package:go_router/go_router.dart';
 class AddBalancePage extends StatelessWidget {
   const AddBalancePage({super.key});
 
+
   @override
   Widget build(BuildContext context) {
-    print(context.read<AuthentificationBloc>().state.user.when(authenticated: (s) => s.currency, notAuthenticated: () => ''));
     return BlocProvider(
       create: (context) => AddBalanceCubit(addBalanceUseCase: injector<AddBalanceUseCase>(), currency: context.read<AuthentificationBloc>().state.user.when(authenticated: (s) => s.currency ?? 'USD', notAuthenticated: () => '')),
       child: DefaultScaffold(
@@ -29,14 +29,22 @@ class AddBalancePage extends StatelessWidget {
               child: Icon(Icons.arrow_back_ios,
                 color: Theme.of(context).extension<ColorExtension>()!.text,)),
         ),
-        body: BlocConsumer<AddBalanceCubit, AddBalanceState>(builder: (context, state){
+        body: BlocConsumer<AddBalanceCubit, AddBalanceState>(
+          listenWhen: (previous, current) =>
+          previous.paymentUrl != current.paymentUrl,
+          builder: (context, state){
           return state.isLoading ? const LoadingState() : const AddBalanceBody();
-        }, listener: (context, state){
+        }, listener: (ctx, state) async {
           if(state.errorMessage.isNotEmpty){
-            DefaultSnackBar.show(context: context, message: state.errorMessage);
+            DefaultSnackBar.show(context: ctx, message: state.errorMessage);
           }
+
           if(state.paymentUrl.isNotEmpty){
-            context.push(Routes.payment, extra: { 'url': state.paymentUrl, 'trx': state.trx });
+            final bool? isSuccess = await context.push<bool>(Routes.payment, extra: { 'url': state.paymentUrl, 'trx': state.trx, 'is_from_balance': true });
+            if(isSuccess == true){
+              await Future.delayed(const Duration(milliseconds: 500));
+              context.pop<bool>(true);
+            }
           }
         },),
       ),

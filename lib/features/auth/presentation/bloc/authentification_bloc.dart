@@ -168,8 +168,6 @@ class AuthentificationBloc
         injector<AwinstApi>().token = token;
         final customer = await injector<FetchCurrentUserUseCase>().call(GetUserParams(fcmToken: null));
 
-        //print(customer);
-        //print(customer.userESims);
         final eSimsActivations = await injector<FetchUserESimUseCase>().call(NoParams());
 
         emit(

@@ -10,6 +10,7 @@ import 'package:esim_mob_app/features/preview_tariffs/presentation/bloc/preview_
 import 'package:esim_mob_app/features/preview_tariffs/presentation/widgets/activation_info_card.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/widgets/preview_tariff_card.dart';
 import 'package:esim_mob_app/features/store/data/models/country_model.dart';
+import 'package:esim_mob_app/features/store/data/models/region_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -117,7 +118,8 @@ class PreviewTariffsContent extends StatelessWidget {
                       'image': bloc.countryEntity is CountryModel ? bloc.plan.image ?? 'https://myaccount.keepgo.com/img/flags/3x2/${(bloc.countryEntity as CountryModel).code.toLowerCase()}.svg' : null,
                       'country': bloc.countryEntity.name,
                       'type': bloc.countryEntity is CountryModel ? 'local' : 'regional',
-                      'country_code': bloc.isLocal ? bloc.countryCodeFromCountryModel ?? 'US' : bloc.countryCodeFromPrivacyIPLocation ?? 'US'
+                      'country_code': bloc.isLocal ? bloc.countryCodeFromCountryModel ?? 'US' : bloc.countryCodeFromPrivacyIPLocation ?? 'US',
+                      'region_id': bloc.countryEntity is RegionModel ? (bloc.countryEntity as RegionModel).id : null
                     });
                   }
                 },
