@@ -90,7 +90,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   _onPromoCodeButtonTap(
       _CheckoutEventPromoCodeTap event, Emitter<CheckoutState> emit) {
-    emit(CheckoutState.success(isOpenPromoCode: !state.isOpenPromoCode, currency: state.currency, price: state.price));
+    emit(CheckoutState.initial(isOpenPromoCode: !state.isOpenPromoCode, currency: state.currency, price: state.price));
     promoCodeTextEditingController.clear();
   }
 

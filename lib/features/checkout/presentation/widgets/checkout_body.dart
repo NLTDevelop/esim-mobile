@@ -171,7 +171,12 @@ class CheckoutBody extends StatelessWidget {
                               ),
                             ),
                           ),
-                          AnimatedCrossFade(firstChild: Container(), secondChild: OrderCouponTextField(textEditingController: blocInternal.promoCodeTextEditingController, onFinish: blocInternal.onCheckPromoCode), crossFadeState: state.isOpenPromoCode ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: const Duration(milliseconds: 300))
+                          AnimatedCrossFade(firstChild: Container(),
+                              secondChild: OrderCouponTextField(
+                                  textEditingController: blocInternal.promoCodeTextEditingController,
+                                  onFinish: blocInternal.onCheckPromoCode
+                              ),
+                              crossFadeState: state.isOpenPromoCode ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: const Duration(milliseconds: 300))
                         ],
                       );
                             },
@@ -214,7 +219,7 @@ class CheckoutBody extends StatelessWidget {
                           onTap: () async {
                             final bool isCurrencyNotNull = context.read<AuthentificationBloc>().state.user.currencyCode != null;
                             if(isCurrencyNotNull){
-                              final purchaseResult = await injector<PurchaseESimByCardUseCase>().call(PurchaseESimParams(type: context.read<CheckoutBloc>().type, location: context.read<CheckoutBloc>().location, package: context.read<CheckoutBloc>().tariff.packageId, promoCode: ''));
+                              final purchaseResult = await injector<PurchaseESimByCardUseCase>().call(PurchaseESimParams(type: context.read<CheckoutBloc>().type, location: context.read<CheckoutBloc>().location, package: context.read<CheckoutBloc>().tariff.packageId, promoCode: context.read<CheckoutBloc>().promoCodeTextEditingController.text));
                               context.push(Routes.payment, extra: {'url': purchaseResult.redirectUrl, 'trx': purchaseResult.trx});
                             } else {
                               ChooseCurrencyDialog.show(context, onConfirm: (value){
