@@ -11,6 +11,8 @@ import 'package:esim_mob_app/features/checkout/presentation/bloc/checkout_bloc.d
 import 'package:esim_mob_app/features/checkout/presentation/widgets/choose_currency_dialog.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/order_coupon_textfield.dart';
 import 'package:esim_mob_app/features/checkout/presentation/widgets/order_summary_data_row.dart';
+import 'package:esim_mob_app/features/status_transaction/domain/use_cases/save_last_transaction_id_use_case.dart';
+import 'package:esim_mob_app/features/status_transaction/presentation/bloc/status_transaction_bloc.dart';
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,30 +108,38 @@ class CheckoutBody extends StatelessWidget {
                       BlocConsumer<CheckoutBloc, CheckoutState>(
                         listener: (context, state){
                           state.mapOrNull(
-                            failure: (state) => DefaultSnackBar.show(context: context, message: state.message, displayDuration: const Duration(milliseconds: 2000))
+                            failure: (state) => DefaultSnackBar.show(context: context, message: state.message, displayDuration: const Duration(milliseconds: 2000)),
+                            paymentSuccess: (s) async {
+                              if(s.paymentCardResultIntent != null){
+                                await injector<SaveLastTransactionIdUseCase>().call(state.paymentCardResultIntent!.trx);
+                                context.read<StatusTransactionBloc>().add(const StatusTransactionEvent.fetchLastTransactionStatus(),);
+                              }
+                            }
                           );
                         },
                             builder: (context, state) {
                               final blocInternal = context.read<CheckoutBloc>();
+                              final discountPercent = num.tryParse(state.promoCode?.discountPercent ?? '0') ?? 0;
+                              final discountValue = state.price * discountPercent / 100.0;
                 return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           OrderSummaryDataRow(
-                              data: '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'}${blocInternal.state.price}', typeName: 'Subtotal'),
-                          // AnimatedCrossFade(firstChild: Container(), secondChild: OrderSummaryDataRow(data: '-US\$${blocInternal.discount}', typeName: 'Coupon', couponWidget: Container(
-                          //   padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                          //   margin: const EdgeInsets.only(left: 8),
-                          //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Theme.of(context).extension<ColorExtension>()!.cardBorder), child: Row(
-                          //     children: [
-                          //       DefaultText.displaySmall(bloc.promoCode),
-                          //       const SizedBox(width: 7,),
-                          //       GestureDetector(
-                          //         onTap: blocInternal.deletePromoCode,
-                          //         child: Icon(Icons.close, color: Theme.of(context).extension<ColorExtension>()!.text, size: 22,),
-                          //       )
-                          //     ],
-                          //   ),
-                          // ),), crossFadeState: state.isOpenPromoCode ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: const Duration(milliseconds: 300)),
+                              data: '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'}${state.price}', typeName: 'Subtotal'),
+                          AnimatedCrossFade(firstChild: Container(), secondChild: OrderSummaryDataRow(data: '-US\$$discountValue', typeName: 'Promo code:', couponWidget: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                            margin: const EdgeInsets.only(left: 8),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Theme.of(context).extension<ColorExtension>()!.cardBorder), child: Row(
+                              children: [
+                                DefaultText.displaySmall(state.promoCode?.description ?? ''),
+                                const SizedBox(width: 7,),
+                                GestureDetector(
+                                  onTap: blocInternal.deletePromoCode,
+                                  child: Icon(Icons.close, color: Theme.of(context).extension<ColorExtension>()!.text, size: 22,),
+                                )
+                              ],
+                            ),
+                          ),), crossFadeState: state.promoCode != null ? CrossFadeState.showSecond : CrossFadeState.showFirst, duration: const Duration(milliseconds: 300)),
                            Padding(
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             child: Row(
@@ -141,7 +151,7 @@ class CheckoutBody extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                                 DefaultText.bodySmall(
-                                 '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'} ${checkoutBloc.state.price}',
+                                 '${authentificationBloc.state.user.currencyCode != null ? authentificationBloc.state.user.currencyCode == 'EUR' ? 'EU€' : 'US\$' : 'US\$'} ${(checkoutBloc.state.price - discountValue).toStringAsFixed(2)}',
                                   fontWeight: FontWeight.w600,
                                 ),
                               ],
@@ -196,8 +206,13 @@ class CheckoutBody extends StatelessWidget {
                       child: PrimaryButton(
                     onTap: () async{
                       //context.read<CheckoutBloc>().add(const CheckoutEvent.purchaseByBalance());
-                      final isPaymentSuccess = await context.push<bool>(Routes.addBalance);
-                      if(isPaymentSuccess == true){
+                      final balance = context.read<AuthentificationBloc>().state.user.balance;
+                      if((balance ?? 0) < context.read<CheckoutBloc>().tariff.price){
+                        final isPaymentSuccess = await context.push<bool>(Routes.addBalance);
+                        if(isPaymentSuccess == true){
+                          context.read<CheckoutBloc>().add(const CheckoutEvent.purchaseByBalance());
+                        }
+                      } else {
                         context.read<CheckoutBloc>().add(const CheckoutEvent.purchaseByBalance());
                       }
                     },
@@ -220,7 +235,8 @@ class CheckoutBody extends StatelessWidget {
                             final bool isCurrencyNotNull = context.read<AuthentificationBloc>().state.user.currencyCode != null;
                             if(isCurrencyNotNull){
                               final purchaseResult = await injector<PurchaseESimByCardUseCase>().call(PurchaseESimParams(type: context.read<CheckoutBloc>().type, location: context.read<CheckoutBloc>().location, package: context.read<CheckoutBloc>().tariff.packageId, promoCode: context.read<CheckoutBloc>().promoCodeTextEditingController.text));
-                              context.push(Routes.payment, extra: {'url': purchaseResult.redirectUrl, 'trx': purchaseResult.trx});
+                              context.read<CheckoutBloc>().add(CheckoutEvent.purchaseByCard(paymentIntent: purchaseResult));
+                              // context.push(Routes.payment, extra: {'url': purchaseResult.redirectUrl, 'trx': purchaseResult.trx});
                             } else {
                               ChooseCurrencyDialog.show(context, onConfirm: (value){
                                 context.read<AuthentificationBloc>().add(AuthentificationEvent.changeCurrencyCode(currencyCode: value));

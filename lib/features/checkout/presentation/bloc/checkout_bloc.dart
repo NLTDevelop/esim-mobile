@@ -1,4 +1,7 @@
 import 'package:esim_mob_app/core/utils/error/error_mapper.dart';
+import 'package:esim_mob_app/features/checkout/data/model/payment_by_card_result_intent.dart';
+import 'package:esim_mob_app/features/checkout/data/model/promocode.dart';
+import 'package:esim_mob_app/features/checkout/domain/use_cases/check_promo_code_use_case.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_balance.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
@@ -8,6 +11,7 @@ import 'package:esim_mob_app/features/store/domain/use_cases/fetch_regional_esim
 import 'package:esim_mob_app/injector.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'checkout_event.dart';
@@ -20,12 +24,14 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   CheckoutBloc(
       {required PurchaseESimByCardUseCase purchaseESimByCardUseCase,
       required PurchaseESimByBalanceUseCase purchaseESimByBalanceUseCase,
+        required CheckPromoCodeUseCase checkPromoCodeUseCase,
       required PackageModel tariff,
         required String esimLocation,
         required String type,
         required String? regionId
       }) :
         _purchaseESimByBalanceUseCase = purchaseESimByBalanceUseCase,
+        _checkPromoCodeUseCase = checkPromoCodeUseCase,
         _tariff = tariff,
           location = esimLocation,
           _type = type,
@@ -46,7 +52,9 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   final TextEditingController promoCodeTextEditingController =
       TextEditingController();
+
   final PurchaseESimByBalanceUseCase _purchaseESimByBalanceUseCase;
+  final CheckPromoCodeUseCase _checkPromoCodeUseCase;
 
   final String location;
 
@@ -73,19 +81,16 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   Future<void> _onCheckPromoCode(
       _CheckoutEventFetchPromoCode event, Emitter<CheckoutState> emit) async {
-    // String? message;
-    // try {
-    //   PromoCode _promoCodeEntity = await _checkPromoCodeUseCase.call(
-    //       PromoCodeParams(promoCode: promoCodeTextEditingController.text));
-    //   emit(CheckoutState.success(
-    //       tariff: state.tariff,
-    //       isOpenPromoCode: false,
-    //       promoCode: _promoCodeEntity));
-    // } on Object catch (error) {
-    //   print(error);
-    //   message = ErrorMapper.mapError(error);
-    //   emit(CheckoutState.failure(message: message, tariff: state.tariff));
-    // }
+    String? message;
+    try {
+      emit(CheckoutState.loadingPromoCode(price: state.price, currency: state.currency));
+      PromoCode _promoCodeEntity = await _checkPromoCodeUseCase.call(
+          PromoCodeParams(promoCode: promoCodeTextEditingController.text));
+     emit(CheckoutState.initial(price: state.price, currency: state.currency, isOpenPromoCode: true, promoCode: _promoCodeEntity));
+    } on Object catch (error) {
+      message = ErrorMapper.mapError(error);
+      emit(CheckoutState.failure(message: message == 'Bad Request' ? 'Invalid promocode' : message, price: state.price, currency: state.currency));
+    }
   }
 
   _onPromoCodeButtonTap(
@@ -96,8 +101,9 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   _onDeletePromoCode(
       _CheckoutDeletePromoCode event, Emitter<CheckoutState> emit) {
-    emit(CheckoutState.success(
-        isOpenPromoCode: state.isOpenPromoCode, currency: state.currency, price: state.price));
+    promoCodeTextEditingController.clear();
+    emit(CheckoutState.initial(
+        isOpenPromoCode: false, currency: state.currency, price: state.price, promoCode: null));
   }
 
   _onFetchTariffData(
@@ -122,7 +128,24 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
   
-  _onPurchaseByCard(_PurchaseByCard event, Emitter<CheckoutState> emit){
+  _onPurchaseByCard(_PurchaseByCard event, Emitter<CheckoutState> emit) async{
+    emit(CheckoutState.paymentLoading(isOpenPromoCode: false, currency: state.currency, price: state.price, paymentCardResultIntent: event.paymentIntent));
+    try{
+      PaymentByCardResultIntent purchaseResult = await injector<PurchaseESimByCardUseCase>().call(PurchaseESimParams(type: type, location: location, package: tariff.packageId, promoCode: promoCodeTextEditingController.text));
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: purchaseResult.clientSecret,
+          merchantDisplayName: "My Store",
+        ),
+      );
+
+      // Step 3: Show Payment Sheet
+      await Stripe.instance.presentPaymentSheet();
+      emit(CheckoutState.paymentSuccess(isOpenPromoCode: state.isOpenPromoCode, paymentCardResultIntent: purchaseResult, price: state.price, currency: state.currency));
+    } on Object catch(e) {
+      String message = ErrorMapper.mapError(e);
+      emit(CheckoutState.failure(message: message, currency: state.currency, price: state.price));
+    }
 
   }
 

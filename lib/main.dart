@@ -21,6 +21,7 @@ import 'package:esim_mob_app/common/routes/router.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_observer.dart';
 import 'package:talker_bloc_logger/talker_bloc_logger_settings.dart';
 import 'common/theme/app_theme.dart';
@@ -69,6 +70,7 @@ void main() async => runZonedGuarded(() async {
       await baseSteps();
       await CountryCodes.init();
       await dotenv.load(fileName: ".env");
+      Stripe.publishableKey = dotenv.get('STRIPE_PUBLISHABLE_KEY');
       FlutterError.onError =
           (details) => Logger.handle(details.exception, details.stack);
       WidgetsBinding.instance.platformDispatcher.onError =

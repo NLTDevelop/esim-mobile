@@ -17,7 +17,6 @@ import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.
 import 'package:esim_mob_app/features/preview_tariffs/presentation/page/preview_tariffs_page.dart';
 import 'package:esim_mob_app/features/splash/presentation/page/splash_page.dart';
 import 'package:esim_mob_app/features/store/data/models/country_model.dart';
-import 'package:esim_mob_app/features/store/data/models/plan_model.dart';
 import 'package:esim_mob_app/features/store/data/models/region_model.dart';
 import 'package:esim_mob_app/features/store/presentation/page/store_page.dart';
 import 'package:esim_mob_app/features/top_up/presentation/top_up_page.dart';
@@ -212,12 +211,10 @@ class PreviewTariffsRoute extends GoRouteData {
     final extra = state.extra as Map<String, dynamic>;
     final countryEntity = extra['country_entity'];
     final isFromWelcome = extra['is_from_welcome'] as bool? ?? false;
-    final plan = extra['plan'] as PlanModel;
     return CustomTransitionPage(
       key: state.pageKey,
       child: PreviewTariffsPage(
         isFromWelcome: isFromWelcome,
-        plan: plan,
         countryEntity: countryEntity is CountryModel ? countryEntity : (countryEntity as RegionModel),
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -229,20 +226,6 @@ class PreviewTariffsRoute extends GoRouteData {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context, GoRouterState state) {
-  //   final extra = state.extra as Map<String, dynamic>;
-  //   final country = extra['country'] as String;
-  //   final iconPath = extra['icon_path'] as String;
-  //   final isFromWelcome = extra['is_from_welcome'] as bool? ?? false;
-  //   final tariffs = extra['tariffs'] as List<TariffModel>? ?? [];
-  //   return PreviewTariffsPage(
-  //     country: country,
-  //     iconPath: iconPath,
-  //     isFromWelcome: isFromWelcome,
-  //     tariffs: tariffs,
-  //   );
-  // }
 }
 
 

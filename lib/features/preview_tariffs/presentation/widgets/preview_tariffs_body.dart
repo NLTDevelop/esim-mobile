@@ -13,7 +13,7 @@ class PreviewTariffsBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PreviewTariffsBloc, PreviewTariffsState>(builder: (context, state){
       return state.map(
-          success: (_) => PreviewTariffsContent(),
+          success: (_) => const PreviewTariffsContent(),
           loading: (_) => const LoadingState(),
           failure: (_) => FailureState(onTap: () {
             context.read<PreviewTariffsBloc>().add(const PreviewTariffsEvent.fetchTariffs());

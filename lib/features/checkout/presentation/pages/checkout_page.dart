@@ -1,10 +1,10 @@
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/scaffold/default_scaffold.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
-import 'package:esim_mob_app/common/widgets/state/payment_failed_state.dart';
 import 'package:esim_mob_app/common/widgets/state/payment_succesfult_state.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
+import 'package:esim_mob_app/features/checkout/domain/use_cases/check_promo_code_use_case.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_balance.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/checkout/presentation/bloc/checkout_bloc.dart';
@@ -31,6 +31,7 @@ class CheckoutPage extends StatelessWidget {
       create: (context) => CheckoutBloc(
           purchaseESimByCardUseCase: injector<PurchaseESimByCardUseCase>(),
           purchaseESimByBalanceUseCase: injector<PurchaseESimByBalanceUseCase>(),
+          checkPromoCodeUseCase: injector<CheckPromoCodeUseCase>(),
           tariff: tariff,
           esimLocation: countryCode,
           type: type,
@@ -57,7 +58,15 @@ class CheckoutPage extends StatelessWidget {
           children: [
             BlocBuilder<CheckoutBloc, CheckoutState>(
               builder: (context, state) {
-                return state.map(initial: (_) => CheckoutBody(country: country, image: image,), success: (_) => PaymentSuccessfulState(tariffModel: tariff), loading: (_) => const LoadingState(), failure: (s) => PaymentFailedState(message: s.message,));
+                return state.map(
+                    initial: (_) => CheckoutBody(country: country, image: image,),
+                    success: (_) => PaymentSuccessfulState(tariffModel: tariff),
+                    loading: (_) => const LoadingState(),
+                    failure: (s) => CheckoutBody(country: country, image: image,),
+                    paymentLoading: (s) => const LoadingState(),
+                    paymentSuccess: (s) => PaymentSuccessfulState(tariffModel: tariff),
+                  loadingPromoCode: (_) => CheckoutBody(country: country, image: image,),
+                );
               },
             ),
             Positioned.fill(

@@ -242,13 +242,6 @@ class AuthentificationBloc
     }
   }
 
-  // void _onTryAgain(_AuthentificationEventTryAgain event, Emitter<AuthentificationState> emit){
-  //   try{
-  //
-  //   } on Object catch (error) {
-  //   emit(_Failure(message: ErrorMapper.mapError(error)));
-  //   }
-  // }
 
   _onUpdateCurrencyCode(_AuthentificationChangeCurrencyCode event, Emitter<AuthentificationState> emit) async{
     try {

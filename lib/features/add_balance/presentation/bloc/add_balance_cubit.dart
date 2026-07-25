@@ -33,11 +33,23 @@ class AddBalanceCubit extends Cubit<AddBalanceState> {
     try{
       emit(state.copyWith(isLoading: true, errorMessage: ''));
       final result = await _addBalanceUseCase.call(AddBalanceParams(amount: state.paymentValue, currencyCode: currencyCode));
-      emit(state.copyWith(isLoading: false, paymentUrl: result.url, trx: result.trx));
+      emit(state.copyWith(isLoading: false, paymentIntentClientSecret: result.clientSecret, trx: result.trx));
     } on Object catch(error){
       String message = ErrorMapper.mapError(error);
       print(message);
       emit(state.copyWith(isLoading: false));
     }
+  }
+
+  startingPayment(){
+    emit(state.copyWith(isFinishingPayment: true, isLoading: true));
+  }
+
+  finishPayment(){
+    emit(state.copyWith(isFinishingPayment: true, isLoading: false));
+  }
+
+  cancelPayment(){
+    emit(state.copyWith(isFinishingPayment: false));
   }
 }

@@ -1,6 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element, unnecessary_cast
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'color_extension.dart';
 
@@ -134,55 +135,99 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
 
   @override
   ColorExtension lerp(
-      covariant ThemeExtension<ColorExtension>? other, double t) {
+    covariant ThemeExtension<ColorExtension>? other,
+    double t,
+  ) {
     if (other is! ColorExtension) return this as ColorExtension;
     return ColorExtension(
       primary: Color.lerp(primary, other.primary, t)!,
       background: Color.lerp(background, other.background, t)!,
       onBackground: Color.lerp(onBackground, other.onBackground, t)!,
       text: Color.lerp(text, other.text, t)!,
-      enabledPrimaryButton:
-          Color.lerp(enabledPrimaryButton, other.enabledPrimaryButton, t)!,
-      disabledPrimaryButton:
-          Color.lerp(disabledPrimaryButton, other.disabledPrimaryButton, t)!,
-      onEnabledPrimaryButton:
-          Color.lerp(onEnabledPrimaryButton, other.onEnabledPrimaryButton, t)!,
+      enabledPrimaryButton: Color.lerp(
+        enabledPrimaryButton,
+        other.enabledPrimaryButton,
+        t,
+      )!,
+      disabledPrimaryButton: Color.lerp(
+        disabledPrimaryButton,
+        other.disabledPrimaryButton,
+        t,
+      )!,
+      onEnabledPrimaryButton: Color.lerp(
+        onEnabledPrimaryButton,
+        other.onEnabledPrimaryButton,
+        t,
+      )!,
       onDisabledPrimaryButton: Color.lerp(
-          onDisabledPrimaryButton, other.onDisabledPrimaryButton, t)!,
+        onDisabledPrimaryButton,
+        other.onDisabledPrimaryButton,
+        t,
+      )!,
       error: Color.lerp(error, other.error, t)!,
       textFieldHeader: Color.lerp(textFieldHeader, other.textFieldHeader, t)!,
       hintText: Color.lerp(hintText, other.hintText, t)!,
       divider: Color.lerp(divider, other.divider, t)!,
       onEnabledSecondaryButton: Color.lerp(
-          onEnabledSecondaryButton, other.onEnabledSecondaryButton, t)!,
+        onEnabledSecondaryButton,
+        other.onEnabledSecondaryButton,
+        t,
+      )!,
       onDisabledSecondaryButton: Color.lerp(
-          onDisabledSecondaryButton, other.onDisabledSecondaryButton, t)!,
-      enabledSecondaryButton:
-          Color.lerp(enabledSecondaryButton, other.enabledSecondaryButton, t)!,
+        onDisabledSecondaryButton,
+        other.onDisabledSecondaryButton,
+        t,
+      )!,
+      enabledSecondaryButton: Color.lerp(
+        enabledSecondaryButton,
+        other.enabledSecondaryButton,
+        t,
+      )!,
       disabledSecondaryButton: Color.lerp(
-          disabledSecondaryButton, other.disabledSecondaryButton, t)!,
+        disabledSecondaryButton,
+        other.disabledSecondaryButton,
+        t,
+      )!,
       welcomeText: Color.lerp(welcomeText, other.welcomeText, t)!,
       secondaryText: Color.lerp(secondaryText, other.secondaryText, t)!,
       shadow: Color.lerp(shadow, other.shadow, t)!,
       textDialog: Color.lerp(textDialog, other.textDialog, t)!,
-      textDialogButton:
-          Color.lerp(textDialogButton, other.textDialogButton, t)!,
+      textDialogButton: Color.lerp(
+        textDialogButton,
+        other.textDialogButton,
+        t,
+      )!,
       textFieldBorder: Color.lerp(textFieldBorder, other.textFieldBorder, t)!,
       cardBorder: Color.lerp(cardBorder, other.cardBorder, t)!,
-      navBarBackground:
-          Color.lerp(navBarBackground, other.navBarBackground, t)!,
-      disabledNavBarButton:
-          Color.lerp(disabledNavBarButton, other.disabledNavBarButton, t)!,
-      enabledNavBarButton:
-          Color.lerp(enabledNavBarButton, other.enabledNavBarButton, t)!,
+      navBarBackground: Color.lerp(
+        navBarBackground,
+        other.navBarBackground,
+        t,
+      )!,
+      disabledNavBarButton: Color.lerp(
+        disabledNavBarButton,
+        other.disabledNavBarButton,
+        t,
+      )!,
+      enabledNavBarButton: Color.lerp(
+        enabledNavBarButton,
+        other.enabledNavBarButton,
+        t,
+      )!,
       actionButton: Color.lerp(actionButton, other.actionButton, t)!,
-      darknessBackground:
-          Color.lerp(darknessBackground, other.darknessBackground, t)!,
+      darknessBackground: Color.lerp(
+        darknessBackground,
+        other.darknessBackground,
+        t,
+      )!,
       icon: Color.lerp(icon, other.icon, t)!,
       searchIcon: Color.lerp(searchIcon, other.searchIcon, t)!,
       searchCursor: Color.lerp(searchCursor, other.searchCursor, t)!,
-      splashBackground:
-          Color.lerp(splashBackground, other.splashBackground, t)!,
+      splashBackground: Color.lerp(
+        splashBackground,
+        other.splashBackground,
+        t,
+      )!,
       toggleCircle: Color.lerp(toggleCircle, other.toggleCircle, t)!,
       toggleActive: Color.lerp(toggleActive, other.toggleActive, t)!,
       descriptionText: Color.lerp(descriptionText, other.descriptionText, t)!,
@@ -196,70 +241,128 @@ mixin _$ColorExtensionTailorMixin on ThemeExtension<ColorExtension> {
         (other.runtimeType == runtimeType &&
             other is ColorExtension &&
             const DeepCollectionEquality().equals(primary, other.primary) &&
-            const DeepCollectionEquality()
-                .equals(background, other.background) &&
-            const DeepCollectionEquality()
-                .equals(onBackground, other.onBackground) &&
-            const DeepCollectionEquality().equals(text, other.text) &&
-            const DeepCollectionEquality()
-                .equals(enabledPrimaryButton, other.enabledPrimaryButton) &&
-            const DeepCollectionEquality()
-                .equals(disabledPrimaryButton, other.disabledPrimaryButton) &&
-            const DeepCollectionEquality()
-                .equals(onEnabledPrimaryButton, other.onEnabledPrimaryButton) &&
             const DeepCollectionEquality().equals(
-                onDisabledPrimaryButton, other.onDisabledPrimaryButton) &&
+              background,
+              other.background,
+            ) &&
+            const DeepCollectionEquality().equals(
+              onBackground,
+              other.onBackground,
+            ) &&
+            const DeepCollectionEquality().equals(text, other.text) &&
+            const DeepCollectionEquality().equals(
+              enabledPrimaryButton,
+              other.enabledPrimaryButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              disabledPrimaryButton,
+              other.disabledPrimaryButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              onEnabledPrimaryButton,
+              other.onEnabledPrimaryButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              onDisabledPrimaryButton,
+              other.onDisabledPrimaryButton,
+            ) &&
             const DeepCollectionEquality().equals(error, other.error) &&
-            const DeepCollectionEquality()
-                .equals(textFieldHeader, other.textFieldHeader) &&
+            const DeepCollectionEquality().equals(
+              textFieldHeader,
+              other.textFieldHeader,
+            ) &&
             const DeepCollectionEquality().equals(hintText, other.hintText) &&
             const DeepCollectionEquality().equals(divider, other.divider) &&
             const DeepCollectionEquality().equals(
-                onEnabledSecondaryButton, other.onEnabledSecondaryButton) &&
+              onEnabledSecondaryButton,
+              other.onEnabledSecondaryButton,
+            ) &&
             const DeepCollectionEquality().equals(
-                onDisabledSecondaryButton, other.onDisabledSecondaryButton) &&
-            const DeepCollectionEquality()
-                .equals(enabledSecondaryButton, other.enabledSecondaryButton) &&
+              onDisabledSecondaryButton,
+              other.onDisabledSecondaryButton,
+            ) &&
             const DeepCollectionEquality().equals(
-                disabledSecondaryButton, other.disabledSecondaryButton) &&
-            const DeepCollectionEquality()
-                .equals(welcomeText, other.welcomeText) &&
-            const DeepCollectionEquality()
-                .equals(secondaryText, other.secondaryText) &&
+              enabledSecondaryButton,
+              other.enabledSecondaryButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              disabledSecondaryButton,
+              other.disabledSecondaryButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              welcomeText,
+              other.welcomeText,
+            ) &&
+            const DeepCollectionEquality().equals(
+              secondaryText,
+              other.secondaryText,
+            ) &&
             const DeepCollectionEquality().equals(shadow, other.shadow) &&
-            const DeepCollectionEquality()
-                .equals(textDialog, other.textDialog) &&
-            const DeepCollectionEquality()
-                .equals(textDialogButton, other.textDialogButton) &&
-            const DeepCollectionEquality()
-                .equals(textFieldBorder, other.textFieldBorder) &&
-            const DeepCollectionEquality()
-                .equals(cardBorder, other.cardBorder) &&
-            const DeepCollectionEquality()
-                .equals(navBarBackground, other.navBarBackground) &&
-            const DeepCollectionEquality()
-                .equals(disabledNavBarButton, other.disabledNavBarButton) &&
-            const DeepCollectionEquality()
-                .equals(enabledNavBarButton, other.enabledNavBarButton) &&
-            const DeepCollectionEquality()
-                .equals(actionButton, other.actionButton) &&
-            const DeepCollectionEquality()
-                .equals(darknessBackground, other.darknessBackground) &&
+            const DeepCollectionEquality().equals(
+              textDialog,
+              other.textDialog,
+            ) &&
+            const DeepCollectionEquality().equals(
+              textDialogButton,
+              other.textDialogButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              textFieldBorder,
+              other.textFieldBorder,
+            ) &&
+            const DeepCollectionEquality().equals(
+              cardBorder,
+              other.cardBorder,
+            ) &&
+            const DeepCollectionEquality().equals(
+              navBarBackground,
+              other.navBarBackground,
+            ) &&
+            const DeepCollectionEquality().equals(
+              disabledNavBarButton,
+              other.disabledNavBarButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              enabledNavBarButton,
+              other.enabledNavBarButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              actionButton,
+              other.actionButton,
+            ) &&
+            const DeepCollectionEquality().equals(
+              darknessBackground,
+              other.darknessBackground,
+            ) &&
             const DeepCollectionEquality().equals(icon, other.icon) &&
-            const DeepCollectionEquality()
-                .equals(searchIcon, other.searchIcon) &&
-            const DeepCollectionEquality()
-                .equals(searchCursor, other.searchCursor) &&
-            const DeepCollectionEquality()
-                .equals(splashBackground, other.splashBackground) &&
-            const DeepCollectionEquality()
-                .equals(toggleCircle, other.toggleCircle) &&
-            const DeepCollectionEquality()
-                .equals(toggleActive, other.toggleActive) &&
-            const DeepCollectionEquality()
-                .equals(descriptionText, other.descriptionText) &&
-            const DeepCollectionEquality()
-                .equals(addBalance, other.addBalance));
+            const DeepCollectionEquality().equals(
+              searchIcon,
+              other.searchIcon,
+            ) &&
+            const DeepCollectionEquality().equals(
+              searchCursor,
+              other.searchCursor,
+            ) &&
+            const DeepCollectionEquality().equals(
+              splashBackground,
+              other.splashBackground,
+            ) &&
+            const DeepCollectionEquality().equals(
+              toggleCircle,
+              other.toggleCircle,
+            ) &&
+            const DeepCollectionEquality().equals(
+              toggleActive,
+              other.toggleActive,
+            ) &&
+            const DeepCollectionEquality().equals(
+              descriptionText,
+              other.descriptionText,
+            ) &&
+            const DeepCollectionEquality().equals(
+              addBalance,
+              other.addBalance,
+            ));
   }
 
   @override

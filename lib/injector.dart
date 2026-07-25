@@ -12,8 +12,12 @@ import 'package:esim_mob_app/features/auto_top_up/domain/repositories/auto_top_u
 import 'package:esim_mob_app/features/auto_top_up/domain/use_cases/fetch_activation_top_up_list_use_case.dart';
 import 'package:esim_mob_app/features/auto_top_up/domain/use_cases/update_auto_top_up_use_case.dart';
 import 'package:esim_mob_app/features/checkout/data/data_sources/remote/checkout_remote_data_source.dart';
+import 'package:esim_mob_app/features/checkout/data/data_sources/remote/promo_code_remote_data_source.dart';
 import 'package:esim_mob_app/features/checkout/data/repository/checkout_repository_impl.dart';
+import 'package:esim_mob_app/features/checkout/data/repository/promocode_repository_impl.dart';
 import 'package:esim_mob_app/features/checkout/domain/repository/checkout_repository.dart';
+import 'package:esim_mob_app/features/checkout/domain/repository/promo_code_repository.dart';
+import 'package:esim_mob_app/features/checkout/domain/use_cases/check_promo_code_use_case.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_balance.dart';
 import 'package:esim_mob_app/features/checkout/domain/use_cases/purchase_esim_by_card_use_case.dart';
 import 'package:esim_mob_app/features/contact_us/data/data_sources/remote/contact_us_remote_data_source.dart';
@@ -106,6 +110,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton<HistoryRemoteDataSource>(() => HistoryRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<ContactUsRemoteDataSource>(() => ContactUsRemoteDataSource(injector<AwinstApi>().dio));
     injector.registerLazySingleton<TopUpRemoteDataSource>(() => TopUpRemoteDataSource(injector<AwinstApi>().dio));
+    injector.registerLazySingleton<PromoCodeRemoteDataSource>(() => PromoCodeRemoteDataSource(injector<AwinstApi>().dio));
 
   },
   'Repository': (){
@@ -119,6 +124,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton<ContactRepository>(() => ContactRepositoryImpl(contactUsRemoteDataSource: injector<ContactUsRemoteDataSource>()));
     injector.registerLazySingleton<TopUpRepository>(() => TopUpRepositoryImpl(topUpRemoteDataSource: injector<TopUpRemoteDataSource>()));
     injector.registerLazySingleton<StatusTransactionRepository>(() => StatusTransactionRepositoryImpl(statusTransactionStorage: injector<StatusTransactionStorage>()));
+    injector.registerLazySingleton<PromoCodeRepository>(() => PromoCodeRepositoryImpl(promoCodeRemoteDataSource: injector<PromoCodeRemoteDataSource>()));
 
     },
   'UseCases': (){
@@ -153,6 +159,7 @@ final Map<String, _InitializationStep> _initializationSteps = {
     injector.registerLazySingleton(() => FetchLastTransactionStatusUseCase(depositRepository: injector<DepositRepository>()));
 
     injector.registerLazySingleton(() => FetchUserESimByIdUseCase(userRepository: injector<UserRepository>()));
+    injector.registerLazySingleton(() => CheckPromoCodeUseCase(promoCodeRepository: injector<PromoCodeRepository>()));
     },
   'Token': () async {
     injector

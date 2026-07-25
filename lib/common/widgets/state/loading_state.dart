@@ -3,12 +3,13 @@ import 'package:esim_mob_app/common/widgets/circular_progress_indicator/default_
 import 'package:flutter/material.dart';
 
 class LoadingState extends StatelessWidget {
-  const LoadingState({super.key, this.value, this.textWidget, this.backgroundColor, this.dimension = 56});
+  const LoadingState({super.key, this.value, this.textWidget, this.backgroundColor, this.strokeWidth, this.dimension = 56});
 
   final double? value;
   final double? dimension;
   final Widget? textWidget;
   final Color? backgroundColor;
+  final double? strokeWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class LoadingState extends StatelessWidget {
           children: [
             if(textWidget != null)
               Padding(padding: const EdgeInsets.only(bottom: 15), child: textWidget,),
-            DefaultCircularProgressIndicator(dimension: dimension,value: value,),
+            DefaultCircularProgressIndicator(dimension: dimension,value: value, strokeWidth: strokeWidth ?? 6,),
           ],
         ),
       ),

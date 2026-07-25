@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:esim_mob_app/common/routes/routes.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_switcher_button.dart';
 import 'package:esim_mob_app/common/widgets/state/loading_state.dart';
@@ -63,12 +64,17 @@ class StoreContent extends StatelessWidget {
         itemBuilder: (context, index) {
           return StoreDataCard(
             name: state.isLocal ? state.countryModels[index].name : state.regionModels[index].name,
+            price: state.isLocal ? state.countryModels[index].prices.firstWhereOrNull((e) => e.currency == s.user.currencyCode)?.amount : state.regionModels[index].prices.firstWhereOrNull((e) => e.currency == s.user.currencyCode)?.amount,
             isLocal: state.isLocal,
+            sign: s.user.currencyCode == 'USD' ? '\$' : '€',
             code: state.isLocal ? state.countryModels[index].code : null,
             onTap: () {
               HapticFeedback.lightImpact();
               // context.push(Routes.tariffs, extra: { 'plan': plans[index], 'country': plans[index].title, 'icon_path': plans[index].image, 'is_local': plans[index].coverages.length == 1, 'is_from_welcome': bloc.isFromWelcome});
-              context.push(Routes.eSimList, extra: { 'currency_type': s.user.currencyCode ?? 'USD', 'country_entity': state.isLocal ? state.countryModels[index] : state.regionModels[index], 'is_from_welcome': bloc.isFromWelcome});
+              //context.push(Routes.eSimList, extra: { 'currency_type': s.user.currencyCode ?? 'USD', 'country_entity': state.isLocal ? state.countryModels[index] : state.regionModels[index], 'is_from_welcome': bloc.isFromWelcome});
+              HapticFeedback.lightImpact();
+              context.push(Routes.tariffs, extra: { 'country_entity': state.isLocal ? state.countryModels[index] : state.regionModels[index], 'is_from_welcome': bloc.isFromWelcome});
+
             },
           );
         },

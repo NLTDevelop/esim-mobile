@@ -13,6 +13,9 @@ class ErrorMapper {
   }
 
   static String _mapErrorByDioException(DioException error) {
+    if(error.response?.data is String && error.response?.statusCode != 400){
+      return 'An unexpected error occurred';
+    }
     if(error.response?.statusCode == 500){
       return 'Server error';
     }
@@ -31,6 +34,9 @@ class ErrorMapper {
     }
     if (error.response?.data['message'] != null) {
       return error.response?.data['message'];
+    }
+    if(error.response?.statusCode == 400){
+      return 'Bad request';
     }
     return 'An unexpected error occurred';
   }

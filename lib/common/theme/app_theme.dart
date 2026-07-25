@@ -87,7 +87,6 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
     onPrimary: palette.onBackground,
     onSecondary: palette.onBackground,
     onSurface: palette.onBackground,
-    onBackground: palette.onBackground,
     onError: palette.onBackground,
     brightness: palette.brightness,
   ),
@@ -149,7 +148,7 @@ ThemeData createTheme(ColoredPalette palette) => ThemeData(
       fontFamily: 'Genttars',
     ),
   ),
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     labelColor: palette.selectedTabLabel,
     unselectedLabelColor: palette.text,
     indicator: UnderlineTabIndicator(

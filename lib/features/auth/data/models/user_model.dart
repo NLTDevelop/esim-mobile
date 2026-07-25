@@ -1,4 +1,4 @@
-import 'package:esim_mob_app/features/preview_tariffs/data/models/package_model.dart';
+
 import 'package:esim_mob_app/features/user/data/models/user_esim_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user_model.g.dart';
@@ -33,6 +33,8 @@ abstract class UserModel {
 
   String? get currencyCode;
 
+  double? get balance;
+
   T when<T extends Object?>({
     required final T Function(AuthenticatedUserModel user) authenticated,
     required final T Function() notAuthenticated,
@@ -65,6 +67,7 @@ class AuthenticatedUserModel implements UserModel {
 
   @override
   String get userEmail => email;
+
 
   @override
   T when<T extends Object?>({
@@ -120,6 +123,9 @@ class NotAuthenticatedUser implements UserModel {
 
   @override
   String? get currencyCode => '';
+
+  @override
+  double? get balance => 0;
 
   @override
   List<UserESimModel> get userESims => [];

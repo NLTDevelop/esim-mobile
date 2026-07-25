@@ -27,10 +27,10 @@ class LoginWidget extends StatelessWidget {
             success: (state){
               context.go(Routes.home,);
             },
-            failure: (_) {
+            failure: (state) {
               DefaultSnackBar.show(
                 context: context,
-                message: _.message,
+                message: state.message,
               );
             },
           );

@@ -3,7 +3,7 @@
 part of 'payment_bloc.dart';
 
 @freezed
-class PaymentState with _$PaymentState {
+abstract class PaymentState with _$PaymentState {
   const PaymentState._();
 
 

@@ -1,7 +1,7 @@
 part of 'authentification_bloc.dart';
 
 @freezed
-class AuthentificationState with _$AuthentificationState {
+abstract class AuthentificationState with _$AuthentificationState {
   const AuthentificationState._();
 
   const factory AuthentificationState.authenticated({

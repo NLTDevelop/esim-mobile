@@ -61,7 +61,7 @@ class InstallESimBottomSheet extends StatelessWidget {
                 builder: (context, state) {
                   final cubit = context.read<InstallESimCubit>();
                   return state.map(
-                      listESimsView: (_) => _.isLoading ? SizedBox(height: MediaQuery.of(context).size.height / 2, child: const LoadingState()) : const InstallESimChoseESim(),
+                      listESimsView: (_) => state.isLoading ? SizedBox(height: MediaQuery.of(context).size.height / 2, child: const LoadingState()) : const InstallESimChoseESim(),
                       installESimViw: (s) => InstallESimAddView(title: 'eSIM #${cubit.userESims[cubit.chosenIndex].id}'),
                       installationSelectionView: (s) => const InstallEsimInstallationSelectionView()
                   );

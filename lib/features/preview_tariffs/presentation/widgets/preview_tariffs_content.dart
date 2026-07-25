@@ -28,7 +28,9 @@ class PreviewTariffsContent extends StatelessWidget {
     final bloc = context.read<PreviewTariffsBloc>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
+      child: BlocBuilder<PreviewTariffsBloc, PreviewTariffsState>(
+  builder: (context, state) {
+    return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
@@ -69,36 +71,32 @@ class PreviewTariffsContent extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: BlocBuilder<PreviewTariffsBloc, PreviewTariffsState>(
-                builder: (context, state) {
-              final bloc = context.read<PreviewTariffsBloc>();
-              return ListView.separated(
-                  itemBuilder: (context, index) {
-                    return index != state.tariffs.length
-                        ? PreviewTariffCard(
-                            price: state.tariffs[index].price,
-                            dataInGb: (state.tariffs[index].dataInMb / 1024),
-                            days: state.tariffs[index].validDays ?? 0,
-                            isActive: index == state.selectedIndex,
-                            currencyCode: context.read<AuthentificationBloc>().state.user.currencyCode,
-                            onTap: () {
-                              HapticFeedback.lightImpact();
-                              bloc.add(PreviewTariffsEvent.selectIndex(index));
-                            })
-                        : ActivationInfoCard(
-                            title: 'Can I activate my plan later',
-                            description:
-                                'All plans have a 30-day activation period. If you get a plan today and don\'t activate it until ${DateFormat('MMMM d').format(DateTime.now().add(const Duration(days: 30)))}, it will be activated automatically.');
-                  },
-                  separatorBuilder: (context, index) {
-                    return index != state.tariffs.length
-                        ? const SizedBox(
-                            height: 10,
-                          )
-                        : const SizedBox.shrink();
-                  },
-                  itemCount: state.tariffs.length + 1);
-            }),
+            child: ListView.separated(
+                itemBuilder: (context, index) {
+                  return index != state.tariffs.length
+                      ? PreviewTariffCard(
+                      price: state.tariffs[index].price,
+                      dataInGb: (state.tariffs[index].dataInMb / 1024),
+                      days: state.tariffs[index].validDays ?? 0,
+                      isActive: index == state.selectedIndex,
+                      currencyCode: context.read<AuthentificationBloc>().state.user.currencyCode,
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        bloc.add(PreviewTariffsEvent.selectIndex(index));
+                      })
+                      : ActivationInfoCard(
+                      title: 'Can I activate my plan later',
+                      description:
+                      'All plans have a 30-day activation period. If you get a plan today and don\'t activate it until ${DateFormat('MMMM d').format(DateTime.now().add(const Duration(days: 30)))}, it will be activated automatically.');
+                },
+                separatorBuilder: (context, index) {
+                  return index != state.tariffs.length
+                      ? const SizedBox(
+                    height: 10,
+                  )
+                      : const SizedBox.shrink();
+                },
+                itemCount: state.tariffs.length + 1),
           ),
           const SizedBox(
             height: 16,
@@ -107,29 +105,31 @@ class PreviewTariffsContent extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 12),
               child: SafeArea(
                   child: PrimaryButton(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  final bloc = context.read<PreviewTariffsBloc>();
-                  if (bloc.isFromWelcome) {
-                    context.go(Routes.auth);
-                  } else {
-                    context.push(Routes.checkout, extra: {
-                      'tariff': bloc.tariffs[bloc.state.selectedIndex],
-                      'image': bloc.countryEntity is CountryModel ? bloc.plan.image ?? 'https://myaccount.keepgo.com/img/flags/3x2/${(bloc.countryEntity as CountryModel).code.toLowerCase()}.svg' : null,
-                      'country': bloc.countryEntity.name,
-                      'type': bloc.countryEntity is CountryModel ? 'local' : 'regional',
-                      'country_code': bloc.isLocal ? bloc.countryCodeFromCountryModel ?? 'US' : bloc.countryCodeFromPrivacyIPLocation ?? 'US',
-                      'region_id': bloc.countryEntity is RegionModel ? (bloc.countryEntity as RegionModel).id : null
-                    });
-                  }
-                },
-                text: context.read<PreviewTariffsBloc>().isFromWelcome
-                    ? 'Sign in'
-                    : 'Continue',
-                isExpanded: true,
-              )))
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      final bloc = context.read<PreviewTariffsBloc>();
+                      if (bloc.isFromWelcome) {
+                        context.go(Routes.auth);
+                      } else {
+                        context.push(Routes.checkout, extra: {
+                          'tariff':  state.tariffs[bloc.state.selectedIndex],
+                          'image': bloc.countryEntity is CountryModel ? state.image ?? 'https://myaccount.keepgo.com/img/flags/3x2/${(bloc.countryEntity as CountryModel).code.toLowerCase()}.svg' : null,
+                          'country': bloc.countryEntity.name,
+                          'type': bloc.countryEntity is CountryModel ? 'local' : 'regional',
+                          'country_code': bloc.isLocal ? bloc.countryCodeFromCountryModel ?? 'US' : 'US',
+                          'region_id': bloc.countryEntity is RegionModel ? (bloc.countryEntity as RegionModel).id : null
+                        });
+                      }
+                    },
+                    text: context.read<PreviewTariffsBloc>().isFromWelcome
+                        ? 'Sign in'
+                        : 'Continue',
+                    isExpanded: true,
+                  )))
         ],
-      ),
+      );
+  },
+),
     );
   }
 }

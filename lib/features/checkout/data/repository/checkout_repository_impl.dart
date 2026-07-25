@@ -1,7 +1,7 @@
 
 import 'package:esim_mob_app/features/checkout/data/data_sources/remote/checkout_remote_data_source.dart';
+import 'package:esim_mob_app/features/checkout/data/model/payment_by_card_result_intent.dart';
 import 'package:esim_mob_app/features/checkout/data/model/purchased_esim_by_balance_response.dart';
-import 'package:esim_mob_app/features/checkout/data/model/purchased_esim_by_card_response.dart';
 import 'package:esim_mob_app/features/checkout/domain/repository/checkout_repository.dart';
 
 class CheckoutRepositoryImpl implements CheckoutRepository{
@@ -19,7 +19,7 @@ class CheckoutRepositoryImpl implements CheckoutRepository{
   }
 
   @override
-  Future<PurchasedESimByCardResponse> purchaseESimByCard({required String type, required String location, required String package, required String? promoCode}) async{
+  Future<PaymentByCardResultIntent> purchaseESimByCard({required String type, required String location, required String package, required String? promoCode}) async{
     return await _checkoutRemoteDataSource.purchaseESimUsingCard(data: {
       'type': type,
       'location': location,

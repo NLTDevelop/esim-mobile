@@ -9,11 +9,16 @@ class StoreDataCard extends StatelessWidget {
       {super.key,
       required this.name,
       required this.isLocal,
-      required this.onTap, this.code});
+      required this.onTap,
+        required this.sign,
+        required this.price,
+        this.code});
 
   final String name;
   final String? code;
+  final num? price;
   final bool isLocal;
+  final String sign;
   final void Function() onTap;
 
   @override
@@ -82,15 +87,16 @@ class StoreDataCard extends StatelessWidget {
                         color: Theme.of(context).extension<ColorExtension>()!.text,
                       ),
                     ),
-                    // const SizedBox(
-                    //   height: 3,
-                    // ),
-                    // DefaultText.labelSmall('Price: from $price \$',
-                    //     overflow: TextOverflow.visible,
-                    //     maxLines: 1,
-                    //     fontWeight: FontWeight.w500,
-                    //     color:
-                    //         Theme.of(context).extension<ColorExtension>()!.text)
+                    const SizedBox(
+                      height: 3,
+                    ),
+                    if(price != null)
+                      DefaultText.labelSmall('Price: from $price $sign',
+                        overflow: TextOverflow.visible,
+                        maxLines: 1,
+                        fontWeight: FontWeight.w500,
+                        color:
+                            Theme.of(context).extension<ColorExtension>()!.text)
                   ],
                 ),
               ),

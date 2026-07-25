@@ -2,7 +2,7 @@ part of 'authentification_bloc.dart';
 
 
 @freezed
-class AuthentificationEvent with _$AuthentificationEvent {
+abstract class AuthentificationEvent with _$AuthentificationEvent {
   const factory AuthentificationEvent.loginGoogle() =
   _AuthentificationEventLoginGoogle;
 

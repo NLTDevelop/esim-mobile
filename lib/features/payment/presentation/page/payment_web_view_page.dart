@@ -52,7 +52,6 @@ class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
                     trx: widget.trx,
                     isFromBalance: widget.isFromBalance ?? false,
                     onSuccess: (){
-                      print('on payment success');
                       context.pop();
                     },
                   );
