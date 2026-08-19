@@ -6,7 +6,7 @@ part 'user_model.g.dart';
 abstract class UserModel {
   const UserModel();
 
-  factory UserModel.notAuthenticated() => const NotAuthenticatedUser();
+  factory UserModel.notAuthenticated({final String? currency}) => NotAuthenticatedUser(currency: currency);
 
   factory UserModel.authenticated({
     required final int id,
@@ -110,7 +110,7 @@ class AuthenticatedUserModel implements UserModel {
 @immutable
 class NotAuthenticatedUser implements UserModel {
   @literal
-  const NotAuthenticatedUser();
+  const NotAuthenticatedUser({this.currency});
 
   @override
   bool get isAuthenticated => false;
@@ -121,8 +121,10 @@ class NotAuthenticatedUser implements UserModel {
   @override
   String get userEmail => '';
 
+  final String? currency;
+
   @override
-  String? get currencyCode => '';
+  String? get currencyCode => currency;
 
   @override
   double? get balance => 0;
@@ -137,6 +139,8 @@ class NotAuthenticatedUser implements UserModel {
     required final T Function() notAuthenticated,
   }) =>
       notAuthenticated();
+
+
 
   @override
   String toString() => 'User is not authenticated';

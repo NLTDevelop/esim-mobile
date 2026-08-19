@@ -246,14 +246,19 @@ class AuthentificationBloc
   _onUpdateCurrencyCode(_AuthentificationChangeCurrencyCode event, Emitter<AuthentificationState> emit) async{
     try {
       emit(_Loading(user: state.user, eSimActivations: state.eSimActivations));
-      final user = await _updateUserUseCase.call(event.currencyCode);
-      
-      emit(
-        user.when<AuthentificationState>(
-          authenticated: (customer) => _Authenticated(user: customer, eSimActivations: state.eSimActivations),
-          notAuthenticated: () => const _NotAuthenticated(),
-        ),
-      );
+
+      if(state.user is AuthenticatedUserModel){
+        final user = await _updateUserUseCase.call(event.currencyCode);
+
+        emit(
+          user.when<AuthentificationState>(
+            authenticated: (customer) => _Authenticated(user: customer, eSimActivations: state.eSimActivations),
+            notAuthenticated: () => const _NotAuthenticated(),
+          ),
+        );
+      } else {
+        emit(_NotAuthenticated(user: UserModel.notAuthenticated(currency: event.currencyCode)));
+      }
     } on Object catch (error) {
       emit(_Failure(message: ErrorMapper.mapError(error)));
     }
