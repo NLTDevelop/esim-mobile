@@ -241,7 +241,7 @@ class CheckoutRoute extends GoRouteData {
     final country = extra['country'] as String;
     final countryCode = extra['country_code'] as String;
     final type = extra['type'] as String;
-    final regionId = extra['region_id'] as String?;
+    final regionId = extra['region_id'] as num?;
 
     return CheckoutPage(
       tariff: tariff,

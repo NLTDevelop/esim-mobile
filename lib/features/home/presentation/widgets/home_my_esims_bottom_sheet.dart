@@ -85,7 +85,7 @@ class HomeMyESimsBottomSheet extends StatelessWidget {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          SquareButton(onTap: (){ context.pop(); context.push(Routes.store);}, title: 'Add data', icon: Icon(Icons.add, color: Theme.of(context).extension<ColorExtension>()!.primary),),
+                          SquareButton(onTap: (){ context.pop(); context.go(Routes.store);}, title: 'Add data', icon: Icon(Icons.add, color: Theme.of(context).extension<ColorExtension>()!.primary),),
                           SquareButton(onTap: (){
                             context.push(Routes.history, extra: { 'transactions': <TransactionModel>[]});
                           }, title: 'Payment history', icon: SvgPicture.asset(AppIcons.history, colorFilter: ColorFilter.mode(Theme.of(context).extension<ColorExtension>()!.primary, BlendMode.srcIn),)),

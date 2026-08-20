@@ -28,7 +28,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       required PackageModel tariff,
         required String esimLocation,
         required String type,
-        required String? regionId
+        required num? regionId
       }) :
         _purchaseESimByBalanceUseCase = purchaseESimByBalanceUseCase,
         _checkPromoCodeUseCase = checkPromoCodeUseCase,
@@ -58,7 +58,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   final String location;
 
-  final String? _regionId;
+  final num? _regionId;
   final PackageModel _tariff;
   PackageModel get tariff => _tariff;
 
@@ -156,7 +156,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         List<PlanModel> plans = await injector<FetchLocalESimsUseCase>().call(FetchLocalESimsParams(currencyCode: event.currency, countryCode: location));
         _findCurrentPackage(plans, emit, event.currency);
       } else if (_regionId != null) {
-        List<PlanModel> plans = await injector<FetchRegionalESimsUseCase>().call(FetchRegionalESimsParams(regionalId: _regionId, currencyCode: event.currency));
+        List<PlanModel> plans = await injector<FetchRegionalESimsUseCase>().call(FetchRegionalESimsParams(regionalId: _regionId.toString(), currencyCode: event.currency));
         _findCurrentPackage(plans, emit, event.currency);
       }
     } on Object catch(e){

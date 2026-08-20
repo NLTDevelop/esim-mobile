@@ -1,4 +1,5 @@
 import 'package:esim_mob_app/common/routes/routes.dart';
+import 'package:esim_mob_app/common/theme/app_assets.dart';
 import 'package:esim_mob_app/common/theme/extension/color/color_extension.dart';
 import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
@@ -24,10 +25,18 @@ class NoPlansWidget extends StatelessWidget {
                 builder: (context, state){
                   return state.maybeMap(orElse: () => Container(), pending: (s) => Padding(padding: const EdgeInsets.only(bottom: 16), child: PendingStatusWidget()));
                 }),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color:  Theme.of(context).extension<ColorExtension>()!.toggleCircle
+              ),
+              child: Image.asset(AppImages.logoTransparent, width: 95, height: 95,),
+            ),
+            const SizedBox(height: 18,),
             const DefaultText.bodyMedium('No store... yet!'),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
-              child: DefaultText.labelMedium('Purchase a plan for it to appear',
+              child: DefaultText.labelMedium('Buy a plan and it will appear here',
                 color: Theme.of(context).extension<ColorExtension>()!.text,),
             ),
             PrimaryButton(onTap: () {

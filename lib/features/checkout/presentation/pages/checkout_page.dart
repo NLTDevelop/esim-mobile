@@ -23,7 +23,7 @@ class CheckoutPage extends StatelessWidget {
   final String country;
   final String type;
   final String countryCode;
-  final String? regionId;
+  final num? regionId;
 
   @override
   Widget build(BuildContext context) {
