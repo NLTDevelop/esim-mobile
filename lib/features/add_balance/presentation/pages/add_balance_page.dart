@@ -74,6 +74,12 @@ class AddBalancePage extends StatelessWidget {
                 paymentSheetParameters: SetupPaymentSheetParameters(
                   paymentIntentClientSecret: state.paymentIntentClientSecret,
                   merchantDisplayName: "My Store",
+                  // applePay: const PaymentSheetApplePay(merchantCountryCode: 'US'),
+                  googlePay: const PaymentSheetGooglePay(
+                    merchantCountryCode: 'US',
+                    testEnv: true,
+                    buttonType: PlatformButtonType.book,
+                  ),
                 ),
               );
 
