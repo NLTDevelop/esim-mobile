@@ -77,10 +77,11 @@ class PreviewTariffsBloc
             PreviewTariffsState.success(
               tariffs: [...plans[0].packages],
               selectedIndex: state.selectedIndex, image: plans[0].image,
+              coverages: plans[0].coverages.map((e) => e.name).toList()
             )
         );
       } else {
-        emit(PreviewTariffsState.failure('No eSim plans'));
+        emit(const PreviewTariffsState.failure('No eSim plans'));
       }
 
 

@@ -43,4 +43,5 @@ class AppIcons{
   static const troubleShooting = '$_svgPath/troubleshooting.svg';
   static const eSim = '$_svgPath/esim.svg';
   static const history = '$_svgPath/history.svg';
+  static const worldOutline = '$_svgPath/world_outline.svg';
 }

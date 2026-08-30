@@ -7,6 +7,7 @@ import 'package:esim_mob_app/common/widgets/button/primary_button.dart';
 import 'package:esim_mob_app/common/widgets/text/default_text.dart';
 import 'package:esim_mob_app/features/auth/presentation/bloc/authentification_bloc.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/bloc/preview_tariffs_bloc.dart';
+import 'package:esim_mob_app/features/preview_tariffs/presentation/bottomsheets/coverages_bottom_sheet.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/widgets/activation_info_card.dart';
 import 'package:esim_mob_app/features/preview_tariffs/presentation/widgets/preview_tariff_card.dart';
 import 'package:esim_mob_app/features/store/data/models/country_model.dart';
@@ -70,6 +71,34 @@ class PreviewTariffsContent extends StatelessWidget {
               ],
             ),
           ),
+          if(bloc.countryEntity is RegionModel)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 14),
+              child: GestureDetector(
+                onTap: (){
+                  showModalBottomSheet(
+                      context: context,
+                      useRootNavigator: true,
+                      useSafeArea: true,
+                      isScrollControlled: true,
+                      builder: (ctx) => CoveragesBottomSheet(coverages: state.coverages));
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Theme.of(context).extension<ColorExtension>()!.primary, width: 1.5),
+                  ),
+                  child: Row(
+                    children: [
+                      SvgPicture.asset(AppIcons.worldOutline, colorFilter: ColorFilter.mode(Theme.of(context).extension<ColorExtension>()!.primary, BlendMode.srcIn), width: 26, height: 26,),
+                      const SizedBox(width: 12,),
+                      DefaultText.bodyLarge('View coverages', color: Theme.of(context).extension<ColorExtension>()!.primary,),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           Expanded(
             child: ListView.separated(
                 itemBuilder: (context, index) {
